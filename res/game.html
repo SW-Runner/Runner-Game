@@ -1,0 +1,64 @@
+<html>
+<head>
+    <title>SW-Runner</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@1,800&display=swap" rel="stylesheet">
+    <script type="text/javascript" src="../js/three.min.js"></script>
+    <script type="text/javascript" src="../js/GLTFLoader.js"></script>
+    <script type="text/javascript" src="../js/orbitcontrols.js"></script>
+    <script type="text/javascript" src="../js/game.js"></script>
+    <link href="../styles.css" rel="stylesheet">
+    <style>
+        body{
+            background-image: url("/res/background.png");
+            background-size: cover;
+        }
+    </style>
+</head>
+<body>
+<div class="panel">
+    <div class="game-title">
+        <div class="title">SW-Runner</div>
+    </div>
+    <div class="stat">
+        <label>Score</label>
+        <p id="score">0</p>
+    </div>
+    <table id="controls">
+        <tr>
+            <td><font color="white">Up:</font></td>
+            <td><font color="white">Jump</font></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td><font color="white">Left:</font></td>
+            <td><font color="white">Left lane switch</font></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td><font color="white">Right:</font></td>
+            <td><font color="white">Right lane switch</font></td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td><font color="white">P:</font></td>
+            <td><font color="white">Pause</font></td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+
+    </table>
+    <div class="animate-flicker" id="variable-content">Press enter to begin</div>
+</div>
+<div id="world"></div>
+
+
+</body>
+</html>
