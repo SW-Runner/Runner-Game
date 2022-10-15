@@ -1,0 +1,11 @@
+Model Information:
+* title:	Moon Walk
+* source:	https://sketchfab.com/3d-models/moon-walk-4a6955a4df8449b5af8ef4c3cd9d0e03
+* author:	EvgenyS (https://sketchfab.com/EvgenyS)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Moon Walk" (https://sketchfab.com/3d-models/moon-walk-4a6955a4df8449b5af8ef4c3cd9d0e03) by EvgenyS (https://sketchfab.com/EvgenyS) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
