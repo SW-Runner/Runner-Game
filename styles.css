@@ -15,9 +15,9 @@ html, body {
 
 #world {
     position: absolute;
-    width:60%;
+    width:80%;
     height: 100%;
-    left:20%;
+    left:10%;
     overflow: hidden;
 }
 
