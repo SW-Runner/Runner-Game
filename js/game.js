@@ -7,6 +7,11 @@
 const defaultX = 0;
 const defaultY = 1500;
 const defaultZ = -1000;
+// 카메라가 보는 위치의 디폴트 값
+const defaultDestX = 0;
+const defaultDestY = 600;
+const defaultDestZ = -5000;
+
 
 // 카메라 x,y,z 값을 조정하기 위한 변수
 let cameraX = 0;
@@ -163,10 +168,20 @@ class Camera {
         this.queuedChange = [];
 
         // 카메라 위치 변화량
-        // 아직까지 카메라의 위치만 변경되게 하였는데, 카메라가 바라보는 곳도 변경하면 더 다이나믹하게 전환될 수 있을듯
         this.xDiff = 1000;
         this.yDiff = 1000;
         this.zDiff = 1000;
+
+        // 카메라가 보는 지점 위치 변화량
+        this.destXDiff = 500;
+        this.destYDiff = 500;
+
+        // 현재 카메라가 보고 있는 지점
+        // 초기에는 default인 곳을 보고 있으니 default로 매핑
+        this.currentDestX = defaultDestX;
+        this.currentDestY = defaultDestY;
+        this.currentDestZ = defaultDestZ;
+
     }
     // timeDiff가 viewChangeTime보다 커지면 실행된다
     // 카메라 위치를 고정
@@ -176,6 +191,12 @@ class Camera {
         camera.position.x = this.newX;
         camera.position.y = this.newY;
         camera.position.z = this.newZ;
+
+        this.currentDestX = this.newDestX;
+        this.currentDestY = this.newDestY;
+        this.currentDestZ = this.newDestZ;
+
+        camera.lookAt(new THREE.Vector3(this.currentDestX, this.currentDestY, this.currentDestZ));
     }
     // update안에 호출되는 함수
     // changing이 실행되면서 카메라 위치 값을 변경해준다.
@@ -184,10 +205,17 @@ class Camera {
         camera.position.x = this.pastX + (this.newX - this.pastX)*(timeDiff / this.viewChangeTime);
         camera.position.y = this.pastY + (this.newY - this.pastY)*(timeDiff / this.viewChangeTime);
         camera.position.z = this.pastZ + (this.newZ - this.pastZ)*(timeDiff / this.viewChangeTime);
+
+        let tempX = this.currentDestX + (this.newDestX - this.currentDestX) * (timeDiff / this.viewChangeTime);
+        let tempY = this.currentDestY + (this.newDestY - this.currentDestY) * (timeDiff / this.viewChangeTime);
+        let tempZ = this.currentDestZ + (this.newDestZ - this.currentDestZ) * (timeDiff / this.viewChangeTime);
+
+        camera.lookAt(new THREE.Vector3(tempX, tempY, tempZ));
     }
     // 위 characterManager와 동일하게 animate 안에서 반복적으로 호출 되며 카메라 위치를 부드럽게 변경
     update() {
         let curTime = new Date() / 1000;
+
         if (!this.changingToOne && !this.changingToTwo && !this.changingToThree && !this.changingToFour && !this.changingToFive && !this.changingToSix && !this.changingToSeven && this.queuedChange > 0) {
             let change = this.queuedChange.shift();
             this.changeStartTime = new Date() / 1000;
@@ -197,30 +225,47 @@ class Camera {
             this.pastY = camera.position.y;
             this.pastZ = camera.position.z;
 
+
             if (change === one && this.currentView !== 1) {
                 this.changingToOne = true;
 
                 this.newX = -this.xDiff;
                 this.newY = defaultY;
                 this.newZ = defaultZ;
+
+                this.newDestX = this.destXDiff;
+                this.newDestY = defaultDestY;
+                this.newDestZ = defaultDestZ;
             }else if (change === two && this.currentView !== 2) {
                 this.changingToTwo = true;
 
                 this.newX = this.xDiff;
                 this.newY = defaultY;
                 this.newZ = defaultZ;
+
+                this.newDestX = -this.destXDiff;
+                this.newDestY = defaultDestY;
+                this.newDestZ = defaultDestZ;
             }else if (change === three && this.currentView !== 3) {
                 this.changingToThree = true;
 
                 this.newX = defaultX;
                 this.newY = defaultY + this.yDiff;
                 this.newZ = defaultZ;
+
+                this.newDestX = defaultDestX;
+                this.newDestY = defaultDestY-this.destYDiff;
+                this.newDestZ = defaultDestZ;
             }else if (change === four && this.currentView !== 4) {
                 this.changingToFour = true;
 
                 this.newX = defaultX;
                 this.newY = defaultY - this.yDiff;
                 this.newZ = defaultZ;
+
+                this.newDestX = defaultDestX;
+                this.newDestY = defaultDestY + this.destYDiff;
+                this.newDestZ = defaultDestZ;
             }else if (change === five && this.currentView !== 5) {
                 this.changingToFive = true;
 
@@ -325,11 +370,11 @@ window.onload = function init() {
 
     // Camera 생성하기
     camera = new THREE.PerspectiveCamera(
-        60, world.clientWidth / world.clientHeight, 1, 56000);
+        60, world.clientWidth / world.clientHeight, 1, 48000);
 
     //camera.position.set(0, 1500, -1000);
     camera.position.set(cameraX, cameraY, cameraZ);
-    camera.lookAt(new THREE.Vector3(0, 600, -5000));
+    camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
     window.camera = camera;
 
     // 광원추가하기
