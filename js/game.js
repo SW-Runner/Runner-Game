@@ -65,7 +65,7 @@ let allowedKeys = {};
 
 // 게임 상태 관리를 위한 변수
 let paused = true;
-let gameOver;
+let gameOver = false;
 
 // 모션을 위한 변수
 let motionValue = -60;
@@ -74,12 +74,16 @@ let motionValue = -60;
 // 캐릭터의 모션을 관리하는 클래스
 class Character{
     constructor() {
+        // 점프 지속 시간
         this.jumpTime = 0.4;
+        // 캐릭터가 점프하는 높이
         this.jumpHeight = 1500;
         this.isJumping = false;
         this.isMovingLeft = false;
         this.isMovingRight = false;
+        // 캐릭터의 현재 lane, 중앙 레인이 0, 왼쪽으로 가면 1씩 작아지고, 오른쪽으로 가면 1씩 커짐
         this.currentLane = 0;
+        // 사용자의 입력을 저장해 놓고 움직임이 끝나면 바로 다음 모션을 진행하기 위한 큐
         this.queuedMove = [];
 
     }
@@ -141,6 +145,8 @@ let camera;
 class Camera {
     constructor() {
         this.currentView = 7;
+        // 카메라 위치를 변경하는데 걸릴 시간
+        // viewChangeTime이 커지면 카메라 옮기는데 시간이 오래걸림
         this.viewChangeTime = 0.5;
         // 카메라 x값 좌우로 변경
         this.changingToOne = false;
@@ -153,27 +159,33 @@ class Camera {
         this.changingToSix = false;
         // 디폴트 카메라 세팅으로 변경
         this.changingToSeven = false;
+        // 다음 카메라 모션을 저장하기 위한 큐
         this.queuedChange = [];
 
-
+        // 카메라 위치 변화량
+        // 아직까지 카메라의 위치만 변경되게 하였는데, 카메라가 바라보는 곳도 변경하면 더 다이나믹하게 전환될 수 있을듯
         this.xDiff = 1000;
         this.yDiff = 1000;
         this.zDiff = 1000;
     }
-
+    // timeDiff가 viewChangeTime보다 커지면 실행된다
+    // 카메라 위치를 고정
+    // 이 코드 없으면 할때마다 위치가 살짝살짝 달라짐
     changeDone(finalView) {
         this.currentView = finalView;
         camera.position.x = this.newX;
         camera.position.y = this.newY;
         camera.position.z = this.newZ;
     }
-
+    // update안에 호출되는 함수
+    // changing이 실행되면서 카메라 위치 값을 변경해준다.
+    // timeDiff = 현재 시간 - 카메라 위치를 변경을 시작한 시간 (초단위로 계산되는듯)
     changing(timeDiff) {
         camera.position.x = this.pastX + (this.newX - this.pastX)*(timeDiff / this.viewChangeTime);
         camera.position.y = this.pastY + (this.newY - this.pastY)*(timeDiff / this.viewChangeTime);
         camera.position.z = this.pastZ + (this.newZ - this.pastZ)*(timeDiff / this.viewChangeTime);
     }
-
+    // 위 characterManager와 동일하게 animate 안에서 반복적으로 호출 되며 카메라 위치를 부드럽게 변경
     update() {
         let curTime = new Date() / 1000;
         if (!this.changingToOne && !this.changingToTwo && !this.changingToThree && !this.changingToFour && !this.changingToFive && !this.changingToSix && !this.changingToSeven && this.queuedChange > 0) {
@@ -187,7 +199,7 @@ class Camera {
 
             if (change === one && this.currentView !== 1) {
                 this.changingToOne = true;
-                console.log("changing to one true in update1");
+
                 this.newX = -this.xDiff;
                 this.newY = defaultY;
                 this.newZ = defaultZ;
@@ -228,17 +240,14 @@ class Camera {
                 this.newY = defaultY;
                 this.newZ = defaultZ;
             }
-
         }
 
         if (this.changingToOne) {
-            console.log("changing to one true in update2");
             let timeDiff = curTime - this.changeStartTime;
             if (timeDiff > this.viewChangeTime) {
                 this.changeDone(1);
                 this.changingToOne = false;
             } else {
-                console.log("changing to one true in update3");
                 this.changing(timeDiff)
             }
         }else if (this.changingToTwo) {
@@ -292,8 +301,9 @@ class Camera {
         }
     }
 }
-
+// 카메라 이동을 위한 객체 생성
 let cameraManager = new Camera();
+
 
 window.onload = function init() {
     // HTML world랑 js 연결하기
@@ -315,7 +325,7 @@ window.onload = function init() {
 
     // Camera 생성하기
     camera = new THREE.PerspectiveCamera(
-        60, world.clientWidth / world.clientHeight, 1, 57000);
+        60, world.clientWidth / world.clientHeight, 1, 56000);
 
     //camera.position.set(0, 1500, -1000);
     camera.position.set(cameraX, cameraY, cameraZ);
@@ -351,7 +361,7 @@ window.onload = function init() {
     // 장애물 & 오브젝트 만들기
     // TODO: 장애물 어떻게 만들어질지 정해야될듯
 
-    // 시점 변화 애니메이션 추가해보기
+
 
     // 사용자로부터 입력받을 수 있게 설정
     document.addEventListener('keydown', function (ev) {
@@ -377,6 +387,7 @@ window.onload = function init() {
                     "Game is paused. Press enter to resume.";
                 runningAction.stop();
             }
+            // 캐릭터 애니메이션을 위한 인풋 매핑
             if (inputKey === up && !paused) {
                 characterManager.queuedMove.push("jump");
             }
@@ -386,6 +397,7 @@ window.onload = function init() {
             if (inputKey === right && !paused) {
                 characterManager.queuedMove.push("right");
             }
+            // 시점 변화를 위한 인풋 매핑
             if (inputKey === one && !paused) {
                 cameraManager.queuedChange.push(one);
             }
