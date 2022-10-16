@@ -284,6 +284,10 @@ class Camera {
                 this.newX = defaultX;
                 this.newY = defaultY;
                 this.newZ = defaultZ;
+
+                this.newDestX = defaultDestX;
+                this.newDestY = defaultDestY;
+                this.newDestZ = defaultDestZ;
             }
         }
 
