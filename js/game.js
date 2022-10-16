@@ -11,7 +11,14 @@ const defaultZ = -1000;
 const defaultDestX = 0;
 const defaultDestY = 600;
 const defaultDestZ = -5000;
+// 8번 시점을 위한 카메라 세팅 변수
+const eightXPosition = 0;
+const eightYPosition = 3800;
+const eightZPotion = -8000;
 
+const eightXDes = 0;
+const eightYDes = -2600;
+const eightZDes = -4000;
 
 // 카메라 x,y,z 값을 조정하기 위한 변수
 let cameraX = 0;
@@ -66,6 +73,7 @@ const four = "4";
 const five = "5";
 const six = "6";
 const seven = "7";
+const eight = "8";
 
 // 중복 키 입력을 방지하기 위한 dictionary
 let allowedKeys = {};
@@ -166,6 +174,8 @@ class Camera {
         this.changingToSix = false;
         // 디폴트 카메라 세팅으로 변경
         this.changingToSeven = false;
+        // 카메라 시점을 완전 변경해서 정면 시점으로 이동
+        this.changingToEight = false;
         // 다음 카메라 모션을 저장하기 위한 큐
         this.queuedChange = [];
 
@@ -248,7 +258,7 @@ class Camera {
     // 위 characterManager와 동일하게 animate 안에서 반복적으로 호출 되며 카메라 위치를 부드럽게 변경
     update() {
         let curTime = new Date() / 1000;
-        if (!this.changingToOne && !this.changingToTwo && !this.changingToThree && !this.changingToFour && !this.changingToFive && !this.changingToSix && !this.changingToSeven && this.queuedChange.length > 0) {
+        if (!this.changingToOne && !this.changingToTwo && !this.changingToThree && !this.changingToFour && !this.changingToFive && !this.changingToSix && !this.changingToSeven && !this.changingToEight && this.queuedChange.length > 0) {
             let change = this.queuedChange.shift();
             this.changeStartTime = new Date() / 1000;
 
@@ -320,6 +330,17 @@ class Camera {
                 this.newDestX = defaultDestX;
                 this.newDestY = defaultDestY;
                 this.newDestZ = defaultDestZ;
+            }else if (change === eight && this.currentView !== 8) {
+                this.changingToEight = true;
+
+                this.newX = eightXPosition;
+                this.newY = eightYPosition;
+                this.newZ = eightZPotion;
+
+                this.newDestX = eightXDes;
+                this.newDestY = eightYDes;
+                this.newDestZ = eightZDes;
+
             }
         }
 
@@ -379,6 +400,14 @@ class Camera {
             } else {
                 this.changing(timeDiff)
             }
+        }else if (this.changingToEight) {
+            let timeDiff = curTime - this.changeStartTime;
+            if (timeDiff > this.viewChangeTime) {
+                this.changeDone(8);
+                this.changingToEight = false;
+            } else {
+                this.changing(timeDiff);
+            }
         }
     }
 }
@@ -419,10 +448,10 @@ window.onload = function init() {
     // scene.add(light);
     // 포인트 라이트를 쓰면 촬영장에서 조명킨것처럼 그림자도 생기고, 빛이 덜 가는 부분에 윤곽선도 생겨서 좀 더 입체적으로 보인다
     // 이 상황에서 코드를 실행시켜보면, pointlight를 써서 좌우로 레인을 옮기면 캐릭터가 어두워지는 것을 볼 수 있음,
-    let backLight = new THREE.PointLight(0xffffff, 5, 3000,2);
-    backLight.position.set(0, 0, -2500);
-    let upLight = new THREE.PointLight(0xffffff, 5, 3000, 2);
-    upLight.position.set(0, 1500, -4000);
+    let backLight = new THREE.PointLight(0xffffff, 8, 3000,2);
+    backLight.position.set(0, 0, -2000);
+    let upLight = new THREE.PointLight(0xffffff, 8, 8000, 2);
+    upLight.position.set(0, 3000, -4000);
     scene.add(backLight);
     scene.add(upLight);
 
@@ -509,6 +538,9 @@ window.onload = function init() {
             }
             if (inputKey === seven && !paused) {
                 cameraManager.queuedChange.push(seven);
+            }
+            if (inputKey === eight && !paused) {
+                cameraManager.queuedChange.push(eight);
             }
             // 흔들거리는 이펙트를 위한 인풋 매핑
             if (inputKey === r && !paused) {
