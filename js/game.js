@@ -52,6 +52,8 @@ const a = "a";
 const s = "s";
 const d = "d";
 
+const r = "r";
+
 const q = "q";
 const e = "e";
 
@@ -182,7 +184,38 @@ class Camera {
         this.currentDestY = defaultDestY;
         this.currentDestZ = defaultDestZ;
 
+        // 화면이 흔들리는데 걸릴 시간
+        this.rumbleTime = 0.4;
+        this.rumbleQueue = [];
+        this.isRumbling = false;
+        this.rDiff = 0.15;
+
     }
+
+    rumble() {
+        let curTime = new Date() / 1000;
+        if (!this.isRumbling && this.rumbleQueue.length > 0) {
+            this.rumbleQueue.shift();
+            this.rumbleStartTime = curTime;
+
+            this.isRumbling = true;
+
+            this.currentRZ = camera.rotation.z;
+        }
+
+        if (this.isRumbling) {
+            let rumbleTimer = curTime - this.rumbleStartTime;
+            if (rumbleTimer > this.rumbleTime) {
+                this.isRumbling = false;
+                camera.rotation.z = this.currentRZ;
+            } else {
+                camera.rotation.z = this.currentRZ + this.rDiff * Math.sin((1 / this.rumbleTime) * 2 * Math.PI * rumbleTimer);
+            }
+
+
+        }
+    }
+
     // timeDiff가 viewChangeTime보다 커지면 실행된다
     // 카메라 위치를 고정
     // 이 코드 없으면 할때마다 위치가 살짝살짝 달라짐
@@ -215,8 +248,7 @@ class Camera {
     // 위 characterManager와 동일하게 animate 안에서 반복적으로 호출 되며 카메라 위치를 부드럽게 변경
     update() {
         let curTime = new Date() / 1000;
-
-        if (!this.changingToOne && !this.changingToTwo && !this.changingToThree && !this.changingToFour && !this.changingToFive && !this.changingToSix && !this.changingToSeven && this.queuedChange > 0) {
+        if (!this.changingToOne && !this.changingToTwo && !this.changingToThree && !this.changingToFour && !this.changingToFive && !this.changingToSix && !this.changingToSeven && this.queuedChange.length > 0) {
             let change = this.queuedChange.shift();
             this.changeStartTime = new Date() / 1000;
 
@@ -382,9 +414,19 @@ window.onload = function init() {
     window.camera = camera;
 
     // 광원추가하기
-    let light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
-    scene.add(light);
+    // hemisphereLight을 쓰면 그냥 그림자도 안생기고 캐릭터의 입체감은 좀 덜하다
+    // let light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
+    // scene.add(light);
+    // 포인트 라이트를 쓰면 촬영장에서 조명킨것처럼 그림자도 생기고, 빛이 덜 가는 부분에 윤곽선도 생겨서 좀 더 입체적으로 보인다
+    // 이 상황에서 코드를 실행시켜보면, pointlight를 써서 좌우로 레인을 옮기면 캐릭터가 어두워지는 것을 볼 수 있음,
+    let backLight = new THREE.PointLight(0xffffff, 5, 3000,2);
+    backLight.position.set(0, 0, -2500);
+    let upLight = new THREE.PointLight(0xffffff, 5, 3000, 2);
+    upLight.position.set(0, 1500, -4000);
+    scene.add(backLight);
+    scene.add(upLight);
 
+    // TODO: spotlight 처리를 어떻게하면 좋을까, PointLight랑 SpotLight을 섞어서 쓰면 될 것 같기도?
 
     // 캐릭터 렌더링하기
     const loader = new THREE.GLTFLoader();
@@ -468,6 +510,11 @@ window.onload = function init() {
             if (inputKey === seven && !paused) {
                 cameraManager.queuedChange.push(seven);
             }
+            // 흔들거리는 이펙트를 위한 인풋 매핑
+            if (inputKey === r && !paused) {
+                console.log("rotation"+camera.rotation.x + " " + camera.rotation.y + " " + camera.rotation.z);
+                cameraManager.rumbleQueue.push(r);
+            }
         }
 
     });
@@ -490,7 +537,8 @@ window.onload = function init() {
     function animate() {
         characterManager.update();
         cameraManager.update();
-        console.log(camera.position.x + " " + camera.position.y + " " + camera.position.z);
+        cameraManager.rumble();
+        // console.log(camera.position.x + " " + camera.position.y + " " + camera.position.z);
         // camera.position.set(cameraX, cameraY, cameraZ);
         let delta = clock.getDelta();
         if ( mixer ) mixer.update( delta );
