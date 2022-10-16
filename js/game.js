@@ -314,12 +314,20 @@ class Camera {
                 this.newX = defaultX;
                 this.newY = defaultY;
                 this.newZ = defaultZ - this.zDiff;
+
+                this.newDestX = defaultDestX;
+                this.newDestY = defaultDestY;
+                this.newDestZ = defaultDestZ;
             }else if (change === six && this.currentView !== 6) {
                 this.changingToSix = true;
 
                 this.newX = defaultX;
                 this.newY = defaultY;
                 this.newZ = defaultZ + this.zDiff;
+
+                this.newDestX = defaultDestX;
+                this.newDestY = defaultDestY;
+                this.newDestZ = defaultDestZ;
             }else if (change === seven && this.currentView !== 7) {
                 this.changingToSeven = true;
 
