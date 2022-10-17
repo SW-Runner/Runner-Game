@@ -422,7 +422,45 @@ class Camera {
 // 카메라 이동을 위한 객체 생성
 let cameraManager = new Camera();
 
+// 장애물, 커리큘럼 등을 저장할 리스트
+let objects = [];
 
+// 오브젝트 관리를 위한 클래스
+class Objects{
+    constructor() {
+        this.objects = [];
+        this.dx = 250;
+        this.dy = 250;
+        this.dz = 250;
+
+    }
+
+    createObject(x,y,z){
+        let geo = new THREE.BoxGeometry(this.dx, this.dy, this.dz);
+        let mat = new THREE.MeshPhongMaterial({
+            color: Colors["olive"],
+            flatShading: true
+        });
+        let object = new THREE.Mesh(geo, mat);
+        object.castShadow = true;
+        object.receiveShadow = true;
+        object.position.set(x, y, z);
+        return object;
+    }
+
+    update(){
+        this.objects.forEach(function (obj) {
+            obj.position.z += 100;
+        });
+        this.objects = this.objects.filter(function (obj) {
+            return obj.position.z < 0;
+        });
+    }
+
+}
+
+// 오브젝트 관리 객체
+let objectManager = new Objects();
 window.onload = function init() {
     // HTML world랑 js 연결하기
     let world = document.getElementById('world');
@@ -488,7 +526,9 @@ window.onload = function init() {
 
     // 장애물 & 오브젝트 만들기
     // TODO: 장애물 어떻게 만들어질지 정해야될듯
-
+    for (let i = 10; i < 40; i++) {
+        createObjects(i * -3000, 0.2, 0.6, 0.7);
+    }
 
 
     // 사용자로부터 입력받을 수 있게 설정
@@ -578,6 +618,10 @@ window.onload = function init() {
         characterManager.update();
         cameraManager.update();
         cameraManager.rumble();
+        if (!paused) {
+
+            objectManager.update();
+        }
         // console.log(camera.position.x + " " + camera.position.y + " " + camera.position.z);
         // camera.position.set(cameraX, cameraY, cameraZ);
         let delta = clock.getDelta();
@@ -609,5 +653,16 @@ window.onload = function init() {
         return box;
     }
 
+    function createObjects(position, probability, minScale, maxScale) {
+        for (let lane = -2; lane <= 2; lane++) {
+            let randomNum = Math.random();
+            if (randomNum < probability) {
+                let scale = minScale + (maxScale - minScale) * Math.random();
+                let object = objectManager.createObject(lane * 800, -400, position);
+                objectManager.objects.push(object);
+                scene.add(object);
+            }
+        }
+    }
 };
 
