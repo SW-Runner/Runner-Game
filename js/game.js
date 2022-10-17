@@ -200,9 +200,10 @@ class Camera {
     this.rumbleTime = 0.4;
     this.rumbleQueue = [];
     this.isRumbling = false;
+    // 화면이 흔들리는 양, 값을 키우면 더 심하게 흔들림
     this.rDiff = 0.15;
   }
-
+  // 화면 흔드는 이펙트 함수
   rumble() {
     let curTime = new Date() / 1000;
     if (!this.isRumbling && this.rumbleQueue.length > 0) {
@@ -567,6 +568,35 @@ window.onload = function init() {
   for (let i = 10; i < 40; i++) {
     createObjects(i * -3000, 0.2, 0.6, 0.7);
   }
+
+  // 텍스트 표현해보기
+  let fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
+  fontLoader.load("https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", (font) => {
+    // 쓸 글씨
+    let fontGeo = new THREE.TextGeometry(
+        "sw_runner", {
+          font: font,
+          size: 500, // 글씨 크기
+          height: 100, // 글씨 두께
+          curveSegments:12
+        }
+    )
+    // 효과를 위한 코드
+    fontGeo.computeBoundingBox();
+    let xMid = -0.5 * ( fontGeo.boundingBox.max.x - fontGeo.boundingBox.min.x );
+    fontGeo.translate( xMid, 0, 0 );
+    // 글씨 색 지정
+    let fontMat = new THREE.MeshBasicMaterial({
+      color: 0x5F9DF7,
+      wireframe:true
+    })
+    // 글씨 오브젝트 생성
+    let textMesh = new THREE.Mesh(fontGeo, fontMat);
+    // 글씨 위치 지정
+    textMesh.position.set(0, 0, -5000);
+    // 씬에 추가
+    scene.add(textMesh)
+  });
 
   // 사용자로부터 입력받을 수 있게 설정
   document.addEventListener("keydown", function (ev) {
