@@ -426,15 +426,19 @@ let cameraManager = new Camera();
 let objects = [];
 
 // 오브젝트 관리를 위한 클래스
+// TODO: 이 클래스 안에 오브젝트랑 충돌 여부를 판단하는 코드도 들어가야될 것 같다, 충돌 여부 판단하는 코드의 결과를 밑에 게임 매니저가 사용해서 점수를 올리거나 낮추거나 하게하면 될듯
+// TODO: 커리큘럼이랑 장애물 분리해서 생성해주는 코드 추가해야함
 class Objects{
     constructor() {
+        // 관리하는 오브젝트를 저장하는 리스트
         this.objects = [];
+        // 현재 만드는 오브젝트의 x,y,z 길이
         this.dx = 250;
         this.dy = 250;
         this.dz = 250;
 
     }
-
+    // 파라미터로 넘겨받은 x,y,z에 오브젝트를 생성해서 리턴해준다
     createObject(x,y,z){
         let geo = new THREE.BoxGeometry(this.dx, this.dy, this.dz);
         let mat = new THREE.MeshPhongMaterial({
@@ -447,7 +451,7 @@ class Objects{
         object.position.set(x, y, z);
         return object;
     }
-
+    // animate 함수 안에서 반복적으로 호출되며 오브젝트를 움직인다
     update(){
         this.objects.forEach(function (obj) {
             obj.position.z += 100;
@@ -461,6 +465,15 @@ class Objects{
 
 // 오브젝트 관리 객체
 let objectManager = new Objects();
+
+// 게임 관리를 위한 클래스
+// 지속적으로 장애물을 생성하도록 해야될 것 같고, 게임오버, 등 게임 전반적인 프로세스를 클래스
+// TODO : 게임 라운드 분리, 난이도 조절 등 코드 추가해야함
+class Game{
+
+}
+
+let gameManager = new Game();
 window.onload = function init() {
     // HTML world랑 js 연결하기
     let world = document.getElementById('world');
@@ -527,6 +540,7 @@ window.onload = function init() {
     // 장애물 & 오브젝트 만들기
     // TODO: 장애물 어떻게 만들어질지 정해야될듯
     for (let i = 10; i < 40; i++) {
+
         createObjects(i * -3000, 0.2, 0.6, 0.7);
     }
 
@@ -652,7 +666,7 @@ window.onload = function init() {
         box.position.set(x, y, z);
         return box;
     }
-
+    // 첫번째 파라미터인 Position이 오브젝트가 그려질 z 축 값을 정한다. 두번째 파라미터 probability가 커질 수록 오브젝트가 더 많이 그려질듯
     function createObjects(position, probability, minScale, maxScale) {
         for (let lane = -2; lane <= 2; lane++) {
             let randomNum = Math.random();
