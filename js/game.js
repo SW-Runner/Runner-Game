@@ -32,9 +32,14 @@ let cameraZ = -1000;
 let runningCharacter;
 let runningAction;
 
+// 동전 그리고 동전 애니메이션
+let coin;
+let spinningAction;
+
 // 애니메이션을 위한 변수
 let clock = new THREE.Clock();
 let mixer;
+let coinMixer;
 
 let Colors = {
   cherry: 0xe35d6a,
@@ -131,27 +136,33 @@ class Character {
 
       if (jumpTimer > this.jumpTime) {
         runningCharacter.position.y = 0;
+        coin.position.y = 600;
         this.isJumping = false;
         runningAction.play();
       } else {
         // 캐릭터의 점프 높이를 sin함수를 통해서 계산,0->1->0
         runningCharacter.position.y =
           this.jumpHeight * Math.sin((1 / this.jumpTime) * Math.PI * jumpTimer);
+        coin.position.y = 600 + this.jumpHeight * Math.sin((1 / this.jumpTime) * Math.PI * jumpTimer);
       }
     } else if (this.isMovingLeft) {
       runningCharacter.position.x -= 200;
+      coin.position.x -= 200;
       let offset = this.currentLane * 800 - runningCharacter.position.x;
       if (offset > 800) {
         this.currentLane -= 1;
         runningCharacter.position.x = this.currentLane * 800;
+        coin.position.x = this.currentLane * 800;
         this.isMovingLeft = false;
       }
     } else if (this.isMovingRight) {
       runningCharacter.position.x += 200;
+      coin.position.x += 200;
       let offset = runningCharacter.position.x - this.currentLane * 800;
       if (offset > 800) {
         this.currentLane += 1;
         runningCharacter.position.x = this.currentLane * 800;
+        coin.position.x = this.currentLane*800;
         this.isMovingRight = false;
       }
     }
@@ -491,7 +502,7 @@ class Objects {
 // 오브젝트 관리 객체
 let objectManager = new Objects();
 
-
+// 커리큘럼 생성, 이동을 관리하는 클래스
 class Curriculum{
   constructor() {
     // 커리큘럼들을 저장하는 리스트
@@ -505,7 +516,9 @@ class Curriculum{
     this.dz = 500;
   }
 
-
+  // 커리큘럼 오브젝트 생성
+  // 커리큘럼 글씨는 밑에 createCurriculums에서 생성해주고,
+  // scene에 추가까지 해준다
   createCurriculum(x, y, z) {
     let geo = new THREE.BoxGeometry(this.dx, this.dy, this.dz);
     let mat = new THREE.MeshPhongMaterial({
@@ -615,6 +628,27 @@ window.onload = function init() {
     }
   );
 
+  // 이펙트를 위한 동전 랜더링
+  loader.load(
+      "./coin/scene.gltf",
+      function (gltf) {
+        let spinning = gltf.scene.children[0];
+        // 동전 크기 설정
+        spinning.scale.set(10, 10, 10);
+        // 캐릭터 위치 설정
+        spinning.position.set(0, 600, -4000);
+        scene.add(gltf.scene);
+        coin = spinning;
+        coinMixer = new THREE.AnimationMixer(gltf.scene);
+        spinningAction = coinMixer.clipAction(gltf.animations[0]);
+        // spinningAction.play();
+      },
+      undefined,
+      function (error) {
+        console.log(error);
+      }
+  );
+
   // ground 설정하기
   let ground = createGround(4000, 20, 120000, Colors.olive, 0, -400, -60000);
   scene.add(ground);
@@ -671,6 +705,7 @@ window.onload = function init() {
       document.getElementById("variable-content").style.visibility = "hidden";
       document.getElementById("controls").style.display = "none";
       runningAction.play();
+      spinningAction.play();
       paused = false;
     } else {
       if (inputKey === p) {
@@ -681,6 +716,7 @@ window.onload = function init() {
         document.getElementById("variable-content").innerHTML =
           "Game is paused. Press enter to resume.";
         runningAction.stop();
+        spinningAction.stop();
       }
       // 캐릭터 애니메이션을 위한 인풋 매핑
       if (inputKey === up && !paused) {
@@ -753,6 +789,7 @@ window.onload = function init() {
     // camera.position.set(cameraX, cameraY, cameraZ);
     let delta = clock.getDelta();
     if (mixer) mixer.update(delta);
+    if (coinMixer) coinMixer.update(delta);
     renderer.render(scene, camera);
     requestAnimationFrame(animate);
   }
