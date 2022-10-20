@@ -3,6 +3,10 @@
 // y 값이 커질 수록 위로 올라가고
 // x 값이 커질 수록 오른쪽으로 간다
 
+// gltf 모델 및 폰트를 띄우게 하기 위한 loader
+let loader;
+let fontLoader;
+let fontURL = "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json";
 // 디폴트 카메라 위치
 const defaultX = 0;
 const defaultY = 1500;
@@ -471,6 +475,8 @@ class Objects {
     object.position.set(x, y, z);
     return object;
   }
+
+
   // animate 함수 안에서 반복적으로 호출되며 오브젝트를 움직인다
   update() {
     this.objects.forEach(function (obj) {
@@ -484,6 +490,56 @@ class Objects {
 
 // 오브젝트 관리 객체
 let objectManager = new Objects();
+
+
+class Curriculum{
+  constructor() {
+    // 커리큘럼들을 저장하는 리스트
+    this.currs = [];
+    // 커리큘럼 글씨들을 저장하는 리스트
+    this.currWords = [];
+
+    // 커리큘럼 오브젝트의 크기 변수
+    this.dx = 500;
+    this.dy = 500;
+    this.dz = 500;
+  }
+
+
+  createCurriculum(x, y, z) {
+    let geo = new THREE.BoxGeometry(this.dx, this.dy, this.dz);
+    let mat = new THREE.MeshPhongMaterial({
+      color: Colors['brownDark'],
+      flatShading:true
+    });
+
+    let object = new THREE.Mesh(geo, mat);
+    object.castShadow = true;
+    object.receiveShadow = true;
+    object.position.set(x, y, z);
+    return object;
+  }
+
+  update() {
+    this.currs.forEach(function (obj) {
+      obj.position.z += 100;
+    });
+
+    this.currWords.forEach(function (obj) {
+      obj.position.z += 100;
+    });
+
+    this.currs = this.currs.filter(function (obj) {
+      return obj.position.z < 0;
+    });
+
+    this.currWords = this.currWords.filter(function (obj) {
+      return obj.position.z < 0;
+    });
+  }
+}
+
+let currManager = new Curriculum();
 
 // 게임 관리를 위한 클래스
 // 지속적으로 장애물을 생성하도록 해야될 것 같고, 게임오버, 등 게임 전반적인 프로세스를 클래스
@@ -538,7 +594,7 @@ window.onload = function init() {
   // TODO: spotlight 처리를 어떻게하면 좋을까, PointLight랑 SpotLight을 섞어서 쓰면 될 것 같기도?
 
   // 캐릭터 렌더링하기
-  const loader = new THREE.GLTFLoader();
+  loader = new THREE.GLTFLoader();
   loader.load(
     "./character/scene.gltf",
     function (gltf) {
@@ -570,8 +626,8 @@ window.onload = function init() {
   }
 
   // 텍스트 표현해보기
-  let fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-  fontLoader.load("https://threejs.org/examples/fonts/helvetiker_regular.typeface.json", (font) => {
+  fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
+  fontLoader.load(fontURL, (font) => {
     // 쓸 글씨
     let fontGeo = new THREE.TextGeometry(
         "sw_runner", {
@@ -597,6 +653,11 @@ window.onload = function init() {
     // 씬에 추가
     scene.add(textMesh)
   });
+
+  // 커리큘럼 객체를 만들고 텍스트까지 매핑
+  for (let i = 10; i < 40; i++) {
+    createCurriculums(i * -5000, 0.2, 0.6, 0.7);
+  }
 
   // 사용자로부터 입력받을 수 있게 설정
   document.addEventListener("keydown", function (ev) {
@@ -686,6 +747,7 @@ window.onload = function init() {
     cameraManager.rumble();
     if (!paused) {
       objectManager.update();
+      currManager.update();
     }
     // console.log(camera.position.x + " " + camera.position.y + " " + camera.position.z);
     // camera.position.set(cameraX, cameraY, cameraZ);
@@ -740,6 +802,48 @@ window.onload = function init() {
         let object = objectManager.createObject(lane * 800, -400, position);
         objectManager.objects.push(object);
         scene.add(object);
+      }
+    }
+  }
+
+  function createCurriculums(position, probability, minScale, maxScale) {
+    for (let lane = -2; lane <= 2; lane++) {
+      let randomNum = Math.random();
+      if (randomNum < probability) {
+        let scale = minScale + (maxScale - minScale) * Math.random();
+        let object = currManager.createCurriculum(lane * 800, -400, position);
+        currManager.currs.push(object);
+        scene.add(object);
+
+        fontLoader.load(fontURL, (font) => {
+          // 쓸 글씨
+          let fontGeo = new THREE.TextGeometry(
+              "test Cur", {
+                font: font,
+                size: 100, // 글씨 크기
+                height: 100, // 글씨 두께
+                curveSegments:12
+              }
+          )
+          // 효과를 위한 코드
+          fontGeo.computeBoundingBox();
+          let xMid = -0.5 * ( fontGeo.boundingBox.max.x - fontGeo.boundingBox.min.x );
+          fontGeo.translate( xMid, 0, 0 );
+          // 글씨 색 지정
+          let fontMat = new THREE.MeshBasicMaterial({
+            color: 0x5F9DF7,
+            wireframe:true
+          })
+          // 글씨 오브젝트 생성
+          let textMesh = new THREE.Mesh(fontGeo, fontMat);
+          // 글씨 위치 지정
+          textMesh.position.set(lane*800, 100, position);
+          currManager.currWords.push(textMesh);
+          // 씬에 추가
+          scene.add(textMesh)
+        });
+
+
       }
     }
   }
