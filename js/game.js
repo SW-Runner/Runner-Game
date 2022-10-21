@@ -38,6 +38,7 @@ let spinningAction;
 
 // 애니메이션을 위한 변수
 let clock = new THREE.Clock();
+// 애니메이션 하나당 한개의 믹서가 필요하다
 let mixer;
 let coinMixer;
 
@@ -69,6 +70,7 @@ const s = "s";
 const d = "d";
 
 const r = "r";
+const i = "i";
 
 const q = "q";
 const e = "e";
@@ -170,6 +172,44 @@ class Character {
 }
 // 캐릭터 관리 객체 생성
 let characterManager = new Character();
+
+// 동전 애니메이션 관리 클래스
+// 동전 이동은 위 캐릭터 관리 클래스에서 하는데
+// 동전이 보여졌다가 사라지는 애니메이션을 이 클래스에서 관리한다
+class Coin{
+  constructor() {
+    this.jumpTime = 0.4
+    this.jumpHeight = 500;
+    this.isJumping = false;
+    this.queuedAction = [];
+  }
+
+  update() {
+    let currentTime = new Date() / 1000;
+    if (!this.isJumping && this.queuedAction.length > 0) {
+      this.queuedAction.shift();
+      this.isJumping = true;
+      this.jumpStartTime = new Date() / 1000;
+
+    }
+
+    if (this.isJumping) {
+      let jumpTimer = currentTime - this.jumpStartTime;
+
+      if (jumpTimer > this.jumpTime) {
+        coin.position.y = 480;
+        coin.visible = false;
+        this.isJumping = false;
+      } else {
+        coin.visible = true;
+        coin.position.y = 480 + this.jumpHeight * Math.sin((1 / this.jumpTime) * Math.PI * jumpTimer);
+      }
+    }
+  }
+
+}
+
+let coinManager = new Coin();
 
 // 카메라 변수
 let camera;
@@ -458,8 +498,6 @@ class Camera {
 // 카메라 이동을 위한 객체 생성
 let cameraManager = new Camera();
 
-// 장애물, 커리큘럼 등을 저장할 리스트
-let objects = [];
 
 // 오브젝트 관리를 위한 클래스
 // TODO: 이 클래스 안에 오브젝트랑 충돌 여부를 판단하는 코드도 들어가야될 것 같다, 충돌 여부 판단하는 코드의 결과를 밑에 게임 매니저가 사용해서 점수를 올리거나 낮추거나 하게하면 될듯
@@ -552,7 +590,51 @@ class Curriculum{
   }
 }
 
+// 커리큘럼 관리 객체
 let currManager = new Curriculum();
+
+// 광원 처리 관리를 위한 클래스
+class Light{
+  constructor() {
+    // 캐릭터 뒷조명
+    this.backLight = new THREE.PointLight(0xffffff, 8, 3000, 2);
+    // 캐릭터 윗조명
+    this.upLight = new THREE.PointLight(0xffffff, 8, 8000, 2);
+    // 광원처리를 위한 시간
+    this.time = new Date() / 1000;
+    // 광원처리 이펙트 루프 시간
+    this.loopTime = 4;
+    // 커리큘럼을 비추는 스포트라이트 리스트
+    this.spotLights = [];
+  }
+
+  // 마찬가지로 animate 안에서 반복적으로 실행되며, 광원 처리 효과를 주는 함수
+  // 조명 세기를 키우거나 줄이거나 하는 방식으로 일단은 구현해놨음
+  // 커리큘럼 오브젝트를 비추는 스포트라이트 이동도 이 메소드에서 실행된다
+  update(){
+    let curTime = new Date() / 1000;
+    let timeDiff = curTime - this.time;
+
+    this.backLight.intensity = 8*(Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff))+0.1);
+    this.upLight.intensity = 8*(Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff))+0.1);
+
+    this.spotLights.forEach(function (obj) {
+      obj.position.z += 100;
+      obj.target.position.z += 100;
+    });
+
+    this.spotLights = this.spotLights.filter(function (obj) {
+      return obj.position.z < 0;
+    });
+
+
+  }
+
+
+}
+
+// 광원처리 관리 객체
+let lightManager = new Light();
 
 // 게임 관리를 위한 클래스
 // 지속적으로 장애물을 생성하도록 해야될 것 같고, 게임오버, 등 게임 전반적인 프로세스를 클래스
@@ -592,17 +674,15 @@ window.onload = function init() {
   window.camera = camera;
 
   // 광원추가하기
+  lightManager.backLight.position.set(0, 0, -2000);
+  lightManager.upLight.position.set(0, 3000, -4000);
   // hemisphereLight을 쓰면 그냥 그림자도 안생기고 캐릭터의 입체감은 좀 덜하다
   // let light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
   // scene.add(light);
   // 포인트 라이트를 쓰면 촬영장에서 조명킨것처럼 그림자도 생기고, 빛이 덜 가는 부분에 윤곽선도 생겨서 좀 더 입체적으로 보인다
   // 이 상황에서 코드를 실행시켜보면, pointlight를 써서 좌우로 레인을 옮기면 캐릭터가 어두워지는 것을 볼 수 있음,
-  let backLight = new THREE.PointLight(0xffffff, 8, 3000, 2);
-  backLight.position.set(0, 0, -2000);
-  let upLight = new THREE.PointLight(0xffffff, 8, 8000, 2);
-  upLight.position.set(0, 3000, -4000);
-  scene.add(backLight);
-  scene.add(upLight);
+  scene.add(lightManager.backLight);
+  scene.add(lightManager.upLight);
 
   // TODO: spotlight 처리를 어떻게하면 좋을까, PointLight랑 SpotLight을 섞어서 쓰면 될 것 같기도?
 
@@ -636,12 +716,12 @@ window.onload = function init() {
         // 동전 크기 설정
         spinning.scale.set(10, 10, 10);
         // 캐릭터 위치 설정
-        spinning.position.set(0, 600, -4000);
+        spinning.position.set(0, 480, -4000);
         scene.add(gltf.scene);
         coin = spinning;
         coinMixer = new THREE.AnimationMixer(gltf.scene);
         spinningAction = coinMixer.clipAction(gltf.animations[0]);
-        // spinningAction.play();
+        coin.visible = false;
       },
       undefined,
       function (error) {
@@ -661,32 +741,8 @@ window.onload = function init() {
 
   // 텍스트 표현해보기
   fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-  fontLoader.load(fontURL, (font) => {
-    // 쓸 글씨
-    let fontGeo = new THREE.TextGeometry(
-        "sw_runner", {
-          font: font,
-          size: 500, // 글씨 크기
-          height: 100, // 글씨 두께
-          curveSegments:12
-        }
-    )
-    // 효과를 위한 코드
-    fontGeo.computeBoundingBox();
-    let xMid = -0.5 * ( fontGeo.boundingBox.max.x - fontGeo.boundingBox.min.x );
-    fontGeo.translate( xMid, 0, 0 );
-    // 글씨 색 지정
-    let fontMat = new THREE.MeshBasicMaterial({
-      color: 0x5F9DF7,
-      wireframe:true
-    })
-    // 글씨 오브젝트 생성
-    let textMesh = new THREE.Mesh(fontGeo, fontMat);
-    // 글씨 위치 지정
-    textMesh.position.set(0, 0, -5000);
-    // 씬에 추가
-    scene.add(textMesh)
-  });
+  createWord(0, 0, -8000, "Round 1",500);
+
 
   // 커리큘럼 객체를 만들고 텍스트까지 매핑
   for (let i = 10; i < 40; i++) {
@@ -765,6 +821,9 @@ window.onload = function init() {
         );
         cameraManager.rumbleQueue.push(r);
       }
+      if (inputKey === i && !paused) {
+        coinManager.queuedAction.push(i);
+      }
     }
   });
 
@@ -779,14 +838,15 @@ window.onload = function init() {
   // 시각화하는 함수
   function animate() {
     characterManager.update();
+    coinManager.update();
     cameraManager.update();
     cameraManager.rumble();
     if (!paused) {
       objectManager.update();
       currManager.update();
+      lightManager.update();
+
     }
-    // console.log(camera.position.x + " " + camera.position.y + " " + camera.position.z);
-    // camera.position.set(cameraX, cameraY, cameraZ);
     let delta = clock.getDelta();
     if (mixer) mixer.update(delta);
     if (coinMixer) coinMixer.update(delta);
@@ -851,37 +911,51 @@ window.onload = function init() {
         let object = currManager.createCurriculum(lane * 800, -400, position);
         currManager.currs.push(object);
         scene.add(object);
-
-        fontLoader.load(fontURL, (font) => {
-          // 쓸 글씨
-          let fontGeo = new THREE.TextGeometry(
-              "test Cur", {
-                font: font,
-                size: 100, // 글씨 크기
-                height: 100, // 글씨 두께
-                curveSegments:12
-              }
-          )
-          // 효과를 위한 코드
-          fontGeo.computeBoundingBox();
-          let xMid = -0.5 * ( fontGeo.boundingBox.max.x - fontGeo.boundingBox.min.x );
-          fontGeo.translate( xMid, 0, 0 );
-          // 글씨 색 지정
-          let fontMat = new THREE.MeshBasicMaterial({
-            color: 0x5F9DF7,
-            wireframe:true
-          })
-          // 글씨 오브젝트 생성
-          let textMesh = new THREE.Mesh(fontGeo, fontMat);
-          // 글씨 위치 지정
-          textMesh.position.set(lane*800, 100, position);
-          currManager.currWords.push(textMesh);
-          // 씬에 추가
-          scene.add(textMesh)
-        });
-
+        createSpotLight(lane * 800, 100, position);
+        createWord(lane * 800, 100, position, "test Curr", 100);
 
       }
     }
+  }
+
+  function createWord(x,y, position, text, fontSize){
+    fontLoader.load(fontURL, (font) => {
+      // 쓸 글씨
+      let fontGeo = new THREE.TextGeometry(
+          text, {
+            font: font,
+            size: fontSize, // 글씨 크기
+            height: 100, // 글씨 두께
+            curveSegments:12
+          }
+      )
+      // 효과를 위한 코드
+      fontGeo.computeBoundingBox();
+      let xMid = -0.5 * ( fontGeo.boundingBox.max.x - fontGeo.boundingBox.min.x );
+      fontGeo.translate( xMid, 0, 0 );
+      // 글씨 색 지정
+      let fontMat = new THREE.MeshBasicMaterial({
+        color: 0x5F9DF7,
+        wireframe:true
+      })
+      // 글씨 오브젝트 생성
+      let textMesh = new THREE.Mesh(fontGeo, fontMat);
+      // 글씨 위치 지정
+      textMesh.position.set(x, y, position);
+      // 씬에 추가
+      scene.add(textMesh)
+      currManager.currWords.push(textMesh);
+    });
+  }
+
+  function createSpotLight(x, y, position) {
+    let spotLight = new THREE.SpotLight();
+    spotLight.position.set(x, 5000, position);
+    spotLight.intensity = 8;
+    spotLight.angle = Math.PI / 30;
+    spotLight.target.position.set(x, y, position);
+    scene.add(spotLight.target);
+    scene.add(spotLight);
+    lightManager.spotLights.push(spotLight);
   }
 };
