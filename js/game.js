@@ -138,14 +138,14 @@ class Character {
 
       if (jumpTimer > this.jumpTime) {
         runningCharacter.position.y = 0;
-        coin.position.y = 600;
+        coin.position.y = 480;
         this.isJumping = false;
         runningAction.play();
       } else {
         // 캐릭터의 점프 높이를 sin함수를 통해서 계산,0->1->0
         runningCharacter.position.y =
           this.jumpHeight * Math.sin((1 / this.jumpTime) * Math.PI * jumpTimer);
-        coin.position.y = 600 + this.jumpHeight * Math.sin((1 / this.jumpTime) * Math.PI * jumpTimer);
+        coin.position.y = 480 + runningCharacter.position.y;
       }
     } else if (this.isMovingLeft) {
       runningCharacter.position.x -= 200;
@@ -197,12 +197,12 @@ class Coin{
       let jumpTimer = currentTime - this.jumpStartTime;
 
       if (jumpTimer > this.jumpTime) {
-        coin.position.y = 480;
+        coin.position.y = 480+runningCharacter.position.y;
         coin.visible = false;
         this.isJumping = false;
       } else {
         coin.visible = true;
-        coin.position.y = 480 + this.jumpHeight * Math.sin((1 / this.jumpTime) * Math.PI * jumpTimer);
+        coin.position.y = 480 + this.jumpHeight * Math.sin((1 / this.jumpTime) * Math.PI * jumpTimer) + runningCharacter.position.y;
       }
     }
   }
@@ -213,9 +213,10 @@ let coinManager = new Coin();
 
 // 카메라 변수
 let camera;
-
+// 카메라 관리하기 위한 클래스
 class Camera {
   constructor() {
+    // 디폴트 뷰가 7번시점이기에 7번으로 고정
     this.currentView = 7;
     // 카메라 위치를 변경하는데 걸릴 시간
     // viewChangeTime이 커지면 카메라 옮기는데 시간이 오래걸림
@@ -570,7 +571,7 @@ class Curriculum{
     object.position.set(x, y, z);
     return object;
   }
-
+  // 커리큘럼 오브젝트를 움직이는 함
   update() {
     this.currs.forEach(function (obj) {
       obj.position.z += 100;
@@ -639,7 +640,23 @@ let lightManager = new Light();
 // 게임 관리를 위한 클래스
 // 지속적으로 장애물을 생성하도록 해야될 것 같고, 게임오버, 등 게임 전반적인 프로세스를 클래스
 // TODO : 게임 라운드 분리, 난이도 조절 등 코드 추가해야함
-class Game {}
+class Game {
+  constructor() {
+    this.score = 0;
+    this.round = 1;
+
+  }
+  // 충돌 확인하는 메소드
+  collisionCheck(){
+
+  }
+
+  // 게임을 진행하는 동안 animate 안에서 반복적으로 실행될 함수
+  // 여기 안에서 충돌 관리, 라운드 관리, 점수관리를 하면 될 것 같다
+  update(){
+
+  }
+}
 
 let gameManager = new Game();
 window.onload = function init() {
@@ -902,7 +919,7 @@ window.onload = function init() {
       }
     }
   }
-
+  // 오브젝트를 생성하는 코드랑 비슷하게, 커리큘럼 오브젝트를 생성하는 코드
   function createCurriculums(position, probability, minScale, maxScale) {
     for (let lane = -2; lane <= 2; lane++) {
       let randomNum = Math.random();
@@ -917,7 +934,7 @@ window.onload = function init() {
       }
     }
   }
-
+  // createCurriculums에서 불리는 함수로, 생성된 커리큘럼 오브젝트 위에 글씨 만드는 코드
   function createWord(x,y, position, text, fontSize){
     fontLoader.load(fontURL, (font) => {
       // 쓸 글씨
@@ -947,11 +964,14 @@ window.onload = function init() {
       currManager.currWords.push(textMesh);
     });
   }
-
+  // createCurriculum에서 불리는 함수로, 커리큘럼 오브젝트에 스포트라이트 추가하는 코드
   function createSpotLight(x, y, position) {
     let spotLight = new THREE.SpotLight();
+    // y좌표가 5000이니까 위에서 아래로 스포트라이트가 향하게 설정
     spotLight.position.set(x, 5000, position);
+    // 조명 강도
     spotLight.intensity = 8;
+    // 이 값을 줄이면 스포트라이트의 원이 커진다
     spotLight.angle = Math.PI / 30;
     spotLight.target.position.set(x, y, position);
     scene.add(spotLight.target);
