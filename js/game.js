@@ -70,6 +70,7 @@ const s = "s";
 const d = "d";
 
 const r = "r";
+const i = "i";
 
 const q = "q";
 const e = "e";
@@ -171,6 +172,44 @@ class Character {
 }
 // 캐릭터 관리 객체 생성
 let characterManager = new Character();
+
+// 동전 애니메이션 관리 클래스
+// 동전 이동은 위 캐릭터 관리 클래스에서 하는데
+// 동전이 보여졌다가 사라지는 애니메이션을 이 클래스에서 관리한다
+class Coin{
+  constructor() {
+    this.jumpTime = 0.4
+    this.jumpHeight = 500;
+    this.isJumping = false;
+    this.queuedAction = [];
+  }
+
+  update() {
+    let currentTime = new Date() / 1000;
+    if (!this.isJumping && this.queuedAction.length > 0) {
+      this.queuedAction.shift();
+      this.isJumping = true;
+      this.jumpStartTime = new Date() / 1000;
+
+    }
+
+    if (this.isJumping) {
+      let jumpTimer = currentTime - this.jumpStartTime;
+
+      if (jumpTimer > this.jumpTime) {
+        coin.position.y = 480;
+        coin.visible = false;
+        this.isJumping = false;
+      } else {
+        coin.visible = true;
+        coin.position.y = 480 + this.jumpHeight * Math.sin((1 / this.jumpTime) * Math.PI * jumpTimer);
+      }
+    }
+  }
+
+}
+
+let coinManager = new Coin();
 
 // 카메라 변수
 let camera;
@@ -571,6 +610,7 @@ class Light{
 
   // 마찬가지로 animate 안에서 반복적으로 실행되며, 광원 처리 효과를 주는 함수
   // 조명 세기를 키우거나 줄이거나 하는 방식으로 일단은 구현해놨음
+  // 커리큘럼 오브젝트를 비추는 스포트라이트 이동도 이 메소드에서 실행된다
   update(){
     let curTime = new Date() / 1000;
     let timeDiff = curTime - this.time;
@@ -676,12 +716,12 @@ window.onload = function init() {
         // 동전 크기 설정
         spinning.scale.set(10, 10, 10);
         // 캐릭터 위치 설정
-        spinning.position.set(0, 600, -4000);
+        spinning.position.set(0, 480, -4000);
         scene.add(gltf.scene);
         coin = spinning;
         coinMixer = new THREE.AnimationMixer(gltf.scene);
         spinningAction = coinMixer.clipAction(gltf.animations[0]);
-        // spinningAction.play();
+        coin.visible = false;
       },
       undefined,
       function (error) {
@@ -781,6 +821,9 @@ window.onload = function init() {
         );
         cameraManager.rumbleQueue.push(r);
       }
+      if (inputKey === i && !paused) {
+        coinManager.queuedAction.push(i);
+      }
     }
   });
 
@@ -795,12 +838,14 @@ window.onload = function init() {
   // 시각화하는 함수
   function animate() {
     characterManager.update();
+    coinManager.update();
     cameraManager.update();
     cameraManager.rumble();
     if (!paused) {
       objectManager.update();
       currManager.update();
       lightManager.update();
+
     }
     let delta = clock.getDelta();
     if (mixer) mixer.update(delta);
