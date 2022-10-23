@@ -659,6 +659,7 @@ class Game {
 }
 
 let gameManager = new Game();
+
 window.onload = function init() {
   // HTML world랑 js 연결하기
   let world = document.getElementById("world");
