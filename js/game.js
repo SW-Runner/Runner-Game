@@ -8,6 +8,9 @@ let world;
 // 랜더러 오브젝트
 let renderer;
 
+//전역 라운드 체크
+let roundNmber;
+
 //라운드 종료 확인
 let roundOverCheck = false;
 
@@ -671,7 +674,6 @@ class Game {
     this.round = round;
     let fogDistance = 40000;
     scene.fog = new THREE.Fog(0xbadbe4, 1, fogDistance);
-
     //camera.position.set(0, 1500, -1000);
     camera.position.set(cameraX, cameraY, cameraZ);
     camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
@@ -752,11 +754,10 @@ class Game {
     for (let i = 10; i < 20; i++) {
       createCurriculums(i * -5000, 0.2, 0.6, 0.7);
     }
-
-    if (gameOver == true) {
-      this.roundOver(this.round);
-      console.log("round " + this.round);
-    }
+    // if (gameOver == true) {
+    //   console.log("round " + round);
+    //   roundOver(round);
+    // }
 
     //생성 후에 gameOver boolean을 true로 만들어서 roundover 작동시켜야할듯
   }
@@ -765,11 +766,14 @@ class Game {
     this.round = round;
     if (gameOver) {
       fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-      createWord(0, 0, -8000, round + "round Over", 500);
+      createWord(0, 0, -8000, round + " Round Over", 500);
       scene.children.forEach(function (obj) {
         scene.remove(obj);
       });
       cancelAnimationFrame(animation);
+      setTimeout(function () {
+        gameOver = false;
+      }, 3000);
     }
 
     // scene.removeAll();
@@ -813,15 +817,22 @@ window.onload = function init() {
     }
     if (paused) {
       if (inputKey === one) {
+        roundNmber = 1;
         gameManager.initRound(1);
+        // if (gameOver) { 의성
+        //   gameManager.roundOver(1);
+        // }
       }
       if (inputKey === two) {
+        roundNmber = 2;
         gameManager.initRound(2);
       }
       if (inputKey === three) {
+        roundNmber = 3;
         gameManager.initRound(3);
       }
       if (inputKey === four) {
+        roundNmber = 4;
         gameManager.initRound(4);
       }
 
@@ -918,12 +929,13 @@ window.onload = function init() {
     coinManager.update();
     cameraManager.update();
     cameraManager.rumble();
-    gameManager.roundOver();
     if (!paused) {
       objectManager.update();
-      // objectManager.checkRoundOver();
       currManager.update();
       lightManager.update();
+      if (gameOver) {
+        gameManager.roundOver(roundNmber);
+      }
     }
     let delta = clock.getDelta();
     if (mixer) mixer.update(delta);
