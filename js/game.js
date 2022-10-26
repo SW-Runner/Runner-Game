@@ -549,7 +549,6 @@ class Objects {
     this.objects.forEach(function (obj) {
       obj.position.z += 100;
     });
-    console.log("first" + this.objects.length);
     this.objects = this.objects.filter(function (obj) {
       //의성
       return obj.position.z < 0;
@@ -557,24 +556,8 @@ class Objects {
 
     if (this.objects.length == 0) {
       gameOver = true;
-      console.log(roundOverCheck);
     }
   }
-
-  // checkRoundOver() {
-  //   this.objects.forEach(function (obj) {
-  //     obj.position.z += 100;
-  //   });
-  //   console.log(roundOverCheck);
-  //   this.objects = this.objects.filter(function (obj) {
-  //     //의성
-  //     return obj.position.z < 0;
-  //   });
-  //   if (obj == null) {
-  //     roundOverCheck = true;
-  //     console.log(roundOverCheck);
-  //   }
-  // }
 }
 
 // 오브젝트 관리 객체
@@ -757,7 +740,7 @@ class Game {
 
     // 장애물 & 오브젝트 만들기
     // TODO: 장애물 어떻게 만들어질지 정해야될듯
-    for (let i = 10; i < 40; i++) {
+    for (let i = 10; i < 20; i++) {
       createObjects(i * -3000, 0.2, 0.6, 0.7);
     }
 
@@ -771,22 +754,23 @@ class Game {
     }
 
     if (gameOver == true) {
-      this.roundOver();
+      this.roundOver(this.round);
+      console.log("round " + this.round);
     }
 
     //생성 후에 gameOver boolean을 true로 만들어서 roundover 작동시켜야할듯
   }
 
-  roundOver() {
+  roundOver(round) {
+    this.round = round;
     if (gameOver) {
       fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-      createWord(0, 0, -8000, "gameover ", 500);
+      createWord(0, 0, -8000, round + "round Over", 500);
       scene.children.forEach(function (obj) {
-        console.log(obj);
         scene.remove(obj);
       });
+      cancelAnimationFrame(animation);
     }
-    cancelAnimationFrame(animation);
 
     // scene.removeAll();
   }
