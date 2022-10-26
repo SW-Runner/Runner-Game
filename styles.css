@@ -158,3 +158,14 @@ td:nth-child(2) {
     -o-animation: flickerAnimation 1.5s infinite;
     animation: flickerAnimation 1.5s infinite;
 }
+
+.test {
+    
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: inline-block;
+    transform: translate(-50%, -50%);
+    width: 760px;
+    padding-top: 15px;
+}

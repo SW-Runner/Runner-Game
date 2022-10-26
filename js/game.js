@@ -42,6 +42,8 @@ let clock = new THREE.Clock();
 let mixer;
 let coinMixer;
 
+let flag = 1; //씬 or 설명 표시
+
 let Colors = {
   cherry: 0xe35d6a,
   blue: 0x1560bd,
@@ -663,6 +665,28 @@ let gameManager = new Game();
 window.onload = function init() {
   // HTML world랑 js 연결하기
   let world = document.getElementById("world");
+  let explain = document.getElementById("explain");
+  let flag = document.getElementById("setFlag");
+
+  explain.style.display = 'block'; //보이도록
+  world.style.display = 'none'; //안보이도록
+
+  // flag.addEventListener("click", handleButtonClick)
+  // function handleButtonClick() { //버튼 클릭 하면 flag 바뀌고 안보이게
+  //   if(flag == 0){ //씬 보일 때 버튼 누르면
+  //     flag = 1;
+  //     explain.style.display = 'none'; //설명이 보이게
+  //     world.style.display = 'block';
+  //     console.log(flag);
+  //   }
+  //   else if(flag == 1){ //설명이 보이는 중 버튼 누르면
+  //     flag = 0;
+  //     explain.style.display = 'block';
+  //     world.style.display = 'none';
+  //     console.log(flag);
+  //   }
+  // }
+
   // Renderer 설정하기
   let renderer = new THREE.WebGLRenderer({
     alpha: true,
@@ -767,6 +791,14 @@ window.onload = function init() {
     createCurriculums(i * -5000, 0.2, 0.6, 0.7);
   }
 
+  //////////////////////////////////////////////////
+
+
+
+
+
+
+
   // 사용자로부터 입력받을 수 있게 설정
   document.addEventListener("keydown", function (ev) {
     let inputKey = ev.key;
@@ -843,6 +875,21 @@ window.onload = function init() {
         coinManager.queuedAction.push(i);
       }
     }
+    // flag.addEventListener("click", handleButtonClick)
+    // function handleButtonClick() { //버튼 클릭 하면 flag 바뀌고 안보이게
+    //   if(flag == 0){ //씬 보일 때 버튼 누르면
+    //     flag = 1;
+    //     explain.style.display = 'none'; //설명이 보이게
+    //     world.style.display = 'block';
+    //     console.log(flag);
+    //   }
+    //   else if(flag == 1){ //설명이 보이는 중 버튼 누르면
+    //     flag = 0;
+    //     explain.style.display = 'block';
+    //     world.style.display = 'none';
+    //     console.log(flag);
+    //   }
+    // }
   });
 
   document.addEventListener("keyup", function (e) {
@@ -851,7 +898,7 @@ window.onload = function init() {
   document.addEventListener("focus", function (e) {
     allowedKeys = {};
   });
-  animate();
+  animate(); //씬 렌더 포함
 
   // 시각화하는 함수
   function animate() {
@@ -863,12 +910,13 @@ window.onload = function init() {
       objectManager.update();
       currManager.update();
       lightManager.update();
-
     }
     let delta = clock.getDelta();
     if (mixer) mixer.update(delta);
     if (coinMixer) coinMixer.update(delta);
-    renderer.render(scene, camera);
+    
+    renderer.render(scene, camera); //씬 렌더
+  
     requestAnimationFrame(animate);
   }
 
