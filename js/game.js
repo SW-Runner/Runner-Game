@@ -161,25 +161,41 @@ class Character {
         coin.position.y = 480 + runningCharacter.position.y;
       }
     } else if (this.isMovingLeft) {
-      runningCharacter.position.x -= 200;
-      coin.position.x -= 200;
-      let offset = this.currentLane * 800 - runningCharacter.position.x;
-      if (offset > 800) {
-        this.currentLane -= 1;
-        runningCharacter.position.x = this.currentLane * 800;
-        coin.position.x = this.currentLane * 800;
+      if (this.currentLane !== -2) {
+        runningCharacter.position.x -= 200;
+        coin.position.x -= 200;
+        let offset = this.currentLane * 800 - runningCharacter.position.x;
+        if (offset > 800) {
+          // if (this.currentLane === -2) {
+          //   this.currentLane = -1;
+          // }
+          this.currentLane -= 1;
+          runningCharacter.position.x = this.currentLane * 800;
+          coin.position.x = this.currentLane * 800;
+          this.isMovingLeft = false;
+        }
+      } else {
         this.isMovingLeft = false;
       }
+
     } else if (this.isMovingRight) {
-      runningCharacter.position.x += 200;
-      coin.position.x += 200;
-      let offset = runningCharacter.position.x - this.currentLane * 800;
-      if (offset > 800) {
-        this.currentLane += 1;
-        runningCharacter.position.x = this.currentLane * 800;
-        coin.position.x = this.currentLane*800;
+      if (this.currentLane !== 2) {
+        runningCharacter.position.x += 200;
+        coin.position.x += 200;
+        let offset = runningCharacter.position.x - this.currentLane * 800;
+        if (offset > 800) {
+          if (this.currentLane === 2) {
+            this.currentLane = 1;
+          }
+          this.currentLane += 1;
+          runningCharacter.position.x = this.currentLane * 800;
+          coin.position.x = this.currentLane * 800;
+          this.isMovingRight = false;
+        }
+      } else {
         this.isMovingRight = false;
       }
+
     }
   }
 }
@@ -527,17 +543,42 @@ class Objects {
   }
   // 파라미터로 넘겨받은 x,y,z에 오브젝트를 생성해서 리턴해준다
   createObject(x, y, z) {
-    let geo = new THREE.BoxGeometry(this.dx, this.dy, this.dz);
-    let mat = new THREE.MeshPhongMaterial({
-      color: Colors["olive"],
-      flatShading: true,
-    });
-    let object = new THREE.Mesh(geo, mat);
-    object.castShadow = true;
-    object.receiveShadow = true;
-    object.position.set(x, y, z);
-    return object;
+    loader.load(
+        "./wood_road_barrier/scene.gltf",
+        function (gltf) {
+          let obstacle = gltf.scene.children[0];
+          // 캐릭터 크기 설정
+          obstacle.scale.set(10, 10, 10);
+          // 캐릭터 위치 설정
+          obstacle.position.set(x, y, z);
+          objectManager.objects.push(obstacle);
+          scene.add(gltf.scene);
+          // runningCharacter = running;
+          // mixer = new THREE.AnimationMixer(gltf.scene);
+          // runningAction = mixer.clipAction(gltf.animations[0]);
+          // runningAction.play();
+        },
+        undefined,
+        function (error) {
+          console.error(error);
+        }
+    );
+
   }
+
+  collisionCheck() {
+    let charMinX = runningCharacter.position.x - 115;
+    let charMaxX = runningCharacter.position.x + 115;
+    let charMinY = runningCharacter.position.y - 310;
+    let charMaxY = runningCharacter.position.y + 320;
+    let charMinZ = runningCharacter.position.z - 40;
+    let charMaxZ = runningCharacter.position.z + 40;
+
+
+
+  }
+
+
 
 
   // animate 함수 안에서 반복적으로 호출되며 오브젝트를 움직인다
@@ -572,6 +613,7 @@ class Curriculum{
   // 커리큘럼 글씨는 밑에 createCurriculums에서 생성해주고,
   // scene에 추가까지 해준다
   createCurriculum(x, y, z) {
+
     let geo = new THREE.BoxGeometry(this.dx, this.dy, this.dz);
     let mat = new THREE.MeshPhongMaterial({
       color: Colors['brownDark'],
@@ -739,7 +781,7 @@ class Game {
 
     // 장애물 & 오브젝트 만들기
     // TODO: 장애물 어떻게 만들어질지 정해야될듯
-    for (let i = 10; i < 40; i++) {
+    for (let i = 10; i < 20; i++) {
       createObjects(i * -3000, 0.2, 0.6, 0.7);
     }
 
@@ -749,7 +791,7 @@ class Game {
 
 
     // 커리큘럼 객체를 만들고 텍스트까지 매핑
-    for (let i = 10; i < 40; i++) {
+    for (let i = 10; i < 20; i++) {
       createCurriculums(i * -5000, 0.2, 0.6, 0.7);
     }
 
@@ -974,9 +1016,7 @@ function createObjects(position, probability, minScale, maxScale) {
     let randomNum = Math.random();
     if (randomNum < probability) {
       let scale = minScale + (maxScale - minScale) * Math.random();
-      let object = objectManager.createObject(lane * 800, -400, position);
-      objectManager.objects.push(object);
-      scene.add(object);
+      objectManager.createObject(lane * 800, -400, position);
     }
   }
 }
