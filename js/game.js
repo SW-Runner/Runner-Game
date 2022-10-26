@@ -7,9 +7,11 @@
 let world;
 // 랜더러 오브젝트
 let renderer;
+//라운드 종료시 출력할 string
+let roundString;
 
 //전역 라운드 체크
-let roundNmber;
+let roundNumber;
 
 //라운드 종료 확인
 let roundOverCheck = false;
@@ -764,9 +766,19 @@ class Game {
 
   roundOver(round) {
     this.round = round;
+    if (round == 1) {
+      roundString = "The First Year Completed ";
+    } else if (round == 2) {
+      roundString = "The Second Year Completed ";
+    } else if (round == 3) {
+      roundString = "The Third Year Completed ";
+    } else if (round == 4) {
+      roundString = "The Last Year Completed ";
+    }
+
     if (gameOver) {
       fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-      createWord(0, 0, -8000, round + " Round Over", 500);
+      createWord(0, 0, -8000, roundString, 500);
       scene.children.forEach(function (obj) {
         scene.remove(obj);
       });
@@ -817,22 +829,22 @@ window.onload = function init() {
     }
     if (paused) {
       if (inputKey === one) {
-        roundNmber = 1;
+        roundNumber = 1;
         gameManager.initRound(1);
         // if (gameOver) { 의성
         //   gameManager.roundOver(1);
         // }
       }
       if (inputKey === two) {
-        roundNmber = 2;
+        roundNumber = 2;
         gameManager.initRound(2);
       }
       if (inputKey === three) {
-        roundNmber = 3;
+        roundNumber = 3;
         gameManager.initRound(3);
       }
       if (inputKey === four) {
-        roundNmber = 4;
+        roundNumber = 4;
         gameManager.initRound(4);
       }
 
@@ -934,7 +946,7 @@ window.onload = function init() {
       currManager.update();
       lightManager.update();
       if (gameOver) {
-        gameManager.roundOver(roundNmber);
+        gameManager.roundOver(roundNumber);
       }
     }
     let delta = clock.getDelta();
