@@ -6,7 +6,8 @@
 // gltf 모델 및 폰트를 띄우게 하기 위한 loader
 let loader;
 let fontLoader;
-let fontURL = "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json";
+let fontURL =
+  "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json";
 // 디폴트 카메라 위치
 const defaultX = 0;
 const defaultY = 1500;
@@ -164,7 +165,7 @@ class Character {
       if (offset > 800) {
         this.currentLane += 1;
         runningCharacter.position.x = this.currentLane * 800;
-        coin.position.x = this.currentLane*800;
+        coin.position.x = this.currentLane * 800;
         this.isMovingRight = false;
       }
     }
@@ -176,9 +177,9 @@ let characterManager = new Character();
 // 동전 애니메이션 관리 클래스
 // 동전 이동은 위 캐릭터 관리 클래스에서 하는데
 // 동전이 보여졌다가 사라지는 애니메이션을 이 클래스에서 관리한다
-class Coin{
+class Coin {
   constructor() {
-    this.jumpTime = 0.4
+    this.jumpTime = 0.4;
     this.jumpHeight = 500;
     this.isJumping = false;
     this.queuedAction = [];
@@ -190,23 +191,25 @@ class Coin{
       this.queuedAction.shift();
       this.isJumping = true;
       this.jumpStartTime = new Date() / 1000;
-
     }
 
     if (this.isJumping) {
       let jumpTimer = currentTime - this.jumpStartTime;
 
       if (jumpTimer > this.jumpTime) {
-        coin.position.y = 480+runningCharacter.position.y;
+        coin.position.y = 480 + runningCharacter.position.y;
         coin.visible = false;
         this.isJumping = false;
       } else {
         coin.visible = true;
-        coin.position.y = 480 + this.jumpHeight * Math.sin((1 / this.jumpTime) * Math.PI * jumpTimer) + runningCharacter.position.y;
+        coin.position.y =
+          480 +
+          this.jumpHeight *
+            Math.sin((1 / this.jumpTime) * Math.PI * jumpTimer) +
+          runningCharacter.position.y;
       }
     }
   }
-
 }
 
 let coinManager = new Coin();
@@ -499,7 +502,6 @@ class Camera {
 // 카메라 이동을 위한 객체 생성
 let cameraManager = new Camera();
 
-
 // 오브젝트 관리를 위한 클래스
 // TODO: 이 클래스 안에 오브젝트랑 충돌 여부를 판단하는 코드도 들어가야될 것 같다, 충돌 여부 판단하는 코드의 결과를 밑에 게임 매니저가 사용해서 점수를 올리거나 낮추거나 하게하면 될듯
 // TODO: 커리큘럼이랑 장애물 분리해서 생성해주는 코드 추가해야함
@@ -526,7 +528,6 @@ class Objects {
     return object;
   }
 
-
   // animate 함수 안에서 반복적으로 호출되며 오브젝트를 움직인다
   update() {
     this.objects.forEach(function (obj) {
@@ -542,7 +543,7 @@ class Objects {
 let objectManager = new Objects();
 
 // 커리큘럼 생성, 이동을 관리하는 클래스
-class Curriculum{
+class Curriculum {
   constructor() {
     // 커리큘럼들을 저장하는 리스트
     this.currs = [];
@@ -561,8 +562,8 @@ class Curriculum{
   createCurriculum(x, y, z) {
     let geo = new THREE.BoxGeometry(this.dx, this.dy, this.dz);
     let mat = new THREE.MeshPhongMaterial({
-      color: Colors['brownDark'],
-      flatShading:true
+      color: Colors["brownDark"],
+      flatShading: true,
     });
 
     let object = new THREE.Mesh(geo, mat);
@@ -595,7 +596,7 @@ class Curriculum{
 let currManager = new Curriculum();
 
 // 광원 처리 관리를 위한 클래스
-class Light{
+class Light {
   constructor() {
     // 캐릭터 뒷조명
     this.backLight = new THREE.PointLight(0xffffff, 8, 3000, 2);
@@ -612,12 +613,14 @@ class Light{
   // 마찬가지로 animate 안에서 반복적으로 실행되며, 광원 처리 효과를 주는 함수
   // 조명 세기를 키우거나 줄이거나 하는 방식으로 일단은 구현해놨음
   // 커리큘럼 오브젝트를 비추는 스포트라이트 이동도 이 메소드에서 실행된다
-  update(){
+  update() {
     let curTime = new Date() / 1000;
     let timeDiff = curTime - this.time;
 
-    this.backLight.intensity = 8*(Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff))+0.1);
-    this.upLight.intensity = 8*(Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff))+0.1);
+    this.backLight.intensity =
+      8 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)) + 0.1);
+    this.upLight.intensity =
+      8 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)) + 0.1);
 
     this.spotLights.forEach(function (obj) {
       obj.position.z += 100;
@@ -627,11 +630,7 @@ class Light{
     this.spotLights = this.spotLights.filter(function (obj) {
       return obj.position.z < 0;
     });
-
-
   }
-
-
 }
 
 // 광원처리 관리 객체
@@ -644,18 +643,13 @@ class Game {
   constructor() {
     this.score = 0;
     this.round = 1;
-
   }
   // 충돌 확인하는 메소드
-  collisionCheck(){
-
-  }
+  collisionCheck() {}
 
   // 게임을 진행하는 동안 animate 안에서 반복적으로 실행될 함수
   // 여기 안에서 충돌 관리, 라운드 관리, 점수관리를 하면 될 것 같다
-  update(){
-
-  }
+  update() {}
 }
 
 let gameManager = new Game();
@@ -727,23 +721,23 @@ window.onload = function init() {
 
   // 이펙트를 위한 동전 랜더링
   loader.load(
-      "./coin/scene.gltf",
-      function (gltf) {
-        let spinning = gltf.scene.children[0];
-        // 동전 크기 설정
-        spinning.scale.set(10, 10, 10);
-        // 캐릭터 위치 설정
-        spinning.position.set(0, 480, -4000);
-        scene.add(gltf.scene);
-        coin = spinning;
-        coinMixer = new THREE.AnimationMixer(gltf.scene);
-        spinningAction = coinMixer.clipAction(gltf.animations[0]);
-        coin.visible = false;
-      },
-      undefined,
-      function (error) {
-        console.log(error);
-      }
+    "./coin/scene.gltf",
+    function (gltf) {
+      let spinning = gltf.scene.children[0];
+      // 동전 크기 설정
+      spinning.scale.set(10, 10, 10);
+      // 캐릭터 위치 설정
+      spinning.position.set(0, 480, -4000);
+      scene.add(gltf.scene);
+      coin = spinning;
+      coinMixer = new THREE.AnimationMixer(gltf.scene);
+      spinningAction = coinMixer.clipAction(gltf.animations[0]);
+      coin.visible = false;
+    },
+    undefined,
+    function (error) {
+      console.log(error);
+    }
   );
 
   // ground 설정하기
@@ -758,8 +752,7 @@ window.onload = function init() {
 
   // 텍스트 표현해보기
   fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-  createWord(0, 0, -8000, "Round 1",500);
-
+  createWord(0, 0, -8000, "Round 1", 500);
 
   // 커리큘럼 객체를 만들고 텍스트까지 매핑
   for (let i = 10; i < 40; i++) {
@@ -862,7 +855,6 @@ window.onload = function init() {
       objectManager.update();
       currManager.update();
       lightManager.update();
-
     }
     let delta = clock.getDelta();
     if (mixer) mixer.update(delta);
@@ -930,37 +922,34 @@ window.onload = function init() {
         scene.add(object);
         createSpotLight(lane * 800, 100, position);
         createWord(lane * 800, 100, position, "test Curr", 100);
-
       }
     }
   }
   // createCurriculums에서 불리는 함수로, 생성된 커리큘럼 오브젝트 위에 글씨 만드는 코드
-  function createWord(x,y, position, text, fontSize){
+  function createWord(x, y, position, text, fontSize) {
     fontLoader.load(fontURL, (font) => {
       // 쓸 글씨
-      let fontGeo = new THREE.TextGeometry(
-          text, {
-            font: font,
-            size: fontSize, // 글씨 크기
-            height: 100, // 글씨 두께
-            curveSegments:12
-          }
-      )
+      let fontGeo = new THREE.TextGeometry(text, {
+        font: font,
+        size: fontSize, // 글씨 크기
+        height: 100, // 글씨 두께
+        curveSegments: 12,
+      });
       // 효과를 위한 코드
       fontGeo.computeBoundingBox();
-      let xMid = -0.5 * ( fontGeo.boundingBox.max.x - fontGeo.boundingBox.min.x );
-      fontGeo.translate( xMid, 0, 0 );
+      let xMid = -0.5 * (fontGeo.boundingBox.max.x - fontGeo.boundingBox.min.x);
+      fontGeo.translate(xMid, 0, 0);
       // 글씨 색 지정
       let fontMat = new THREE.MeshBasicMaterial({
-        color: 0x5F9DF7,
-        wireframe:true
-      })
+        color: 0x5f9df7,
+        wireframe: true,
+      });
       // 글씨 오브젝트 생성
       let textMesh = new THREE.Mesh(fontGeo, fontMat);
       // 글씨 위치 지정
       textMesh.position.set(x, y, position);
       // 씬에 추가
-      scene.add(textMesh)
+      scene.add(textMesh);
       currManager.currWords.push(textMesh);
     });
   }
