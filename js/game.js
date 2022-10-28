@@ -86,6 +86,8 @@ const q = "q";
 const e = "e";
 
 const enter = "Enter";
+// 로그 보기 위한 키 매핑
+const l = "l";
 
 const one = "1";
 const two = "2";
@@ -535,11 +537,18 @@ let cameraManager = new Camera();
 class Objects {
   constructor() {
     // 관리하는 오브젝트를 저장하는 리스트
+    // 리스트 자료구조에 살짝 변동이 있음
+    // objects안에 리스트가 들어가고, 그 리스트의 0번 인덱스에 오브젝트가, 1번 인덱스에는 아이디 값이 들어가게 변경함
     this.objects = [];
     // 현재 만드는 오브젝트의 x,y,z 길이
     this.dx = 500;
     this.dy = 500;
     this.dz = 500;
+    // 충돌 관리를 위한 딕셔너리
+    this.objectCollision = {};
+    // 오브젝트 아이디를 위한 인덱스 변수
+    // 오브젝트가 하나 생성될때마다 값이 증가한다.
+    this.index = 0;
   }
   // 파라미터로 넘겨받은 x,y,z에 오브젝트를 생성해서 리턴해준다
   createObject(x, y, z) {
@@ -551,12 +560,18 @@ class Objects {
           obstacle.scale.set(10, 10, 10);
           // 캐릭터 위치 설정
           obstacle.position.set(x, y, z);
-          objectManager.objects.push(obstacle);
+          // objects에 넣은 리스트 생성
+          let tempContainer = [];
+          // 0번 인덱스에 오브젝트
+          tempContainer.push(obstacle);
+          // 1번 인덱스에 아이디 값
+          tempContainer.push(objectManager.index);
+          objectManager.objects.push(tempContainer);
+          // objectCollision 딕셔너리에서는 오브젝트 아이다 값으로 충돌 여부를 확인한다
+          // 초기에는 충돌 안한 상태이기에 false
+          objectManager.objectCollision[objectManager.index] = false;
           scene.add(gltf.scene);
-          // runningCharacter = running;
-          // mixer = new THREE.AnimationMixer(gltf.scene);
-          // runningAction = mixer.clipAction(gltf.animations[0]);
-          // runningAction.play();
+          objectManager.index += 1;
         },
         undefined,
         function (error) {
@@ -564,9 +579,11 @@ class Objects {
         }
     );
 
+
   }
 
   collisionCheck() {
+    // let collide = false;
     let charMinX = runningCharacter.position.x - 115;
     let charMaxX = runningCharacter.position.x + 115;
     let charMinY = runningCharacter.position.y - 310;
@@ -574,6 +591,22 @@ class Objects {
     let charMinZ = runningCharacter.position.z - 40;
     let charMaxZ = runningCharacter.position.z + 40;
 
+    this.objects.forEach(function (obj) {
+      let objMinX = obj[0].position.x - 250;
+      let objMaxX = obj[0].position.x + 250;
+      let objMinY = obj[0].position.y - 1150;
+      let objMaxY = obj[0].position.y + 1150;
+      let objMinZ = obj[0].position.z - 250;
+      let objMaxZ = obj[0].position.z + 250;
+
+      if (objMinX <= charMaxX && objMaxX >= charMinX
+          && objMinY <= charMaxY && objMaxY >= charMinY
+          && objMinZ <= charMaxZ && objMaxZ >= charMinZ) {
+        console.log("collision check");
+        // 충돌을 확인하면 true로 값을 변경,
+        objectManager.objectCollision[obj] = true;
+      }
+    });
 
 
   }
@@ -584,12 +617,14 @@ class Objects {
   // animate 함수 안에서 반복적으로 호출되며 오브젝트를 움직인다
   update() {
     this.objects.forEach(function (obj) {
-      obj.position.z += 100;
+      obj[0].position.z += 100;
     });
     this.objects = this.objects.filter(function (obj) {
-      return obj.position.z < 0;
+      return obj[0].position.z < 0;
     });
   }
+
+
 }
 
 // 오브젝트 관리 객체
@@ -599,6 +634,7 @@ let objectManager = new Objects();
 class Curriculum{
   constructor() {
     // 커리큘럼들을 저장하는 리스트
+    // 오브젝트 리스트와 같은 구조로 변경되었다.
     this.currs = [];
     // 커리큘럼 글씨들을 저장하는 리스트
     this.currWords = [];
@@ -607,6 +643,12 @@ class Curriculum{
     this.dx = 500;
     this.dy = 500;
     this.dz = 500;
+
+    // 오브젝트 매니저랑 마찬가지로 아이디 값으로 충돌 여부를 확인하기 위한 딕셔너리
+    this.currCollision = {};
+
+    // 커리큘럼 아이디를 위한 변수
+    this.index = 0;
   }
 
   // 커리큘럼 오브젝트 생성
@@ -626,10 +668,43 @@ class Curriculum{
     object.position.set(x, y, z);
     return object;
   }
+
+  collisionCheck() {
+
+    let charMinX = runningCharacter.position.x - 115;
+    let charMaxX = runningCharacter.position.x + 115;
+    let charMinY = runningCharacter.position.y - 310;
+    let charMaxY = runningCharacter.position.y + 320;
+    let charMinZ = runningCharacter.position.z - 40;
+    let charMaxZ = runningCharacter.position.z + 40;
+
+    this.currs.forEach(function (obj) {
+      let objMinX = obj[0].position.x - 250;
+      let objMaxX = obj[0].position.x + 250;
+      let objMinY = obj[0].position.y - 1150;
+      let objMaxY = obj[0].position.y + 1150;
+      let objMinZ = obj[0].position.z - 250;
+      let objMaxZ = obj[0].position.z + 250;
+
+
+
+      if (objMinX <= charMaxX && objMaxX >= charMinX
+          && objMinY <= charMaxY && objMaxY >= charMinY
+          && objMinZ <= charMaxZ && objMaxZ >= charMinZ) {
+        console.log("collision check");
+        // 충돌 여부를 확인했으면 true로 값을 변경한다.
+        currManager.currCollision[obj[1]] = true;
+      }
+    });
+
+
+  }
+
+
   // 커리큘럼 오브젝트를 움직이는 함
   update() {
     this.currs.forEach(function (obj) {
-      obj.position.z += 100;
+      obj[0].position.z += 100;
     });
 
     this.currWords.forEach(function (obj) {
@@ -637,7 +712,7 @@ class Curriculum{
     });
 
     this.currs = this.currs.filter(function (obj) {
-      return obj.position.z < 0;
+      return obj[0].position.z < 0;
     });
 
     this.currWords = this.currWords.filter(function (obj) {
@@ -698,14 +773,12 @@ let lightManager = new Light();
 class Game {
   constructor() {
     this.score = 0;
-
-
-  }
-  // 충돌 확인하는 메소드
-  collisionCheck(){
+    this.collision = false;
 
   }
 
+  // currManagaer랑 objectManager 딕셔너리 비우는 코드 추가해야한다
+  // 인덱스 추가 코드도 들어가야한다
   initRound(round) {
     this.round = round;
     let fogDistance = 40000;
@@ -746,6 +819,8 @@ class Game {
           mixer = new THREE.AnimationMixer(gltf.scene);
           runningAction = mixer.clipAction(gltf.animations[0]);
           runningAction.play();
+          paused = false;
+          gameOver = false;
         },
         undefined,
         function (error) {
@@ -807,7 +882,6 @@ class Game {
     }
     cancelAnimationFrame(animation);
 
-    // scene.removeAll();
 
 
   }
@@ -815,8 +889,28 @@ class Game {
   // 게임을 진행하는 동안 animate 안에서 반복적으로 실행될 함수
   // 여기 안에서 충돌 관리, 라운드 관리, 점수관리를 하면 될 것 같다
   update(){
+    let objectHit = 0;
+    let currHit = 0;
+    // 충돌 여부를 확인하는 코드를 돌려서 충돌한 커리큘럼, 오브젝트들 최신화
+    objectManager.collisionCheck();
+    currManager.collisionCheck();
+    // 점수 계산 로직
+    Object.keys(objectManager.objectCollision).forEach(function (value) {
+      if (objectManager.objectCollision[value]) {
+        objectHit -= 1;
+      }
+    });
+    Object.keys(currManager.currCollision).forEach(function (value) {
+      if (currManager.currCollision[value]) {
+        currHit += 1;
+      }
+    });
 
+    this.score = (objectHit + currHit) * 10;
+    // 점수 화면에 반영하기
+    document.getElementById("score").innerHTML = this.score;
   }
+
 }
 
 let gameManager = new Game();
@@ -866,8 +960,6 @@ window.onload = function init() {
 
       document.getElementById("variable-content").style.visibility = "hidden";
       document.getElementById("controls").style.visibility = "hidden";
-      paused = false;
-      gameOver = false;
     } else {
       if (inputKey === p) {
         paused = true;
@@ -933,12 +1025,18 @@ window.onload = function init() {
         document.getElementById("variable-content").style.visibility = "visible";
         document.getElementById("controls").style.visibility = "visible";
         document.getElementById("variable-content").innerHTML = "Press 1~4 to select a round and begin";
-        // gameManager.initRound();
         gameOver = true;
         paused = true;
-        // gameManager.roundOver();
       }
-
+      // 로그 위한 인풋 매핑
+      if (inputKey === l && !paused) {
+        Object.keys(objectManager.objectCollision).forEach(function (value) {
+          console.log(value + " : " + objectManager.objectCollision[value]);
+        });
+        Object.keys(currManager.currCollision).forEach(function (value) {
+          console.log(value + " : " + currManager.currCollision[value]);
+        });
+      }
 
     }
   });
@@ -962,6 +1060,7 @@ window.onload = function init() {
       objectManager.update();
       currManager.update();
       lightManager.update();
+      gameManager.update();
 
     }
     let delta = clock.getDelta();
@@ -1026,11 +1125,16 @@ function createCurriculums(position, probability, minScale, maxScale) {
     let randomNum = Math.random();
     if (randomNum < probability) {
       let scale = minScale + (maxScale - minScale) * Math.random();
-      let object = currManager.createCurriculum(lane * 800, -400, position);
-      currManager.currs.push(object);
+      let object = currManager.createCurriculum(lane * 800, 0, position);
+      let tempContainer = [];
+      tempContainer.push(object);
+      tempContainer.push(currManager.index);
+      currManager.currs.push(tempContainer);
+      currManager.currCollision[currManager.index] = false;
       scene.add(object);
       createSpotLight(lane * 800, 100, position);
-      createWord(lane * 800, 100, position, "test Curr", 100);
+      createWord(lane * 800, 500, position, "test Curr", 100);
+      currManager.index += 1;
 
     }
   }
