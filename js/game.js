@@ -603,8 +603,11 @@ class Objects {
           && objMinY <= charMaxY && objMaxY >= charMinY
           && objMinZ <= charMaxZ && objMaxZ >= charMinZ) {
         console.log("collision check");
+        if (!objectManager.objectCollision[obj[1]]) {
+          cameraManager.rumbleQueue.push(r);
+        }
         // 충돌을 확인하면 true로 값을 변경,
-        objectManager.objectCollision[obj] = true;
+        objectManager.objectCollision[obj[1]] = true;
       }
     });
 
@@ -692,6 +695,9 @@ class Curriculum{
           && objMinY <= charMaxY && objMaxY >= charMinY
           && objMinZ <= charMaxZ && objMaxZ >= charMinZ) {
         console.log("collision check");
+        if (!currManager.currCollision[obj[1]]) {
+          coinManager.queuedAction.push(i);
+        }
         // 충돌 여부를 확인했으면 true로 값을 변경한다.
         currManager.currCollision[obj[1]] = true;
       }
