@@ -165,6 +165,6 @@ td:nth-child(2) {
     top: 50%;
     display: inline-block;
     transform: translate(-50%, -50%);
-    width: 760px;
+    /* width: 1000px; */
     padding-top: 15px;
 }

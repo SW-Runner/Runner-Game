@@ -554,12 +554,13 @@ class Objects {
   // animate 함수 안에서 반복적으로 호출되며 오브젝트를 움직인다
   update() {
     this.objects.forEach(function (obj) {
-      obj.position.z += 100;
+      obj.position.z += 300; /////////////
     });
     this.objects = this.objects.filter(function (obj) {
       //의성
       return obj.position.z < 0;
     });
+    console.log("길이" + this.objects.length);
 
     if (this.objects.length == 0) {
       gameOver = true;
@@ -600,14 +601,15 @@ class Curriculum {
     object.position.set(x, y, z);
     return object;
   }
+
   // 커리큘럼 오브젝트를 움직이는 함수
   update() {
     this.currs.forEach(function (obj) {
-      obj.position.z += 100;
+      obj.position.z += 300;
     });
 
     this.currWords.forEach(function (obj) {
-      obj.position.z += 100;
+      obj.position.z += 300; //////////
     });
 
     this.currs = this.currs.filter(function (obj) {
@@ -651,8 +653,8 @@ class Light {
       8 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)) + 0.1);
 
     this.spotLights.forEach(function (obj) {
-      obj.position.z += 100;
-      obj.target.position.z += 100;
+      obj.position.z += 300;
+      obj.target.position.z += 300; ////////
     });
 
     this.spotLights = this.spotLights.filter(function (obj) {
@@ -746,7 +748,7 @@ class Game {
 
     // 장애물 & 오브젝트 만들기
     // TODO: 장애물 어떻게 만들어질지 정해야될듯
-    for (let i = 10; i < 20; i++) {
+    for (let i = 10; i < 30; i++) {
       createObjects(i * -3000, 0.2, 0.6, 0.7);
     }
 
@@ -755,13 +757,13 @@ class Game {
     createWord(0, 0, -8000, "Round " + round, 500);
 
     // 커리큘럼 객체를 만들고 텍스트까지 매핑
-    for (let i = 10; i < 20; i++) {
+    for (let i = 10; i < 30; i++) {
       createCurriculums(i * -5000, 0.2, 0.6, 0.7);
     }
-    // if (gameOver == true) {
-    //   console.log("round " + round);
-    //   roundOver(round);
-    // }
+    if (gameOver == true) {
+      console.log("round " + round);
+      roundOver(round);
+    }
 
     //생성 후에 gameOver boolean을 true로 만들어서 roundover 작동시켜야할듯
   }
@@ -784,6 +786,8 @@ class Game {
       scene.children.forEach(function (obj) {
         scene.remove(obj);
       });
+      explain1.style.display = 'block';
+      // world.style.display = 'none';
       cancelAnimationFrame(animation);
       setTimeout(function () {
         gameOver = false;
@@ -799,10 +803,19 @@ class Game {
 }
 
 let gameManager = new Game();
+
 window.onload = function init() {
   // HTML world랑 js 연결하기
   world = document.getElementById("world");
-  explain = document.getElementById("explain");
+  explain1 = document.getElementById("explain1");
+  explain2 = document.getElementById("explain2");
+  explain3 = document.getElementById("explain3");
+  explain4 = document.getElementById("explain4");
+
+  explain1.style.display = 'block';
+  explain2.style.display = 'none';
+  explain3.style.display = 'none';
+  explain4.style.display = 'none';
 
   // Renderer 설정하기
   renderer = new THREE.WebGLRenderer({
@@ -835,9 +848,9 @@ window.onload = function init() {
       if (inputKey === one) {
         roundNumber = 1;
         gameManager.initRound(1);
-        // if (gameOver) { 의성
-        //   gameManager.roundOver(1);
-        // }
+        if (gameOver) { 
+          gameManager.roundOver(1);
+        }
       }
       if (inputKey === two) {
         roundNumber = 2;
@@ -1032,7 +1045,6 @@ function createCurriculums(position, probability, minScale, maxScale) {
     let randomNum = Math.random();
     if (randomNum < probability) {
       let scale = minScale + (maxScale - minScale) * Math.random();
-
       let object = currManager.createCurriculum(lane * 800, -400, position);
       currManager.currs.push(object);
       scene.add(object);
@@ -1069,6 +1081,7 @@ function createWord(x, y, position, text, fontSize) {
     currManager.currWords.push(textMesh);
   });
 }
+
 // createCurriculum에서 불리는 함수로, 커리큘럼 오브젝트에 스포트라이트 추가하는 코드
 function createSpotLight(x, y, position) {
   let spotLight = new THREE.SpotLight();
@@ -1077,7 +1090,7 @@ function createSpotLight(x, y, position) {
   // 조명 강도
   spotLight.intensity = 8;
   // 이 값을 줄이면 스포트라이트의 원이 커진다
-  spotLight.angle = Math.PI / 30;
+  spotLight.angle = Math.PI / 65;
   spotLight.target.position.set(x, y, position);
   scene.add(spotLight.target);
   scene.add(spotLight);
