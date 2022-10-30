@@ -1,4 +1,6 @@
 let gameOverInt = 1;
+//라운드 종료시에 inputkey 다시 눌릴 수 있게 하는 변수
+let inputkeyBoolean = true;
 
 // 카메라 위치 설정
 // z 값이 커질 수록, 모니터에 가까워짐,
@@ -564,6 +566,7 @@ class Objects {
     });
 
     if (this.objects.length == 0) {
+      console.log("gameoverInt 다음라운드 시작전까지", gameOverInt);
       gameOverInt--;
     }
   }
@@ -869,8 +872,6 @@ class Game {
       createWordStatic(0, 0, -8000, roundString, 500);
       round++;
       cancelAnimationFrame(animation);
-      // console.dir(ProgressEvent);
-      // console.dir(scene);
       scene.children.forEach(function (obj) {
         scene.remove(obj);
       });
@@ -878,6 +879,9 @@ class Game {
         scene.children.forEach(function (obj) {
           scene.remove(obj);
         });
+        inputkeyBoolean = true;
+        paused = true;
+        gameOverInt = 1;
       }, 3000);
     }
 
@@ -930,10 +934,15 @@ window.onload = function init() {
     let inputKey = ev.key;
     console.log(inputKey);
     // keydown이 되면 다시 그 입력을 처리하지 않게 false처리, keyup에서 true로 변경해준다.
-    if (allowedKeys[inputKey] !== false) {
-      allowedKeys[inputKey] = false;
-    }
+    // if (allowedKeys[inputKey] !== false) {
+    //   allowedKeys[inputKey] = false;
+    // }
+    // if(inputkeyBoolean)
+    // {
+    //   allowedKeys[inputKey] = false;
+    // }
     if (paused) {
+      // allowedKeys[inputKey] = inputkeyBoolean;
       if (inputKey === zero) {
         //의성
         roundNumber = 1;
@@ -1055,7 +1064,6 @@ window.onload = function init() {
       lightManager.update();
       if (-5 < gameOverInt && gameOverInt <= 0) {
         gameManager.roundOver(roundNumber);
-        console.log("gameoverint animate 함수 안", gameOverInt);
         scene.children.forEach(function (obj) {
           scene.remove(obj);
         });
