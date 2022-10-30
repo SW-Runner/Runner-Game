@@ -567,7 +567,6 @@ class Objects {
     });
 
     if (this.objects.length == 0) {
-      console.log("gameoverInt 다음라운드 시작전까지", gameOverInt);
       gameOverInt--;
     }
   }
