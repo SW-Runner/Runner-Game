@@ -1,9 +1,11 @@
+let gameOverInt = 1;
+
 // 카메라 위치 설정
 // z 값이 커질 수록, 모니터에 가까워짐,
 // y 값이 커질 수록 위로 올라가고
 // x 값이 커질 수록 오른쪽으로 간다
-
 // html 캔버스
+
 let world;
 // 랜더러 오브젝트
 let renderer;
@@ -104,6 +106,8 @@ const five = "5";
 const six = "6";
 const seven = "7";
 const eight = "8";
+
+const zero = "0";
 
 // 중복 키 입력을 방지하기 위한 dictionary
 let allowedKeys = {};
@@ -552,7 +556,7 @@ class Objects {
   // animate 함수 안에서 반복적으로 호출되며 오브젝트를 움직인다
   update() {
     this.objects.forEach(function (obj) {
-      obj.position.z += 100;
+      obj.position.z += 600;
     });
     this.objects = this.objects.filter(function (obj) {
       //의성
@@ -560,7 +564,7 @@ class Objects {
     });
 
     if (this.objects.length == 0) {
-      gameOver = true;
+      gameOverInt--;
     }
   }
 }
@@ -615,6 +619,10 @@ class Curriculum {
     this.currWords = this.currWords.filter(function (obj) {
       return obj.position.z < 0;
     });
+
+    // if (this.currs.length == 0) {
+    //   gameOver = true;
+    // }
   }
 }
 
@@ -744,7 +752,7 @@ class Game {
 
     // 장애물 & 오브젝트 만들기
     // TODO: 장애물 어떻게 만들어질지 정해야될듯
-    for (let i = 10; i < 20; i++) {
+    for (let i = 10; i < 50; i++) {
       createObjects(i * -3000, 0.2, 0.6, 0.7);
     }
 
@@ -753,15 +761,94 @@ class Game {
     createWord(0, 0, -8000, "Round " + round, 500);
 
     // 커리큘럼 객체를 만들고 텍스트까지 매핑
-    for (let i = 10; i < 20; i++) {
+    for (let i = 10; i < 30; i++) {
       createCurriculums(i * -5000, 0.2, 0.6, 0.7);
     }
-    // if (gameOver == true) {
-    //   console.log("round " + round);
-    //   roundOver(round);
-    // }
+  }
 
-    //생성 후에 gameOver boolean을 true로 만들어서 roundover 작동시켜야할듯
+  initRoundDefault() {
+    round = 0;
+    let fogDistance = 40000;
+    scene.fog = new THREE.Fog(0xbadbe4, 1, fogDistance);
+    camera.position.set(cameraX, cameraY, cameraZ);
+    camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
+    window.camera = camera;
+
+    // 광원추가하기
+    lightManager.backLight.position.set(0, 0, -2000);
+    lightManager.upLight.position.set(0, 3000, -4000);
+    // hemisphereLight을 쓰면 그냥 그림자도 안생기고 캐릭터의 입체감은 좀 덜하다
+    // let light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
+    // scene.add(light);
+    // 포인트 라이트를 쓰면 촬영장에서 조명킨것처럼 그림자도 생기고, 빛이 덜 가는 부분에 윤곽선도 생겨서 좀 더 입체적으로 보인다
+    // 이 상황에서 코드를 실행시켜보면, pointlight를 써서 좌우로 레인을 옮기면 캐릭터가 어두워지는 것을 볼 수 있음,
+    scene.add(lightManager.backLight);
+    scene.add(lightManager.upLight);
+
+    // TODO: spotlight 처리를 어떻게하면 좋을까, PointLight랑 SpotLight을 섞어서 쓰면 될 것 같기도?
+
+    // 캐릭터 렌더링하기
+    loader = new THREE.GLTFLoader();
+    loader.load(
+      "./character/scene.gltf",
+      function (gltf) {
+        let running = gltf.scene.children[0];
+        // 캐릭터 크기 설정
+        running.scale.set(1.5, -4, 1.5);
+        // 캐릭터 위치 설정
+        running.position.set(0, 0, -4000);
+        scene.add(gltf.scene);
+        runningCharacter = running;
+        mixer = new THREE.AnimationMixer(gltf.scene);
+        runningAction = mixer.clipAction(gltf.animations[0]);
+        runningAction.play();
+      },
+      undefined,
+      function (error) {
+        console.error(error);
+      }
+    );
+
+    // 이펙트를 위한 동전 랜더링
+    loader.load(
+      "./coin/scene.gltf",
+      function (gltf) {
+        let spinning = gltf.scene.children[0];
+        // 동전 크기 설정
+        spinning.scale.set(10, 10, 10);
+        // 캐릭터 위치 설정
+        spinning.position.set(0, 480, -4000);
+        scene.add(gltf.scene);
+        coin = spinning;
+        coinMixer = new THREE.AnimationMixer(gltf.scene);
+        spinningAction = coinMixer.clipAction(gltf.animations[0]);
+        coin.visible = false;
+        spinningAction.play();
+      },
+      undefined,
+      function (error) {
+        console.log(error);
+      }
+    );
+
+    // ground 설정하기
+    let ground = createGround(4000, 20, 120000, Colors.olive, 0, -400, -60000);
+    scene.add(ground);
+
+    // 장애물 & 오브젝트 만들기
+    // TODO: 장애물 어떻게 만들어질지 정해야될듯
+    for (let i = 10; i < 50; i++) {
+      createObjects(i * -3000, 0.2, 0.6, 0.7);
+    }
+
+    // 텍스트 표현해보기
+    fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
+    createWord(0, 0, -8000, "Round " + round, 500);
+
+    // 커리큘럼 객체를 만들고 텍스트까지 매핑
+    for (let i = 10; i < 30; i++) {
+      createCurriculums(i * -5000, 0.2, 0.6, 0.7);
+    }
   }
 
   roundOver(round) {
@@ -776,23 +863,42 @@ class Game {
       roundString = "The Last Year Completed ";
     }
 
-    if (gameOver) {
+    //의성) scene.remove를 하면 다 안지워져서 여러번 반복문을 돌리는 방식으로 구현
+    if (-5 < gameOverInt && gameOverInt <= 0) {
       fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-      createWord(0, 0, -8000, roundString, 500);
+      createWordStatic(0, 0, -8000, roundString, 500);
+      round++;
+      cancelAnimationFrame(animation);
+      // console.dir(ProgressEvent);
+      // console.dir(scene);
       scene.children.forEach(function (obj) {
         scene.remove(obj);
       });
-      cancelAnimationFrame(animation);
       setTimeout(function () {
-        gameOver = false;
+        scene.children.forEach(function (obj) {
+          scene.remove(obj);
+        });
       }, 3000);
     }
 
-    // scene.removeAll();
+    // document.addEventListener("keydown", function (ev) {
+    //   let inputKey = ev.key;
+    //   if (allowedKeys[inputKey] !== false) {
+    //     allowedKeys[inputKey] = false;
+    //   }
+
+    //   console.log(round);
+
+    //   if (inputKey === enter) {
+    //     console.log("시작해 제발");
+    //     gameManager.initRound(round);
+    //   }
+    // });
   }
 
   // 게임을 진행하는 동안 animate 안에서 반복적으로 실행될 함수
   // 여기 안에서 충돌 관리, 라운드 관리, 점수관리를 하면 될 것 같다
+
   update() {}
 }
 
@@ -828,12 +934,14 @@ window.onload = function init() {
       allowedKeys[inputKey] = false;
     }
     if (paused) {
+      if (inputKey === zero) {
+        //의성
+        roundNumber = 1;
+        gameManager.initRoundDefault();
+      }
       if (inputKey === one) {
         roundNumber = 1;
         gameManager.initRound(1);
-        // if (gameOver) { 의성
-        //   gameManager.roundOver(1);
-        // }
       }
       if (inputKey === two) {
         roundNumber = 2;
@@ -945,8 +1053,13 @@ window.onload = function init() {
       objectManager.update();
       currManager.update();
       lightManager.update();
-      if (gameOver) {
+      if (-5 < gameOverInt && gameOverInt <= 0) {
         gameManager.roundOver(roundNumber);
+        console.log("gameoverint animate 함수 안", gameOverInt);
+        scene.children.forEach(function (obj) {
+          scene.remove(obj);
+        });
+        cancelAnimationFrame(animation);
       }
     }
     let delta = clock.getDelta();
@@ -1061,4 +1174,33 @@ function createSpotLight(x, y, position) {
   scene.add(spotLight.target);
   scene.add(spotLight);
   lightManager.spotLights.push(spotLight);
+}
+
+//움직이는 글씨가 아닌 정적으로 띄워주는 글자 생성 함수
+function createWordStatic(x, y, position, text, fontSize) {
+  fontLoader.load(fontURL, (font) => {
+    // 쓸 글씨
+    let fontGeo = new THREE.TextGeometry(text, {
+      font: font,
+      size: fontSize, // 글씨 크기
+      height: 100, // 글씨 두께
+      curveSegments: 12,
+    });
+    // 효과를 위한 코드
+    fontGeo.computeBoundingBox();
+    let xMid = -0.5 * (fontGeo.boundingBox.max.x - fontGeo.boundingBox.min.x);
+    fontGeo.translate(xMid, 0, 0);
+    // 글씨 색 지정
+    let fontMat = new THREE.MeshBasicMaterial({
+      color: 0x5f9df7,
+      wireframe: true,
+    });
+    // 글씨 오브젝트 생성
+    let textMesh = new THREE.Mesh(fontGeo, fontMat);
+    // 글씨 위치 지정
+    textMesh.position.set(x, y, position);
+    // 씬에 추가
+    scene.add(textMesh);
+    // currManager.currWords.push(textMesh);
+  });
 }
