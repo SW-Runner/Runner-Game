@@ -110,6 +110,7 @@ const seven = "7";
 const eight = "8";
 
 const zero = "0";
+const spacebar = " ";
 
 // 중복 키 입력을 방지하기 위한 dictionary
 let allowedKeys = {};
@@ -884,20 +885,6 @@ class Game {
         gameOverInt = 1;
       }, 3000);
     }
-
-    // document.addEventListener("keydown", function (ev) {
-    //   let inputKey = ev.key;
-    //   if (allowedKeys[inputKey] !== false) {
-    //     allowedKeys[inputKey] = false;
-    //   }
-
-    //   console.log(round);
-
-    //   if (inputKey === enter) {
-    //     console.log("시작해 제발");
-    //     gameManager.initRound(round);
-    //   }
-    // });
   }
 
   // 게임을 진행하는 동안 animate 안에서 반복적으로 실행될 함수
@@ -934,35 +921,37 @@ window.onload = function init() {
     let inputKey = ev.key;
     console.log(inputKey);
     // keydown이 되면 다시 그 입력을 처리하지 않게 false처리, keyup에서 true로 변경해준다.
-    // if (allowedKeys[inputKey] !== false) {
-    //   allowedKeys[inputKey] = false;
-    // }
-    // if(inputkeyBoolean)
-    // {
-    //   allowedKeys[inputKey] = false;
-    // }
+    if (allowedKeys[inputKey] !== false) {
+      allowedKeys[inputKey] = false;
+    }
+
     if (paused) {
-      // allowedKeys[inputKey] = inputkeyBoolean;
-      if (inputKey === zero) {
-        //의성
-        roundNumber = 1;
-        gameManager.initRoundDefault();
+      if (inputKey === spacebar) {
+        //spacebar키 클릭시 : default로 1라운드부터 시작, spacebar로 다음 라운드 시작
+        //4라운드에서 spacebar 클릭시 더이상 게임 진행 불가
+        if (roundNumber == null) {
+          roundNumber = 1;
+          gameManager.initRound(roundNumber);
+        } else if (roundNumber <= 3) {
+          roundNumber++;
+          gameManager.initRound(roundNumber);
+        }
       }
       if (inputKey === one) {
         roundNumber = 1;
-        gameManager.initRound(1);
+        gameManager.initRound(roundNumber);
       }
       if (inputKey === two) {
         roundNumber = 2;
-        gameManager.initRound(2);
+        gameManager.initRound(roundNumber);
       }
       if (inputKey === three) {
         roundNumber = 3;
-        gameManager.initRound(3);
+        gameManager.initRound(roundNumber);
       }
       if (inputKey === four) {
         roundNumber = 4;
-        gameManager.initRound(4);
+        gameManager.initRound(roundNumber);
       }
 
       document.getElementById("variable-content").style.visibility = "hidden";
