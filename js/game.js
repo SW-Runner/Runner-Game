@@ -353,6 +353,7 @@ class Camera {
   }
   // 위 characterManager와 동일하게 animate 안에서 반복적으로 호출 되며 카메라 위치를 부드럽게 변경
   update() {
+    
     let curTime = new Date() / 1000;
     if (
       !this.changingToOne &&
@@ -373,34 +374,62 @@ class Camera {
       this.pastZ = camera.position.z;
 
       if (change === one && this.currentView !== 1) {
+        // this.changingToOne = true;
+
+        // this.newX = -this.xDiff;
+        // this.newY = defaultY;
+        // this.newZ = defaultZ;
+
+        // this.newDestX = this.destXDiff;
+        // this.newDestY = defaultDestY;
+        // this.newDestZ = defaultDestZ;
         this.changingToOne = true;
-
-        this.newX = -this.xDiff;
-        this.newY = defaultY;
-        this.newZ = defaultZ;
-
-        this.newDestX = this.destXDiff;
-        this.newDestY = defaultDestY;
-        this.newDestZ = defaultDestZ;
-      } else if (change === two && this.currentView !== 2) {
-        this.changingToTwo = true;
-
-        this.newX = this.xDiff;
-        this.newY = defaultY;
-        this.newZ = defaultZ;
-
-        this.newDestX = -this.destXDiff;
-        this.newDestY = defaultDestY;
-        this.newDestZ = defaultDestZ;
-      } else if (change === three && this.currentView !== 3) {
-        this.changingToThree = true;
-
         this.newX = defaultX;
-        this.newY = defaultY + this.yDiff;
+        this.newY = 600;
         this.newZ = defaultZ;
 
         this.newDestX = defaultDestX;
-        this.newDestY = defaultDestY - this.destYDiff;
+        this.newDestY = -1000;
+        this.newDestZ = defaultDestZ;
+
+
+      } else if (change === two && this.currentView !== 2) {
+        // this.changingToTwo = true;
+
+        // this.newX = this.xDiff;
+        // this.newY = defaultY;
+        // this.newZ = defaultZ;
+
+        // this.newDestX = -this.destXDiff;
+        // this.newDestY = defaultDestY;
+        // this.newDestZ = defaultDestZ;
+        this.changingToOne = true;
+        this.newX = defaultX;
+        this.newY = defaultY;
+        this.newZ = defaultZ;
+
+        this.newDestX = defaultDestX;
+        this.newDestY = -1000;
+        this.newDestZ = defaultDestZ;
+
+      } else if (change === three && this.currentView !== 3) {
+        // this.changingToThree = true;
+
+        // this.newX = defaultX;
+        // this.newY = defaultY + this.yDiff;
+        // this.newZ = defaultZ;
+
+        // this.newDestX = defaultDestX;
+        // this.newDestY = defaultDestY - this.destYDiff;
+        // this.newDestZ = defaultDestZ;
+        this.changingToThree = true;
+
+        this.newX = defaultX;
+        this.newY = 600;
+        this.newZ = defaultZ;
+
+        this.newDestX = defaultDestX;
+        this.newDestY = defaultDestY;
         this.newDestZ = defaultDestZ;
       } else if (change === four && this.currentView !== 4) {
         this.changingToFour = true;
@@ -454,6 +483,7 @@ class Camera {
         this.newDestZ = eightZDes;
       }
     }
+    console.log(this.newY + " " + this.newDestY);
 
     if (this.changingToOne) {
       let timeDiff = curTime - this.changeStartTime;
@@ -554,16 +584,16 @@ class Objects {
   // animate 함수 안에서 반복적으로 호출되며 오브젝트를 움직인다
   update() {
     this.objects.forEach(function (obj) {
-      obj.position.z += 300; /////////////
+      obj.position.z += 150; ////////////////////////////////////////
     });
     this.objects = this.objects.filter(function (obj) {
       //의성
       return obj.position.z < 0;
     });
-    console.log("길이" + this.objects.length);
+    // console.log("길이" + this.objects.length);
 
     if (this.objects.length == 0) {
-      gameOver = true;
+      // gameOver = true;
     }
   }
 }
@@ -605,11 +635,11 @@ class Curriculum {
   // 커리큘럼 오브젝트를 움직이는 함수
   update() {
     this.currs.forEach(function (obj) {
-      obj.position.z += 300;
+      obj.position.z += 150;
     });
 
     this.currWords.forEach(function (obj) {
-      obj.position.z += 300; //////////
+      obj.position.z += 150; ///////////////////////////////////////////
     });
 
     this.currs = this.currs.filter(function (obj) {
@@ -653,8 +683,8 @@ class Light {
       8 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)) + 0.1);
 
     this.spotLights.forEach(function (obj) {
-      obj.position.z += 300;
-      obj.target.position.z += 300; ////////
+      obj.position.z += 150;
+      obj.target.position.z += 150; ///////////////////////////////////
     });
 
     this.spotLights = this.spotLights.filter(function (obj) {
@@ -812,7 +842,7 @@ window.onload = function init() {
   explain3 = document.getElementById("explain3");
   explain4 = document.getElementById("explain4");
 
-  explain1.style.display = 'block';
+  explain1.style.display = 'none';
   explain2.style.display = 'none';
   explain3.style.display = 'none';
   explain4.style.display = 'none';
