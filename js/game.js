@@ -534,7 +534,7 @@ let cameraManager = new Camera();
 // 오브젝트 관리를 위한 클래스
 // TODO: 이 클래스 안에 오브젝트랑 충돌 여부를 판단하는 코드도 들어가야될 것 같다, 충돌 여부 판단하는 코드의 결과를 밑에 게임 매니저가 사용해서 점수를 올리거나 낮추거나 하게하면 될듯
 // TODO: 커리큘럼이랑 장애물 분리해서 생성해주는 코드 추가해야함
-class Objects {
+class ObjectsManager {
   constructor() {
     // 관리하는 오브젝트를 저장하는 리스트
     // 리스트 자료구조에 살짝 변동이 있음
@@ -631,16 +631,19 @@ class Objects {
 }
 
 // 오브젝트 관리 객체
-let objectManager = new Objects();
+let objectManager = new ObjectsManager();
 
 // 커리큘럼 생성, 이동을 관리하는 클래스
-class Curriculum{
+class CurriculumManager{
   constructor() {
     // 커리큘럼들을 저장하는 리스트
     // 오브젝트 리스트와 같은 구조로 변경되었다.
     this.currs = [];
     // 커리큘럼 글씨들을 저장하는 리스트
     this.currWords = [];
+
+    // 먹은 오브젝트 글씨 정보를 매핑하기 위한 딕셔너리
+    this.currWordDict = {};
 
     // 커리큘럼 오브젝트의 크기 변수
     this.dx = 500;
@@ -728,7 +731,7 @@ class Curriculum{
 }
 
 // 커리큘럼 관리 객체
-let currManager = new Curriculum();
+let currManager = new CurriculumManager();
 
 // 광원 처리 관리를 위한 클래스
 class Light{
@@ -897,6 +900,9 @@ class Game {
   update(){
     let objectHit = 0;
     let currHit = 0;
+
+    let showCurr = "";
+
     // 충돌 여부를 확인하는 코드를 돌려서 충돌한 커리큘럼, 오브젝트들 최신화
     objectManager.collisionCheck();
     currManager.collisionCheck();
@@ -908,6 +914,7 @@ class Game {
     });
     Object.keys(currManager.currCollision).forEach(function (value) {
       if (currManager.currCollision[value]) {
+        showCurr +=currManager.currWordDict[value]+"\n";
         currHit += 1;
       }
     });
@@ -915,6 +922,7 @@ class Game {
     this.score = (objectHit + currHit) * 10;
     // 점수 화면에 반영하기
     document.getElementById("score").innerHTML = this.score;
+    document.getElementById("curr").innerHTML = showCurr;
   }
 
 }
@@ -1136,10 +1144,11 @@ function createCurriculums(position, probability, minScale, maxScale) {
       tempContainer.push(object);
       tempContainer.push(currManager.index);
       currManager.currs.push(tempContainer);
+      currManager.currWordDict[currManager.index] = "test Curr"+currManager.index;
       currManager.currCollision[currManager.index] = false;
       scene.add(object);
       createSpotLight(lane * 800, 100, position);
-      createWord(lane * 800, 500, position, "test Curr", 100);
+      createWord(lane * 800, 500, position, "test Curr"+currManager.index, 100);
       currManager.index += 1;
 
     }
