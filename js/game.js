@@ -640,12 +640,31 @@ class ObjectsManager {
 
   // animate 함수 안에서 반복적으로 호출되며 오브젝트를 움직인다
   update() {
-    this.objects.forEach(function (obj) {
-      obj[0].position.z += 100;
-    });
+    //roundspeed 1)라운드 별 object(장애물) 속도 설정
+    if (roundNumber === 1) {
+      this.objects.forEach(function (obj) {
+        obj[0].position.z += 150;
+      });
+    } else if (roundNumber === 2) {
+      this.objects.forEach(function (obj) {
+        obj[0].position.z += 200;
+      });
+    } else if (roundNumber === 3) {
+      this.objects.forEach(function (obj) {
+        obj[0].position.z += 220;
+      });
+    } else if (roundNumber === 4) {
+      this.objects.forEach(function (obj) {
+        obj[0].position.z += 250;
+      });
+    }
+
     this.objects = this.objects.filter(function (obj) {
       return obj[0].position.z < 0;
     });
+    if (this.objects.length === 0) {
+      gameOverInt --;
+    }
   }
 
 
@@ -733,17 +752,45 @@ class CurriculumManager{
 
   // 커리큘럼 오브젝트를 움직이는 함
   update() {
-    this.currs.forEach(function (obj) {
-      obj[0].position.z += 100;
-    });
+    //roundspeed 2)라운드 별 커리큘럼 속도와 커리큘럼 word 속도
+    if (roundNumber === 1) {
+      this.currs.forEach(function (obj) {
+        obj[0].position.z += 150;
+      });
 
-    this.currWords.forEach(function (obj) {
-      obj.position.z += 100;
-    });
+      this.currWords.forEach(function (obj) {
+        obj.position.z += 150;
+      });
+    } else if (roundNumber === 2) {
+      this.currs.forEach(function (obj) {
+        obj[0].position.z += 200;
+      });
+
+      this.currWords.forEach(function (obj) {
+        obj.position.z += 200;
+      });
+    } else if (roundNumber === 3) {
+      this.currs.forEach(function (obj) {
+        obj[0].position.z += 220;
+      });
+
+      this.currWords.forEach(function (obj) {
+        obj.position.z += 220;
+      });
+    } else if (roundNumber === 4) {
+      this.currs.forEach(function (obj) {
+        obj[0].position.z += 250;
+      });
+
+      this.currWords.forEach(function (obj) {
+        obj.position.z += 250;
+      });
+    }
 
     this.currs = this.currs.filter(function (obj) {
       return obj[0].position.z < 0;
     });
+
 
     this.currWords = this.currWords.filter(function (obj) {
       return obj.position.z < 0;
@@ -779,10 +826,28 @@ class Light{
     this.backLight.intensity = 8*(Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff))+0.1);
     this.upLight.intensity = 8*(Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff))+0.1);
 
-    this.spotLights.forEach(function (obj) {
-      obj.position.z += 100;
-      obj.target.position.z += 100;
-    });
+    //roundspeed 3)
+    if (roundNumber === 1) {
+      this.spotLights.forEach(function (obj) {
+        obj.position.z += 150;
+        obj.target.position.z += 150;
+      });
+    } else if (roundNumber === 2) {
+      this.spotLights.forEach(function (obj) {
+        obj.position.z += 200;
+        obj.target.position.z += 200;
+      });
+    } else if (roundNumber === 3) {
+      this.spotLights.forEach(function (obj) {
+        obj.position.z += 220;
+        obj.target.position.z += 220;
+      });
+    } else if (roundNumber === 4) {
+      this.spotLights.forEach(function (obj) {
+        obj.position.z += 250;
+        obj.target.position.z += 250;
+      });
+    }
 
     this.spotLights = this.spotLights.filter(function (obj) {
       return obj.position.z < 0;
@@ -817,20 +882,20 @@ class Game {
 
 
     //camera.position.set(0, 1500, -1000);
-    if (round == 1) {
+    if (round === 1) {
       camera.position.set(cameraX, cameraY, cameraZ);
       camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
       window.camera = camera;
-    } else if (round == 2) {
+    } else if (round === 2) {
       camera.position.set(cameraX, cameraY, cameraZ);
       camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
       window.camera = camera;
-    } else if (round == 3) {
+    } else if (round === 3) {
 
       camera.position.set(cameraX, cameraY, cameraZ);
       camera.lookAt(new THREE.Vector3(defaultDestX, -1000, defaultDestZ));
       window.camera = camera;
-    } else if (round == 4) {
+    } else if (round === 4) {
       camera.position.set(cameraX, cameraY, cameraZ);
       camera.lookAt(new THREE.Vector3(defaultDestX, -1200, defaultDestZ));
       window.camera = camera;
@@ -848,7 +913,7 @@ class Game {
 
     // TODO: spotlight 처리를 어떻게하면 좋을까, PointLight랑 SpotLight을 섞어서 쓰면 될 것 같기도?
 
-        // 캐릭터 렌더링하기
+    // 캐릭터 렌더링하기
     loader = new THREE.GLTFLoader();
     loader.load(
         "./character/scene.gltf",
@@ -863,7 +928,9 @@ class Game {
           mixer = new THREE.AnimationMixer(gltf.scene);
           runningAction = mixer.clipAction(gltf.animations[0]);
           runningAction.play();
-          },
+          // paused = false;
+          // gameOver = false;
+        },
         undefined,
         function (error) {
           console.error(error);
@@ -905,56 +972,59 @@ class Game {
     fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
     createWord(0, 0, -8000, "Round " + round, 500);
 
-        // 커리큘럼 객체를 만들고 텍스트까지 매핑
-        for (let i = 10; i < 30; i++) {
-            createCurriculums(i * -5000, 0.2, 0.6, 0.7);
-        }
+    // 커리큘럼 객체를 만들고 텍스트까지 매핑
+    for (let i = 10; i < 30; i++) {
+      createCurriculums(i * -5000, 0.2, 0.6, 0.7);
     }
+    setTimeout(function () {
+      paused = false;
+      gameOver = false;
+    }, 4000);
+  }
 
 
-    roundOver(round) {
-        this.round = round;
-        if (round == 1) {
-            roundString = "The First Year Completed ";
-        } else if (round == 2) {
-            roundString = "The Second Year Completed ";
-        } else if (round == 3) {
-            roundString = "The Third Year Completed ";
-        } else if (round == 4) {
-            roundString = "The Last Year Completed ";
-        }
-
-        //의성) scene.remove를 하면 다 안지워져서 여러번 반복문을 돌리는 방식으로 구현
-        if (-5 < gameOverInt && gameOverInt <= 0) {
-            fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-            if(roundNumber==1 || roundNumber == 2) {
-                createWordStatic(0, 0, -8000, roundString, 500);
-            }else if(roundNumber==3)
-            {
-                createWordStatic(0, -2000, -7000, roundString, 500);
-            }
-            else if(roundNumber==4)
-            {
-                createWordStatic(0, -2100, -7000, roundString, 500);
-            }
-            round++;
-            cancelAnimationFrame(animation);
-            scene.children.forEach(function (obj) {
-                scene.remove(obj);
-            });
-            setTimeout(function () {
-                scene.children.forEach(function (obj) {
-                    scene.remove(obj);
-                });
-                inputkeyBoolean = true;
-                paused = true;
-                gameOverInt = 1;
-            }, 3000);
-        }
+  roundOver(round) {
+    this.round = round;
+    if (round === 1) {
+      roundString = "The First Year Completed ";
+    } else if (round === 2) {
+      roundString = "The Second Year Completed ";
+    } else if (round === 3) {
+      roundString = "The Third Year Completed ";
+    } else if (round === 4) {
+      roundString = "The Last Year Completed ";
     }
+    //의성) scene.remove를 하면 다 안지워져서 여러번 반복문을 돌리는 방식으로 구현
+    if (-5 < gameOverInt && gameOverInt <= 0) {
+      fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
+      if(roundNumber===1 || roundNumber === 2) {
+        createWordStatic(0, 0, -8000, roundString, 500);
+      }else if(roundNumber===3)
+      {
+        createWordStatic(0, -2000, -7000, roundString, 500);
+      }
+      else if(roundNumber===4)
+      {
+        createWordStatic(0, -2100, -7000, roundString, 500);
+      }
+      round++;
+      cancelAnimationFrame(animation);
+      scene.children.forEach(function (obj) {
+        scene.remove(obj);
+      });
+      setTimeout(function () {
+        scene.children.forEach(function (obj) {
+          scene.remove(obj);
+        });
+        inputkeyBoolean = true;
+        paused = true;
+        gameOverInt = 1;
+        }, 3000);
+    }
+  }
 
-    // 게임을 진행하는 동안 animate 안에서 반복적으로 실행될 함수
-    // 여기 안에서 충돌 관리, 라운드 관리, 점수관리를 하면 될 것 같다
+  // 게임을 진행하는 동안 animate 안에서 반복적으로 실행될 함수
+  // 여기 안에서 충돌 관리, 라운드 관리, 점수관리를 하면 될 것 같다
 
   update(){
     let objectHit = 0;
@@ -1048,8 +1118,8 @@ window.onload = function init() {
 
             document.getElementById("variable-content").style.visibility = "hidden";
             document.getElementById("controls").style.visibility = "hidden";
-            paused = false;
-            gameOver = false;
+            // paused = false;
+            // gameOver = false;
         } else {
             if (inputKey === p) {
                 paused = true;
@@ -1136,28 +1206,29 @@ window.onload = function init() {
 
     // 시각화하는 함수
     function animate() {
-        characterManager.update();
-        coinManager.update();
-        cameraManager.update();
-        cameraManager.rumble();
-        if (!paused) {
-            objectManager.update();
-            currManager.update();
-            lightManager.update();
-            gameManager.update();
-            if (-5 < gameOverInt && gameOverInt <= 0) {
-                gameManager.roundOver(roundNumber);
-                scene.children.forEach(function (obj) {
-                    scene.remove(obj);
-                });
-                cancelAnimationFrame(animation);
-            }
+      console.log(gameOverInt)
+      characterManager.update();
+      coinManager.update();
+      cameraManager.update();
+      cameraManager.rumble();
+      if (!paused) {
+        objectManager.update();
+        currManager.update();
+        lightManager.update();
+        gameManager.update();
+        if (-5 < gameOverInt && gameOverInt <= 0) {
+          gameManager.roundOver(roundNumber);
+          scene.children.forEach(function (obj) {
+            scene.remove(obj);
+          });
+          cancelAnimationFrame(animation);
         }
-        let delta = clock.getDelta();
-        if (mixer) mixer.update(delta);
-        if (coinMixer) coinMixer.update(delta);
-        renderer.render(scene, camera);
-        animation = requestAnimationFrame(animate);
+      }
+      let delta = clock.getDelta();
+      if (mixer) mixer.update(delta);
+      if (coinMixer) coinMixer.update(delta);
+      renderer.render(scene, camera);
+      animation = requestAnimationFrame(animate);
     }
 };
 
