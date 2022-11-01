@@ -635,7 +635,7 @@ class Curriculum {
   // 커리큘럼 오브젝트를 움직이는 함수
   update() {
     this.currs.forEach(function (obj) {
-      obj.position.z += 150;
+      obj.position.z += 150; /////////////////////////////////
     });
 
     this.currWords.forEach(function (obj) {
@@ -683,7 +683,7 @@ class Light {
       8 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)) + 0.1);
 
     this.spotLights.forEach(function (obj) {
-      obj.position.z += 150;
+      obj.position.z += 150; ///////////////////////////
       obj.target.position.z += 150; ///////////////////////////////////
     });
 
@@ -1069,6 +1069,7 @@ function createObjects(position, probability, minScale, maxScale) {
     }
   }
 }
+
 // 오브젝트를 생성하는 코드랑 비슷하게, 커리큘럼 오브젝트를 생성하는 코드
 function createCurriculums(position, probability, minScale, maxScale) {
   for (let lane = -2; lane <= 2; lane++) {
@@ -1083,6 +1084,7 @@ function createCurriculums(position, probability, minScale, maxScale) {
     }
   }
 }
+
 // createCurriculums에서 불리는 함수로, 생성된 커리큘럼 오브젝트 위에 글씨 만드는 코드
 function createWord(x, y, position, text, fontSize) {
   fontLoader.load(fontURL, (font) => {
