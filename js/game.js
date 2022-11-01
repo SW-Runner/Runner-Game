@@ -777,7 +777,7 @@ class Game {
             window.camera = camera;
         } else if (round == 4) {
             camera.position.set(cameraX, cameraY, cameraZ);
-            camera.lookAt(new THREE.Vector3(defaultDestX, 600, defaultDestZ));
+            camera.lookAt(new THREE.Vector3(defaultDestX, -1200, defaultDestZ));
             window.camera = camera;
         }
         // 광원추가하기
@@ -873,7 +873,16 @@ class Game {
         //의성) scene.remove를 하면 다 안지워져서 여러번 반복문을 돌리는 방식으로 구현
         if (-5 < gameOverInt && gameOverInt <= 0) {
             fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-            createWordStatic(0, 0, -8000, roundString, 500);
+            if(roundNumber==1 || roundNumber == 2) {
+                createWordStatic(0, 0, -8000, roundString, 500);
+            }else if(roundNumber==3)
+            {
+                createWordStatic(0, -2000, -7000, roundString, 500);
+            }
+            else if(roundNumber==4)
+            {
+                createWordStatic(0, -2100, -7000, roundString, 500);
+            }
             round++;
             cancelAnimationFrame(animation);
             scene.children.forEach(function (obj) {
