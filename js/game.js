@@ -565,10 +565,28 @@ class Objects {
     }
 
     // animate 함수 안에서 반복적으로 호출되며 오브젝트를 움직인다
+    /**
+     * 속도 변경하고 싶을때 roundspeed 1, 2, 3을 roundNumber에 따라 같은 속도 값으로 맞춰주면 된다
+     */
     update() {
-        this.objects.forEach(function (obj) {
-            obj.position.z += 600;
-        });
+        //roundspeed 1)라운드 별 object(장애물) 속도 설정
+        if (roundNumber == 1) {
+            this.objects.forEach(function (obj) {
+                obj.position.z += 150;
+            });
+        } else if (roundNumber == 2) {
+            this.objects.forEach(function (obj) {
+                obj.position.z += 200;
+            });
+        } else if (roundNumber == 3) {
+            this.objects.forEach(function (obj) {
+                obj.position.z += 220;
+            });
+        } else if (roundNumber == 4) {
+            this.objects.forEach(function (obj) {
+                obj.position.z += 250;
+            });
+        }
         this.objects = this.objects.filter(function (obj) {
             //의성
             return obj.position.z < 0;
@@ -578,6 +596,8 @@ class Objects {
             gameOverInt--;
         }
     }
+
+
 }
 
 // 오브젝트 관리 객체
@@ -616,13 +636,40 @@ class Curriculum {
 
     // 커리큘럼 오브젝트를 움직이는 함수
     update() {
-        this.currs.forEach(function (obj) {
-            obj.position.z += 100;
-        });
+        //roundspeed 2)라운드 별 커리큘럼 속도와 커리큘럼 word 속도
+        if (roundNumber == 1) {
+            this.currs.forEach(function (obj) {
+                obj.position.z += 150;
+            });
 
-        this.currWords.forEach(function (obj) {
-            obj.position.z += 100;
-        });
+            this.currWords.forEach(function (obj) {
+                obj.position.z += 150;
+            });
+        } else if (roundNumber == 2) {
+            this.currs.forEach(function (obj) {
+                obj.position.z += 200;
+            });
+
+            this.currWords.forEach(function (obj) {
+                obj.position.z += 200;
+            });
+        } else if (roundNumber == 3) {
+            this.currs.forEach(function (obj) {
+                obj.position.z += 220;
+            });
+
+            this.currWords.forEach(function (obj) {
+                obj.position.z += 220;
+            });
+        } else if (roundNumber == 4) {
+            this.currs.forEach(function (obj) {
+                obj.position.z += 250;
+            });
+
+            this.currWords.forEach(function (obj) {
+                obj.position.z += 250;
+            });
+        }
 
         this.currs = this.currs.filter(function (obj) {
             return obj.position.z < 0;
@@ -632,9 +679,6 @@ class Curriculum {
             return obj.position.z < 0;
         });
 
-        // if (this.currs.length == 0) {
-        //   gameOver = true;
-        // }
     }
 }
 
@@ -668,10 +712,29 @@ class Light {
         this.upLight.intensity =
             8 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)) + 0.1);
 
-        this.spotLights.forEach(function (obj) {
-            obj.position.z += 100;
-            obj.target.position.z += 100;
-        });
+        //roundspeed 3)
+        if (roundNumber == 1) {
+            this.spotLights.forEach(function (obj) {
+                obj.position.z += 150;
+                obj.target.position.z += 150;
+            });
+        } else if (roundNumber == 2) {
+            this.spotLights.forEach(function (obj) {
+                obj.position.z += 200;
+                obj.target.position.z += 200;
+            });
+        } else if (roundNumber == 3) {
+            this.spotLights.forEach(function (obj) {
+                obj.position.z += 220;
+                obj.target.position.z += 220;
+            });
+        } else if (roundNumber == 4) {
+            this.spotLights.forEach(function (obj) {
+                obj.position.z += 250;
+                obj.target.position.z += 250;
+            });
+        }
+
 
         this.spotLights = this.spotLights.filter(function (obj) {
             return obj.position.z < 0;
@@ -703,22 +766,16 @@ class Game {
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
             window.camera = camera;
-        }
-        else if(round == 2)
-        {
+        } else if (round == 2) {
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
             window.camera = camera;
-        }
-        else if(round==3)
-        {
+        } else if (round == 3) {
 
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, -1000, defaultDestZ));
             window.camera = camera;
-        }
-        else if(round==4)
-        {
+        } else if (round == 4) {
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, 600, defaultDestZ));
             window.camera = camera;
@@ -800,90 +857,6 @@ class Game {
         }
     }
 
-    initRoundDefault() {
-        round = 0;
-        let fogDistance = 40000;
-        scene.fog = new THREE.Fog(0xbadbe4, 1, fogDistance);
-        camera.position.set(cameraX, cameraY, cameraZ);
-        camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
-        window.camera = camera;
-
-        // 광원추가하기
-        lightManager.backLight.position.set(0, 0, -2000);
-        lightManager.upLight.position.set(0, 3000, -4000);
-        // hemisphereLight을 쓰면 그냥 그림자도 안생기고 캐릭터의 입체감은 좀 덜하다
-        // let light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
-        // scene.add(light);
-        // 포인트 라이트를 쓰면 촬영장에서 조명킨것처럼 그림자도 생기고, 빛이 덜 가는 부분에 윤곽선도 생겨서 좀 더 입체적으로 보인다
-        // 이 상황에서 코드를 실행시켜보면, pointlight를 써서 좌우로 레인을 옮기면 캐릭터가 어두워지는 것을 볼 수 있음,
-        scene.add(lightManager.backLight);
-        scene.add(lightManager.upLight);
-
-        // TODO: spotlight 처리를 어떻게하면 좋을까, PointLight랑 SpotLight을 섞어서 쓰면 될 것 같기도?
-
-        // 캐릭터 렌더링하기
-        loader = new THREE.GLTFLoader();
-        loader.load(
-            "./character/scene.gltf",
-            function (gltf) {
-                let running = gltf.scene.children[0];
-                // 캐릭터 크기 설정
-                running.scale.set(1.5, -4, 1.5);
-                // 캐릭터 위치 설정
-                running.position.set(0, 0, -4000);
-                scene.add(gltf.scene);
-                runningCharacter = running;
-                mixer = new THREE.AnimationMixer(gltf.scene);
-                runningAction = mixer.clipAction(gltf.animations[0]);
-                runningAction.play();
-            },
-            undefined,
-            function (error) {
-                console.error(error);
-            }
-        );
-
-        // 이펙트를 위한 동전 랜더링
-        loader.load(
-            "./coin/scene.gltf",
-            function (gltf) {
-                let spinning = gltf.scene.children[0];
-                // 동전 크기 설정
-                spinning.scale.set(10, 10, 10);
-                // 캐릭터 위치 설정
-                spinning.position.set(0, 480, -4000);
-                scene.add(gltf.scene);
-                coin = spinning;
-                coinMixer = new THREE.AnimationMixer(gltf.scene);
-                spinningAction = coinMixer.clipAction(gltf.animations[0]);
-                coin.visible = false;
-                spinningAction.play();
-            },
-            undefined,
-            function (error) {
-                console.log(error);
-            }
-        );
-
-        // ground 설정하기
-        let ground = createGround(4000, 20, 120000, Colors.olive, 0, -400, -60000);
-        scene.add(ground);
-
-        // 장애물 & 오브젝트 만들기
-        // TODO: 장애물 어떻게 만들어질지 정해야될듯
-        for (let i = 10; i < 50; i++) {
-            createObjects(i * -3000, 0.2, 0.6, 0.7);
-        }
-
-        // 텍스트 표현해보기
-        fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-        createWord(0, 0, -8000, "Round " + round, 500);
-
-        // 커리큘럼 객체를 만들고 텍스트까지 매핑
-        for (let i = 10; i < 30; i++) {
-            createCurriculums(i * -5000, 0.2, 0.6, 0.7);
-        }
-    }
 
     roundOver(round) {
         this.round = round;
