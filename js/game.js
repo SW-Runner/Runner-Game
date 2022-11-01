@@ -1,12 +1,24 @@
+let gameOverInt = 1;
+//라운드 종료시에 inputkey 다시 눌릴 수 있게 하는 변수
+let inputkeyBoolean = true;
+
 // 카메라 위치 설정
 // z 값이 커질 수록, 모니터에 가까워짐,
 // y 값이 커질 수록 위로 올라가고
 // x 값이 커질 수록 오른쪽으로 간다
-
 // html 캔버스
+
 let world;
 // 랜더러 오브젝트
 let renderer;
+//라운드 종료시 출력할 string
+let roundString;
+
+//전역 라운드 체크
+let roundNumber;
+
+//라운드 종료 확인
+let roundOverCheck = false;
 
 // animate을 멈추기 위한 변수
 let animation;
@@ -14,7 +26,8 @@ let animation;
 // gltf 모델 및 폰트를 띄우게 하기 위한 loader
 let loader;
 let fontLoader;
-let fontURL = "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json";
+let fontURL =
+    "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json";
 // 디폴트 카메라 위치
 const defaultX = 0;
 const defaultY = 1500;
@@ -97,6 +110,9 @@ const five = "5";
 const six = "6";
 const seven = "7";
 const eight = "8";
+
+const zero = "0";
+const spacebar = " ";
 
 // 중복 키 입력을 방지하기 위한 dictionary
 let allowedKeys = {};
@@ -201,19 +217,20 @@ class Character {
     }
   }
 }
+
 // 캐릭터 관리 객체 생성
 let characterManager = new Character();
 
 // 동전 애니메이션 관리 클래스
 // 동전 이동은 위 캐릭터 관리 클래스에서 하는데
 // 동전이 보여졌다가 사라지는 애니메이션을 이 클래스에서 관리한다
-class Coin{
-  constructor() {
-    this.jumpTime = 0.4
-    this.jumpHeight = 500;
-    this.isJumping = false;
-    this.queuedAction = [];
-  }
+class Coin {
+    constructor() {
+        this.jumpTime = 0.4;
+        this.jumpHeight = 500;
+        this.isJumping = false;
+        this.queuedAction = [];
+    }
 
   update() {
     let currentTime = new Date() / 1000;
@@ -228,22 +245,26 @@ class Coin{
       let jumpTimer = currentTime - this.jumpStartTime;
 
       if (jumpTimer > this.jumpTime) {
-        coin.position.y = 480+runningCharacter.position.y;
+        coin.position.y = 480 + runningCharacter.position.y;
         coin.visible = false;
         this.isJumping = false;
       } else {
         coin.visible = true;
-        coin.position.y = 480 + this.jumpHeight * Math.sin((1 / this.jumpTime) * Math.PI * jumpTimer) + runningCharacter.position.y;
+        coin.position.y =
+            480 +
+            this.jumpHeight *
+            Math.sin((1 / this.jumpTime) * Math.PI * jumpTimer) +
+            runningCharacter.position.y;
+        }
       }
     }
-  }
-
 }
 
 let coinManager = new Coin();
 
 // 카메라 변수
 let camera;
+
 // 카메라 관리하기 위한 클래스
 class Camera {
   constructor() {
@@ -527,9 +548,9 @@ class Camera {
     }
   }
 }
+
 // 카메라 이동을 위한 객체 생성
 let cameraManager = new Camera();
-
 
 // 오브젝트 관리를 위한 클래스
 // TODO: 이 클래스 안에 오브젝트랑 충돌 여부를 판단하는 코드도 들어가야될 것 같다, 충돌 여부 판단하는 코드의 결과를 밑에 게임 매니저가 사용해서 점수를 올리거나 낮추거나 하게하면 될듯
@@ -796,10 +817,24 @@ class Game {
 
 
     //camera.position.set(0, 1500, -1000);
-    camera.position.set(cameraX, cameraY, cameraZ);
-    camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
-    window.camera = camera;
+    if (round == 1) {
+      camera.position.set(cameraX, cameraY, cameraZ);
+      camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
+      window.camera = camera;
+    } else if (round == 2) {
+      camera.position.set(cameraX, cameraY, cameraZ);
+      camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
+      window.camera = camera;
+    } else if (round == 3) {
 
+      camera.position.set(cameraX, cameraY, cameraZ);
+      camera.lookAt(new THREE.Vector3(defaultDestX, -1000, defaultDestZ));
+      window.camera = camera;
+    } else if (round == 4) {
+      camera.position.set(cameraX, cameraY, cameraZ);
+      camera.lookAt(new THREE.Vector3(defaultDestX, -1200, defaultDestZ));
+      window.camera = camera;
+    }
     // 광원추가하기
     lightManager.backLight.position.set(0, 0, -2000);
     lightManager.upLight.position.set(0, 3000, -4000);
@@ -813,7 +848,7 @@ class Game {
 
     // TODO: spotlight 처리를 어떻게하면 좋을까, PointLight랑 SpotLight을 섞어서 쓰면 될 것 같기도?
 
-    // 캐릭터 렌더링하기
+        // 캐릭터 렌더링하기
     loader = new THREE.GLTFLoader();
     loader.load(
         "./character/scene.gltf",
@@ -828,14 +863,11 @@ class Game {
           mixer = new THREE.AnimationMixer(gltf.scene);
           runningAction = mixer.clipAction(gltf.animations[0]);
           runningAction.play();
-          paused = false;
-          gameOver = false;
-        },
+          },
         undefined,
         function (error) {
           console.error(error);
-        }
-    );
+        });
 
     // 이펙트를 위한 동전 랜더링
     loader.load(
@@ -865,38 +897,65 @@ class Game {
 
     // 장애물 & 오브젝트 만들기
     // TODO: 장애물 어떻게 만들어질지 정해야될듯
-    for (let i = 10; i < 20; i++) {
+    for (let i = 10; i < 50; i++) {
       createObjects(i * -3000, 0.2, 0.6, 0.7);
     }
 
     // 텍스트 표현해보기
     fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-    createWord(0, 0, -8000, "Round "+round,500);
+    createWord(0, 0, -8000, "Round " + round, 500);
 
-
-    // 커리큘럼 객체를 만들고 텍스트까지 매핑
-    for (let i = 10; i < 20; i++) {
-      createCurriculums(i * -5000, 0.2, 0.6, 0.7);
+        // 커리큘럼 객체를 만들고 텍스트까지 매핑
+        for (let i = 10; i < 30; i++) {
+            createCurriculums(i * -5000, 0.2, 0.6, 0.7);
+        }
     }
 
 
-  }
+    roundOver(round) {
+        this.round = round;
+        if (round == 1) {
+            roundString = "The First Year Completed ";
+        } else if (round == 2) {
+            roundString = "The Second Year Completed ";
+        } else if (round == 3) {
+            roundString = "The Third Year Completed ";
+        } else if (round == 4) {
+            roundString = "The Last Year Completed ";
+        }
 
-  roundOver(){
-    if (gameOver) {
-      scene.children.forEach(function (obj) {
-        console.log(obj);
-        scene.remove(obj);
-      });
+        //의성) scene.remove를 하면 다 안지워져서 여러번 반복문을 돌리는 방식으로 구현
+        if (-5 < gameOverInt && gameOverInt <= 0) {
+            fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
+            if(roundNumber==1 || roundNumber == 2) {
+                createWordStatic(0, 0, -8000, roundString, 500);
+            }else if(roundNumber==3)
+            {
+                createWordStatic(0, -2000, -7000, roundString, 500);
+            }
+            else if(roundNumber==4)
+            {
+                createWordStatic(0, -2100, -7000, roundString, 500);
+            }
+            round++;
+            cancelAnimationFrame(animation);
+            scene.children.forEach(function (obj) {
+                scene.remove(obj);
+            });
+            setTimeout(function () {
+                scene.children.forEach(function (obj) {
+                    scene.remove(obj);
+                });
+                inputkeyBoolean = true;
+                paused = true;
+                gameOverInt = 1;
+            }, 3000);
+        }
     }
-    cancelAnimationFrame(animation);
 
+    // 게임을 진행하는 동안 animate 안에서 반복적으로 실행될 함수
+    // 여기 안에서 충돌 관리, 라운드 관리, 점수관리를 하면 될 것 같다
 
-
-  }
-
-  // 게임을 진행하는 동안 animate 안에서 반복적으로 실행될 함수
-  // 여기 안에서 충돌 관리, 라운드 관리, 점수관리를 하면 될 것 같다
   update(){
     let objectHit = 0;
     let currHit = 0;
@@ -924,167 +983,182 @@ class Game {
     document.getElementById("score").innerHTML = this.score;
     document.getElementById("curr").innerHTML = showCurr;
   }
-
 }
 
 let gameManager = new Game();
 window.onload = function init() {
-  // HTML world랑 js 연결하기
-  world = document.getElementById("world");
-  // Renderer 설정하기
-  renderer = new THREE.WebGLRenderer({
-    alpha: true,
-    antialias: true,
-  });
+    // HTML world랑 js 연결하기
+    world = document.getElementById("world");
+    // Renderer 설정하기
+    renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: true,
+    });
 
-  renderer.setSize(world.clientWidth, world.clientHeight);
-  renderer.shadowMap.enabled = true;
-  world.appendChild(renderer.domElement);
-  // Scene 생성하기
-  scene = new THREE.Scene();
-  // Camera 생성하기
-  camera = new THREE.PerspectiveCamera(
+    renderer.setSize(world.clientWidth, world.clientHeight);
+    renderer.shadowMap.enabled = true;
+    world.appendChild(renderer.domElement);
+    // Scene 생성하기
+    scene = new THREE.Scene();
+    // Camera 생성하기
+    camera = new THREE.PerspectiveCamera(
         60,
         world.clientWidth / world.clientHeight,
         1,
         48000
     );
 
-  // 사용자로부터 입력받을 수 있게 설정
-  document.addEventListener("keydown", function (ev) {
-    let inputKey = ev.key;
-    console.log(inputKey);
-    // keydown이 되면 다시 그 입력을 처리하지 않게 false처리, keyup에서 true로 변경해준다.
-    if (allowedKeys[inputKey] !== false) {
-      allowedKeys[inputKey] = false;
+    // 사용자로부터 입력받을 수 있게 설정
+    document.addEventListener("keydown", function (ev) {
+        let inputKey = ev.key;
+        console.log(inputKey);
+        // keydown이 되면 다시 그 입력을 처리하지 않게 false처리, keyup에서 true로 변경해준다.
+        if (allowedKeys[inputKey] !== false) {
+            allowedKeys[inputKey] = false;
+        }
+
+        if (paused) {
+            if (inputKey === spacebar) {
+                //spacebar키 클릭시 : default로 1라운드부터 시작, spacebar로 다음 라운드 시작
+                //4라운드에서 spacebar 클릭시 더이상 게임 진행 불가
+                if (roundNumber == null) {
+                    roundNumber = 1;
+                    gameManager.initRound(roundNumber);
+                } else if (roundNumber <= 3) {
+                    roundNumber++;
+                    gameManager.initRound(roundNumber);
+                }
+            }
+            if (inputKey === one) {
+                roundNumber = 1;
+                gameManager.initRound(roundNumber);
+            }
+            if (inputKey === two) {
+                roundNumber = 2;
+                gameManager.initRound(roundNumber);
+            }
+            if (inputKey === three) {
+                roundNumber = 3;
+                gameManager.initRound(roundNumber);
+            }
+            if (inputKey === four) {
+                roundNumber = 4;
+                gameManager.initRound(roundNumber);
+            }
+
+            document.getElementById("variable-content").style.visibility = "hidden";
+            document.getElementById("controls").style.visibility = "hidden";
+            paused = false;
+            gameOver = false;
+        } else {
+            if (inputKey === p) {
+                paused = true;
+                // character.onPause();
+                document.getElementById("variable-content").style.visibility =
+                    "visible";
+                document.getElementById("variable-content").innerHTML =
+                    "Game is paused. Press enter to resume.";
+                runningAction.stop();
+                spinningAction.stop();
+            }
+            // 캐릭터 애니메이션을 위한 인풋 매핑
+            if (inputKey === up && !paused) {
+                characterManager.queuedMove.push("jump");
+            }
+            if (inputKey === left && !paused) {
+                characterManager.queuedMove.push("left");
+            }
+            if (inputKey === right && !paused) {
+                characterManager.queuedMove.push("right");
+            }
+            // 시점 변화를 위한 인풋 매핑
+            if (inputKey === one && !paused) {
+                cameraManager.queuedChange.push(one);
+            }
+            if (inputKey === two && !paused) {
+                cameraManager.queuedChange.push(two);
+            }
+            if (inputKey === three && !paused) {
+                cameraManager.queuedChange.push(three);
+            }
+            if (inputKey === four && !paused) {
+                cameraManager.queuedChange.push(four);
+            }
+            if (inputKey === five && !paused) {
+                cameraManager.queuedChange.push(five);
+            }
+            if (inputKey === six && !paused) {
+                cameraManager.queuedChange.push(six);
+            }
+            if (inputKey === seven && !paused) {
+                cameraManager.queuedChange.push(seven);
+            }
+            if (inputKey === eight && !paused) {
+                cameraManager.queuedChange.push(eight);
+            }
+            // 흔들거리는 이펙트를 위한 인풋 매핑
+            if (inputKey === r && !paused) {
+                console.log(
+                    "rotation" +
+                    camera.rotation.x +
+                    " " +
+                    camera.rotation.y +
+                    " " +
+                    camera.rotation.z
+                );
+                cameraManager.rumbleQueue.push(r);
+            }
+            if (inputKey === i && !paused) {
+                coinManager.queuedAction.push(i);
+            }
+            if (inputKey === v && !paused) {
+                document.getElementById("variable-content").style.visibility =
+                    "visible";
+                document.getElementById("controls").style.visibility = "visible";
+                document.getElementById("variable-content").innerHTML =
+                    "Press 1~4 to select a round and begin";
+                // gameManager.initRound();
+                gameOver = true;
+                paused = true;
+                // gameManager.roundOver();
+            }
+        }
+    });
+
+    document.addEventListener("keyup", function (e) {
+        allowedKeys[e.key] = true;
+    });
+    document.addEventListener("focus", function (e) {
+        allowedKeys = {};
+    });
+
+    animate();
+
+    // 시각화하는 함수
+    function animate() {
+        characterManager.update();
+        coinManager.update();
+        cameraManager.update();
+        cameraManager.rumble();
+        if (!paused) {
+            objectManager.update();
+            currManager.update();
+            lightManager.update();
+            gameManager.update();
+            if (-5 < gameOverInt && gameOverInt <= 0) {
+                gameManager.roundOver(roundNumber);
+                scene.children.forEach(function (obj) {
+                    scene.remove(obj);
+                });
+                cancelAnimationFrame(animation);
+            }
+        }
+        let delta = clock.getDelta();
+        if (mixer) mixer.update(delta);
+        if (coinMixer) coinMixer.update(delta);
+        renderer.render(scene, camera);
+        animation = requestAnimationFrame(animate);
     }
-    if (paused) {
-      if (inputKey === one) {
-        gameManager.initRound(1);
-      }
-      if (inputKey === two) {
-        gameManager.initRound(2);
-      }
-      if (inputKey === three) {
-        gameManager.initRound(3);
-      }
-      if (inputKey === four) {
-        gameManager.initRound(4);
-      }
-
-      document.getElementById("variable-content").style.visibility = "hidden";
-      document.getElementById("controls").style.visibility = "hidden";
-    } else {
-      if (inputKey === p) {
-        paused = true;
-        // character.onPause();
-        document.getElementById("variable-content").style.visibility =
-          "visible";
-        document.getElementById("variable-content").innerHTML =
-          "Game is paused. Press enter to resume.";
-        runningAction.stop();
-        spinningAction.stop();
-      }
-      // 캐릭터 애니메이션을 위한 인풋 매핑
-      if (inputKey === up && !paused) {
-        characterManager.queuedMove.push("jump");
-      }
-      if (inputKey === left && !paused) {
-        characterManager.queuedMove.push("left");
-      }
-      if (inputKey === right && !paused) {
-        characterManager.queuedMove.push("right");
-      }
-      // 시점 변화를 위한 인풋 매핑
-      if (inputKey === one && !paused) {
-        cameraManager.queuedChange.push(one);
-      }
-      if (inputKey === two && !paused) {
-        cameraManager.queuedChange.push(two);
-      }
-      if (inputKey === three && !paused) {
-        cameraManager.queuedChange.push(three);
-      }
-      if (inputKey === four && !paused) {
-        cameraManager.queuedChange.push(four);
-      }
-      if (inputKey === five && !paused) {
-        cameraManager.queuedChange.push(five);
-      }
-      if (inputKey === six && !paused) {
-        cameraManager.queuedChange.push(six);
-      }
-      if (inputKey === seven && !paused) {
-        cameraManager.queuedChange.push(seven);
-      }
-      if (inputKey === eight && !paused) {
-        cameraManager.queuedChange.push(eight);
-      }
-      // 흔들거리는 이펙트를 위한 인풋 매핑
-      if (inputKey === r && !paused) {
-        console.log(
-          "rotation" +
-            camera.rotation.x +
-            " " +
-            camera.rotation.y +
-            " " +
-            camera.rotation.z
-        );
-        cameraManager.rumbleQueue.push(r);
-      }
-      if (inputKey === i && !paused) {
-        coinManager.queuedAction.push(i);
-      }
-      if (inputKey === v && !paused) {
-        document.getElementById("variable-content").style.visibility = "visible";
-        document.getElementById("controls").style.visibility = "visible";
-        document.getElementById("variable-content").innerHTML = "Press 1~4 to select a round and begin";
-        gameOver = true;
-        paused = true;
-      }
-      // 로그 위한 인풋 매핑
-      if (inputKey === l && !paused) {
-        Object.keys(objectManager.objectCollision).forEach(function (value) {
-          console.log(value + " : " + objectManager.objectCollision[value]);
-        });
-        Object.keys(currManager.currCollision).forEach(function (value) {
-          console.log(value + " : " + currManager.currCollision[value]);
-        });
-      }
-
-    }
-  });
-
-  document.addEventListener("keyup", function (e) {
-    allowedKeys[e.key] = true;
-  });
-  document.addEventListener("focus", function (e) {
-    allowedKeys = {};
-  });
-
-  animate();
-  // 시각화하는 함수
-  function animate() {
-    characterManager.update();
-    coinManager.update();
-    cameraManager.update();
-    cameraManager.rumble();
-    gameManager.roundOver();
-    if (!paused) {
-      objectManager.update();
-      currManager.update();
-      lightManager.update();
-      gameManager.update();
-
-    }
-    let delta = clock.getDelta();
-    if (mixer) mixer.update(delta);
-    if (coinMixer) coinMixer.update(delta);
-    renderer.render(scene, camera);
-    animation = requestAnimationFrame(animate);
-  }
-
-
 };
 
 // lane 만드는 function
@@ -1197,4 +1271,32 @@ function createSpotLight(x, y, position) {
   scene.add(spotLight.target);
   scene.add(spotLight);
   lightManager.spotLights.push(spotLight);
+}
+//움직이는 글씨가 아닌 정적으로 띄워주는 글자 생성 함수
+function createWordStatic(x, y, position, text, fontSize) {
+  fontLoader.load(fontURL, (font) => {
+    // 쓸 글씨
+    let fontGeo = new THREE.TextGeometry(text, {
+      font: font,
+      size: fontSize, // 글씨 크기
+      height: 100, // 글씨 두께
+      curveSegments: 12,
+    });
+    // 효과를 위한 코드
+    fontGeo.computeBoundingBox();
+    let xMid = -0.5 * (fontGeo.boundingBox.max.x - fontGeo.boundingBox.min.x);
+    fontGeo.translate(xMid, 0, 0);
+    // 글씨 색 지정
+    let fontMat = new THREE.MeshBasicMaterial({
+      color: 0x5f9df7,
+      wireframe: true,
+    });
+    // 글씨 오브젝트 생성
+    let textMesh = new THREE.Mesh(fontGeo, fontMat);
+    // 글씨 위치 지정
+    textMesh.position.set(x, y, position);
+    // 씬에 추가
+    scene.add(textMesh);
+    // currManager.currWords.push(textMesh);
+  });
 }
