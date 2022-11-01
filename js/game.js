@@ -984,6 +984,10 @@ class Game {
 
 
   roundOver(round) {
+    document.getElementById("curr").innerText = "";
+    currManager.currWordDict = {};
+    currManager.currCollision = {};
+    objectManager.objectCollision = {};
     this.round = round;
     if (round === 1) {
       roundString = "The First Year Completed ";
