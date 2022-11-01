@@ -735,7 +735,6 @@ class Light {
             });
         }
 
-
         this.spotLights = this.spotLights.filter(function (obj) {
             return obj.position.z < 0;
         });
@@ -771,7 +770,6 @@ class Game {
             camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
             window.camera = camera;
         } else if (round == 3) {
-
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, -1000, defaultDestZ));
             window.camera = camera;
@@ -947,6 +945,10 @@ window.onload = function init() {
                     gameManager.initRound(roundNumber);
                 } else if (roundNumber <= 3) {
                     roundNumber++;
+                    if(inputKey === spacebar) {
+                      console.log("one more!")
+                      
+                    }
                     gameManager.initRound(roundNumber);
                 }
             }
