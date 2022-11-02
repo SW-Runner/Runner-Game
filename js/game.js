@@ -890,8 +890,7 @@ class Game {
     this.score = 0;
     this.roundScore = 0;
     this.collision = false;
-    // this.roundScores = [0,0,0,0];
-    // this.round = 1;
+
   }
 
   // currManagaer랑 objectManager 딕셔너리 비우는 코드 추가해야한다
@@ -998,6 +997,7 @@ class Game {
     // 텍스트 표현해보기
     fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
     createWord(0, 0, -8000, "Round " + round, 500);
+
     // 커리큘럼 객체를 만들고 텍스트까지 매핑
     for (let i = 10; i < 10 + currLenghth; i++) {
       createCurriculums(i * -5000, 0.2, 0.6, 0.7);
@@ -1060,12 +1060,9 @@ class Game {
   update(){
     let objectHit = 0;
     let currHit = 0;
-    // let display = document.getElementById("curr");
+
     let showCurr = "";
-    // let curr = document.createElement('div');
-    // for (const element of displayCurr.children) {
-    //   element.remove();
-    // }
+
     // 충돌 여부를 확인하는 코드를 돌려서 충돌한 커리큘럼, 오브젝트들 최신화
     objectManager.collisionCheck();
     currManager.collisionCheck();
@@ -1077,17 +1074,12 @@ class Game {
     });
     Object.keys(currManager.currCollision).forEach(function (value) {
       if (currManager.currCollision[value]) {
-        // const newCurr = document.createElement('p');
-        // const newCurr = document.createTextNode(currManager.currWordDict[value]);
-        // newCurr.innerText = currManager.currWordDict[value];
-        // curr.appendChild(newCurr);
         showCurr +=currManager.currWordDict[value]+"\n";
         currHit += 1;
       }
     });
-    // display.appendChild(curr);
-    // curr.remove();
-    // this.score =
+
+    this.score = (objectHit + currHit) * 10;
     // 점수 화면에 반영하기
     if (objectManager.objects.length === 0) {
       this.roundScore = 0;
@@ -1105,16 +1097,24 @@ let gameManager = new Game();
 window.onload = function init() {
     // HTML world랑 js 연결하기
     world = document.getElementById("world");
-    explain1 = document.getElementById("explain1");
-    explain2 = document.getElementById("explain2");
-    explain3 = document.getElementById("explain3");
-    explain4 = document.getElementById("explain4");
+    explain11 = document.getElementById("explain11");
+    explain21 = document.getElementById("explain21");
+    explain31 = document.getElementById("explain31");
+    explain41 = document.getElementById("explain41");
+    explain12 = document.getElementById("explain12");
+    explain22 = document.getElementById("explain22");
+    explain32 = document.getElementById("explain32");
+    explain42 = document.getElementById("explain42");
 
-    explain1.style.display = 'none';
-    explain2.style.display = 'none';
-    explain3.style.display = 'none';
-    explain4.style.display = 'none';
-    
+    explain11.style.display = 'none';
+    explain21.style.display = 'none';
+    explain31.style.display = 'none';
+    explain41.style.display = 'none';
+    explain12.style.display = 'none';
+    explain22.style.display = 'none';
+    explain32.style.display = 'none';
+    explain42.style.display = 'none';
+
     // Renderer 설정하기
     renderer = new THREE.WebGLRenderer({
         alpha: true,
@@ -1145,38 +1145,62 @@ window.onload = function init() {
 
         if (paused) {
           if (inputKey === spacebar) {
+            console.log("Count!" + count);
             count++;
-            if(count === 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
-              console.log("Count" + count);
+            if(count == 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
+              console.log("Count!" + count);
               if (roundNumber == null) {
                   roundNumber = 1;
                   gameManager.initRound(roundNumber);
               } 
               else if (roundNumber <= 4) {
-                if(roundNumber===1) {
-                  explain1.style.display = 'block';
-                  roundNumber++;
+                if(roundNumber==1) {
+                  explain11.style.display = 'block';
                 }
-                else if(roundNumber===2) {
-                  explain2.style.display = 'block';
-                  roundNumber++;
+                else if(roundNumber==2) {
+                  explain21.style.display = 'block';
                 }
-                else if(roundNumber===3){
-                  explain3.style.display = 'block';
-                  roundNumber++;
+                else if(roundNumber==3){
+                  explain31.style.display = 'block';
                 }
-                else if(roundNumber===4){
-                  explain4.style.display = 'block';
-                }                
+                else if(roundNumber==4){
+                  explain41.style.display = 'block';
+                }
               }
             }
-            if(count === 2) { //설명 지우고 다음 라운드 넘어가기
-              console.log("Count" + count);
-              explain1.style.display = 'none';
-              explain2.style.display = 'none';
-              explain3.style.display = 'none';
-              explain4.style.display = 'none';
-              if(roundNumber!==4){
+
+            else if(count == 2) { //첫번째 설명 지우고 두번째 설명 띄우기
+              console.log("Count!!" + count);
+              explain11.style.display = 'none';
+              explain21.style.display = 'none';
+              explain31.style.display = 'none';
+              explain41.style.display = 'none';
+
+              if(roundNumber==1) {
+                explain12.style.display = 'block';
+                roundNumber++;
+              }
+              else if(roundNumber==2) {
+                explain22.style.display = 'block';
+                roundNumber++;
+              }
+              else if(roundNumber==3){
+                explain32.style.display = 'block';
+                roundNumber++;
+              }
+              else if(roundNumber==4){
+                explain42.style.display = 'block';
+                roundNumber++;
+              }
+            }
+
+            else if(count == 3) { //두번째 설명 지우고 다음 라운드 시작
+              console.log("Count!!" + count);
+              explain12.style.display = 'none';
+              explain22.style.display = 'none';
+              explain32.style.display = 'none';
+              explain42.style.display = 'none';
+              if(roundNumber!==5){
                 gameManager.initRound(roundNumber);
               }              
               count = 0;
@@ -1188,18 +1212,22 @@ window.onload = function init() {
             if (inputKey === one) {
                 roundNumber = 1;
                 gameManager.initRound(roundNumber);
+                count = 0;
             }
             if (inputKey === two) {
                 roundNumber = 2;
                 gameManager.initRound(roundNumber);
+                count = 0;
             }
             if (inputKey === three) {
                 roundNumber = 3;
                 gameManager.initRound(roundNumber);
+                count = 0;
             }
             if (inputKey === four) {
                 roundNumber = 4;
                 gameManager.initRound(roundNumber);
+                count = 0;
             }
 
             document.getElementById("variable-content").style.visibility = "hidden";
@@ -1292,7 +1320,7 @@ window.onload = function init() {
 
     // 시각화하는 함수
     function animate() {
-      console.log(gameOverInt)
+      // console.log(gameOverInt)
       characterManager.update();
       coinManager.update();
       cameraManager.update();
@@ -1303,8 +1331,6 @@ window.onload = function init() {
         lightManager.update();
         gameManager.update();
         if (-5 < gameOverInt && gameOverInt <= 0) {
-          // gameManager.roundScores[gameManager.round-1] = this.score;
-          // gameManager.score = gameManager.roundScore;
           gameManager.roundOver(roundNumber);
           scene.children.forEach(function (obj) {
             scene.remove(obj);
