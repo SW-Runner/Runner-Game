@@ -2,6 +2,7 @@ let gameOverInt = 1;
 //라운드 종료시에 inputkey 다시 눌릴 수 있게 하는 변수
 let inputkeyBoolean = true;
 let SWcurrNameList
+let trackId;
 // 카메라 위치 설정
 // z 값이 커질 수록, 모니터에 가까워짐,
 // y 값이 커질 수록 위로 올라가고
@@ -14,6 +15,36 @@ const SWcurrName3 = ["Mobile\nProgramming", "Software\nEngineering", "Software I
 const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCourse", "Graduation\nProjectsⅢ", "Data Management\nR&D Lab", "Chatbot\nR&D Lab", "system Architecture\nR&D Lab", "Human-Computer\nInteraction", "Advanced Topics\nin Software", "\nMarketing"]; // 10
 const otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
 
+
+// const generalTrack3 = [
+//     "Data\nScience",
+//     "Introduction\nto All",
+// ];
+//
+// const generalTrack4 = [
+//     "Cloud Computing\nSystem",
+//     "Cyber\nSecurity"
+// ];
+
+const dataTrack3 = [
+    "Data\nScience",
+    "Machine\nLearning"
+]
+
+const dataTrack4 = [
+    "Deep\nLearning",
+    "Database2"
+]
+
+const sensorTrack3 = [
+    "Sensor and Wireless\nSensor Networks",
+    "Drones and\nRobotics"
+];
+
+const sensorTrack4 = [
+    "Embedded\nSystems",
+    "VR and\nVR"
+]
 let currLenghth;
 let world;
 // 랜더러 오브젝트
@@ -911,24 +942,20 @@ class Game {
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
             window.camera = camera;
-            currLenghth = SWcurrName1.length;
 
         } else if (round === 2) {
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
             window.camera = camera;
-            currLenghth = SWcurrName2.length;
         } else if (round === 3) {
 
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, -1000, defaultDestZ));
             window.camera = camera;
-            currLenghth = SWcurrName3.length;
         } else if (round === 4) {
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, -1200, defaultDestZ));
             window.camera = camera;
-            currLenghth = SWcurrName4.length;
         }
         // 광원추가하기
         lightManager.backLight.position.set(0, 0, -2000);
@@ -1006,7 +1033,7 @@ class Game {
         //의성)
         shuffleArray(otherCurrName);
         let otherCurrArray = otherCurrName.slice(0, 5);
-        console.log(otherCurrArray);
+
 
 
         if (roundNumber === 1) {
@@ -1016,14 +1043,28 @@ class Game {
             SWcurrNameList = [...SWcurrName2, ...otherCurrArray];
             shuffleArray(SWcurrNameList)
         } else if (roundNumber === 3) {
-            SWcurrNameList = [...SWcurrName3, ...otherCurrArray];
-            shuffleArray(SWcurrNameList)
+            if (trackId === "bigdata") {
+                SWcurrNameList = [...SWcurrName3, ...otherCurrArray, ...dataTrack3];
+                shuffleArray(SWcurrNameList)
+            } else if (trackId === "smart") {
+                SWcurrNameList = [...SWcurrName3, ...otherCurrArray, ...sensorTrack3];
+                shuffleArray(SWcurrNameList)
+            }
+
         } else if (roundNumber === 4) {
-            SWcurrNameList = [...SWcurrName4, ...otherCurrArray];
-            shuffleArray(SWcurrNameList)
+            if (trackId === "bigdata") {
+                SWcurrNameList = [...SWcurrName4, ...otherCurrArray, ...dataTrack4];
+                shuffleArray(SWcurrNameList)
+            } else if (trackId === "smart") {
+                SWcurrNameList = [...SWcurrName4, ...otherCurrArray, ...sensorTrack4];
+                shuffleArray(SWcurrNameList)
+            }
+
         }
 
-        for (let i = 10; i < 10 +5+ currLenghth; i++) {
+        currLenghth = SWcurrNameList.length
+
+        for (let i = 10; i < 10 + currLenghth; i++) {
             createCurriculums(i * -5000, 0.2, 0.6, 0.7);
         }
         setTimeout(function () {
@@ -1071,7 +1112,7 @@ class Game {
                 inputkeyBoolean = true;
                 paused = true;
                 gameOverInt = 1;
-                currManager.index =0
+                currManager.index = 0
             }, 3000);
         }
     }
@@ -1200,58 +1241,50 @@ window.onload = function init() {
                     explain31.style.display = 'none';
                     explain41.style.display = 'none';
 
-              if(roundNumber==1) {
-                explain12.style.display = 'block';
-                roundNumber++;
-              }
-              else if(roundNumber==2) {
-                explain22.style.display = 'block';
-                roundNumber++;
-              }
-              else if(roundNumber==3){
-                explain32.style.display = 'block';
-                roundNumber++;
-              }
-              else if(roundNumber==4){
-                explain42.style.display = 'block';
-                roundNumber++;
-              }
-            }
-
-            else if(count == 3) { //두번째 설명 지우고 다음 라운드 시작
-              console.log("Count!!" + count);
-              explain12.style.display = 'none';
-              explain22.style.display = 'none';
-              explain32.style.display = 'none';
-              explain42.style.display = 'none';
-
-              if(roundNumber==3) {
-                console.log();
-
-                var tracklist = document.getElementById("tracklist");
-                tracklist.style.display = 'block';
-                var track = document.getElementsByName('track');
-                var trackChoice; // 여기에 선택된 radio 버튼의 값이 담기게 된다.
-                for(var i=0; i<3; i++) {
-                  console.log(11);
-                    if(track[i].checked) { //체크 되면
-                        trackChoice = track[i].value;
-                        console.log("트랙: " + trackChoice)
-                        //해당 트랙으로 initRound(3)
-                        count=0;
-                        gameManager.initRound(roundNumber); //임시방편
+                    if (roundNumber == 1) {
+                        explain12.style.display = 'block';
+                        roundNumber++;
+                    } else if (roundNumber == 2) {
+                        explain22.style.display = 'block';
+                        roundNumber++;
+                    } else if (roundNumber == 3) {
+                        explain32.style.display = 'block';
+                        roundNumber++;
+                    } else if (roundNumber == 4) {
+                        explain42.style.display = 'block';
+                        roundNumber++;
                     }
+                } else if (count == 3) { //두번째 설명 지우고 다음 라운드 시작
+                    console.log("Count!!" + count);
+                    explain12.style.display = 'none';
+                    explain22.style.display = 'none';
+                    explain32.style.display = 'none';
+                    explain42.style.display = 'none';
+
+                    if (roundNumber == 3) {
+                        var tracklist = document.getElementById("tracklist");
+                        tracklist.style.display = "block";
+                        var track = document.getElementsByName("track");
+                        var trackChoice; // 여기에 선택된 radio 버튼의 값이 담기게 된다.
+                        const radios = document.querySelectorAll(
+                            "input[type=radio][name=track]"
+                        );
+                        radios.forEach((radio) => {
+                            radio.addEventListener("change", (event) => {
+                                trackId = event.currentTarget.value;
+                                console.log("track : " + trackId);
+                                count = 0;
+                                tracklist.style.display = "none";
+                                gameManager.initRound(roundNumber); //임시방편
+                            });
+                        });
+                    } else if (roundNumber !== 5) {
+                        gameManager.initRound(roundNumber);
+                    }
+                    count = 0;
+
                 }
-              }
-
-
-              else if(roundNumber!==5){
-                gameManager.initRound(roundNumber);
-              }
-              count = 0;
-
             }
-          }
 
 
             if (inputKey === one) {
