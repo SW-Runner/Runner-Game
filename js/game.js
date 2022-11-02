@@ -23,6 +23,9 @@ let roundOverCheck = false;
 // animate을 멈추기 위한 변수
 let animation;
 
+//설명창 넘어가기 위한 변수
+let count = 0;  
+
 // gltf 모델 및 폰트를 띄우게 하기 위한 loader
 let loader;
 let fontLoader;
@@ -908,6 +911,16 @@ let gameManager = new Game();
 window.onload = function init() {
     // HTML world랑 js 연결하기
     world = document.getElementById("world");
+    explain1 = document.getElementById("explain1");
+    explain2 = document.getElementById("explain2");
+    explain3 = document.getElementById("explain3");
+    explain4 = document.getElementById("explain4");
+
+    explain1.style.display = 'none';
+    explain2.style.display = 'none';
+    explain3.style.display = 'none';
+    explain4.style.display = 'none';
+    
     // Renderer 설정하기
     renderer = new THREE.WebGLRenderer({
         alpha: true,
@@ -937,21 +950,47 @@ window.onload = function init() {
         }
 
         if (paused) {
-            if (inputKey === spacebar) {
-                //spacebar키 클릭시 : default로 1라운드부터 시작, spacebar로 다음 라운드 시작
-                //4라운드에서 spacebar 클릭시 더이상 게임 진행 불가
-                if (roundNumber == null) {
-                    roundNumber = 1;
-                    gameManager.initRound(roundNumber);
-                } else if (roundNumber <= 3) {
-                    roundNumber++;
-                    if(inputKey === spacebar) {
-                      console.log("one more!")
-                      
-                    }
-                    gameManager.initRound(roundNumber);
+          if (inputKey === spacebar) {
+            count++;
+            if(count == 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
+              console.log("Count" + count);
+              if (roundNumber == null) {
+                  roundNumber = 1;
+                  gameManager.initRound(roundNumber);
+              } 
+              else if (roundNumber <= 4) {
+                if(roundNumber==1) {
+                  explain1.style.display = 'block';
+                  roundNumber++;
                 }
+                else if(roundNumber==2) {
+                  explain2.style.display = 'block';
+                  roundNumber++;
+                }
+                else if(roundNumber==3){
+                  explain3.style.display = 'block';
+                  roundNumber++;
+                }
+                else if(roundNumber==4){
+                  explain4.style.display = 'block';
+                }                
+              }
             }
+            if(count == 2) { //설명 지우고 다음 라운드 넘어가기
+              console.log("Count" + count);
+              explain1.style.display = 'none';
+              explain2.style.display = 'none';
+              explain3.style.display = 'none';
+              explain4.style.display = 'none';
+              if(roundNumber!==4){
+                gameManager.initRound(roundNumber);
+              }              
+              count = 0;
+            }
+          }
+
+
+
             if (inputKey === one) {
                 roundNumber = 1;
                 gameManager.initRound(roundNumber);
@@ -973,6 +1012,7 @@ window.onload = function init() {
             document.getElementById("controls").style.visibility = "hidden";
             paused = false;
             gameOver = false;
+          
         } else {
             if (inputKey === p) {
                 paused = true;
