@@ -1053,6 +1053,7 @@ class Game {
         inputkeyBoolean = true;
         paused = true;
         gameOverInt = 1;
+        currManager.index = 0;
         }, 3000);
     }
   }
@@ -1345,22 +1346,22 @@ function createGround(dx, dy, dz, map, x, y, z, notFlatShading) {
   const materials = [
     new THREE.MeshBasicMaterial({
       map: loader.load(
-          "https://images.pexels.com/photos/13644281/pexels-photo-13644281.jpeg"
+          "/res/lane.png"
       ),
     }),
     new THREE.MeshBasicMaterial({
       map: loader.load(
-          "https://images.pexels.com/photos/13644281/pexels-photo-13644281.jpeg"
+          "/res/lane.png"
       ),
     }),
     new THREE.MeshBasicMaterial({
       map: loader.load(
-          "https://images.pexels.com/photos/13644281/pexels-photo-13644281.jpeg"
+          "/res/lane.png"
       ),
     }),
     new THREE.MeshBasicMaterial({
       map: loader.load(
-          "https://images.pexels.com/photos/13644281/pexels-photo-13644281.jpeg"
+          "/res/lane.png"
       ),
     }),
   ];
