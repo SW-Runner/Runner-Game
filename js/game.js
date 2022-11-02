@@ -1003,6 +1003,26 @@ class Game {
         fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
         createWord(0, 0, -8000, "Round " + round, 500);
         // 커리큘럼 객체를 만들고 텍스트까지 매핑
+        //의성)
+        shuffleArray(otherCurrName);
+        let otherCurrArray = otherCurrName.slice(0, 5);
+        console.log(otherCurrArray);
+
+
+        if (roundNumber === 1) {
+            SWcurrNameList = [...SWcurrName1, ...otherCurrArray];
+            shuffleArray(SWcurrNameList)
+        } else if (roundNumber === 2) {
+            SWcurrNameList = [...SWcurrName2, ...otherCurrArray];
+            shuffleArray(SWcurrNameList)
+        } else if (roundNumber === 3) {
+            SWcurrNameList = [...SWcurrName3, ...otherCurrArray];
+            shuffleArray(SWcurrNameList)
+        } else if (roundNumber === 4) {
+            SWcurrNameList = [...SWcurrName4, ...otherCurrArray];
+            shuffleArray(SWcurrNameList)
+        }
+
         for (let i = 10; i < 10 +5+ currLenghth; i++) {
             createCurriculums(i * -5000, 0.2, 0.6, 0.7);
         }
@@ -1206,7 +1226,7 @@ window.onload = function init() {
               explain42.style.display = 'none';
 
               if(roundNumber==3) {
-                console.log(00);
+                console.log();
 
                 var tracklist = document.getElementById("tracklist");
                 tracklist.style.display = 'block';
@@ -1345,7 +1365,6 @@ window.onload = function init() {
 
     // 시각화하는 함수
     function animate() {
-        console.log(gameOverInt)
         characterManager.update();
         coinManager.update();
         cameraManager.update();
@@ -1424,24 +1443,6 @@ function createObjects(position, probability, minScale, maxScale) {
 // 오브젝트를 생성하는 코드랑 비슷하게, 커리큘럼 오브젝트를 생성하는 코드
 function createCurriculums(position, probability, minScale, maxScale) {
 
-    shuffleArray(otherCurrName);
-    let otherCurrArray = otherCurrName.slice(0, 5);
-    console.log(otherCurrArray);
-
-
-    if (roundNumber === 1) {
-        SWcurrNameList = [...SWcurrName1, ...otherCurrArray];
-        shuffleArray(SWcurrNameList)
-    } else if (roundNumber === 2) {
-        SWcurrNameList = [...SWcurrName2, ...otherCurrArray];
-        shuffleArray(SWcurrNameList)
-    } else if (roundNumber === 3) {
-        SWcurrNameList = [...SWcurrName3, ...otherCurrArray];
-        shuffleArray(SWcurrNameList)
-    } else if (roundNumber === 4) {
-        SWcurrNameList = [...SWcurrName4, ...otherCurrArray];
-        shuffleArray(SWcurrNameList)
-    }
     let lane = Math.floor(Math.random() * 4) - 2
 
     let scale = minScale + (maxScale - minScale) * Math.random();
@@ -1456,9 +1457,7 @@ function createCurriculums(position, probability, minScale, maxScale) {
     createSpotLight(lane * 800, 100, position);
     createWord(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
     currManager.index += 1;
-    console.log(roundNumber, "roundNumber");
-    console.log("index", currManager.index);
-    console.log("SWcurrNameList[currManager.index]", SWcurrNameList[currManager.index]);
+
 
 }
 
