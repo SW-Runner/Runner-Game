@@ -163,7 +163,7 @@ td:nth-child(2) {
     position: absolute;
     left: 50%;
     top: 50%;
-    display: inline-block;
+    display: none;
     transform: translate(-50%, -50%);
     /* width: 1000px; */
     padding-top: 15px;

@@ -1171,6 +1171,7 @@ window.onload = function init() {
               if(roundNumber!==5){
                 gameManager.initRound(roundNumber);
               }              
+              
               count = 0;
             }
           }
