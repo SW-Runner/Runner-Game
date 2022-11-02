@@ -1,13 +1,20 @@
 let gameOverInt = 1;
 //라운드 종료시에 inputkey 다시 눌릴 수 있게 하는 변수
 let inputkeyBoolean = true;
-
+let SWcurrNameList
 // 카메라 위치 설정
 // z 값이 커질 수록, 모니터에 가까워짐,
 // y 값이 커질 수록 위로 올라가고
 // x 값이 커질 수록 오른쪽으로 간다
 // html 캔버스
+//과목명
+const SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software Design\nPatterns", "\nRobotics", "Enterprise and\nLeadership"]; // 6
+const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operating\nSystems", "Probability and\nStatistics", "\nAlgorithms", "Computer\nNetworks", "Database\nSystems", "Principles of\nEconomics"]; // 8
+const SWcurrName3 = ["Mobile\nProgramming", "Software\nEngineering", "Software Industry\nSeminar", "Graduation\nProjectsⅠ", "Principles of\nManagement", "Computer\nGraphics", "Computer\nArchitecture", "P-Practical\nProject", "Graduation\nProjectsⅡ"]; // 9 + 2
+const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCourse", "Graduation\nProjectsⅢ", "Data Management\nR&D Lab", "Chatbot\nR&D Lab", "system Architecture\nR&D Lab", "Human-Computer\nInteraction", "Advanced Topics\nin Software", "\nMarketing"]; // 10
+const otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
 
+let currLenghth;
 let world;
 // 랜더러 오브젝트
 let renderer;
@@ -666,6 +673,8 @@ class ObjectsManager {
       return obj[0].position.z < 0;
     });
     if (this.objects.length === 0) {
+      gameManager.score += gameManager.roundScore;
+      gameManager.roundScore = 0;
       gameOverInt --;
     }
   }
@@ -687,6 +696,17 @@ class CurriculumManager{
 
     // 먹은 오브젝트 글씨 정보를 매핑하기 위한 딕셔너리
     this.currWordDict = {};
+
+    this.SWcurrs = [];
+    // 커리큘럼 글씨들을 저장하는 리스트
+    this.SWcurrWords = [];
+    // 커리큘럼 이름을 저장하는 리스트
+    this.SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software\nDesign\nPatterns", "Robotics", "Enterprise\nand\nLeadership"]; // 6
+    this.SWcurrName2 = ["Data Structures", "Object Oriented Programming", "Operating Systems", "Probability and Statistics", "Algorithms", "Computer Networks", "Database Systems", "Principles of Economics"]; // 8
+    this.SWcurrName3 = ["Mobile Programming", "Software Engineering", "Software Industry Seminar", "Graduation ProjectsⅠ", "Principles of Management", "Computer Graphics", "Computer Architecture", "P-Practical Project", "Graduation ProjectsⅡ"]; // 9 + 2
+    this.SWcurrName4 = ["Computer Vision", "Technology Management", "You Make Course", "Graduation ProjectsⅢ", "Data Management R&D Lab", "Chatbot R&D Lab", "system Architecture R&D Lab", "Human-Computer Interaction", "Advanced Topics in Software", "Marketing"]; // 10
+    this.otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
+
 
     // 커리큘럼 오브젝트의 크기 변수
     this.dx = 500;
@@ -871,6 +891,7 @@ let lightManager = new Light();
 class Game {
   constructor() {
     this.score = 0;
+    this.roundScore = 0;
     this.collision = false;
 
   }
@@ -889,18 +910,23 @@ class Game {
       camera.position.set(cameraX, cameraY, cameraZ);
       camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
       window.camera = camera;
+      currLenghth = SWcurrName1.length;
+
     } else if (round === 2) {
       camera.position.set(cameraX, cameraY, cameraZ);
       camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
       window.camera = camera;
+      currLenghth = SWcurrName2.length;
     } else if (round === 3) {
       camera.position.set(cameraX, cameraY, cameraZ);
       camera.lookAt(new THREE.Vector3(defaultDestX, -1000, defaultDestZ));
       window.camera = camera;
+      currLenghth = SWcurrName3.length;
     } else if (round === 4) {
       camera.position.set(cameraX, cameraY, cameraZ);
       camera.lookAt(new THREE.Vector3(defaultDestX, -1200, defaultDestZ));
       window.camera = camera;
+      currLenghth = SWcurrName4.length;
     }
     // 광원추가하기
     lightManager.backLight.position.set(0, 0, -2000);
@@ -960,6 +986,7 @@ class Game {
         }
     );
 
+    console.log(SWcurrName1.length);
     // ground 설정하기
     let ground = createGround(4000, 20, 120000, Colors.olive, 0, -400, -60000);
     scene.add(ground);
@@ -975,7 +1002,7 @@ class Game {
     createWord(0, 0, -8000, "Round " + round, 500);
 
     // 커리큘럼 객체를 만들고 텍스트까지 매핑
-    for (let i = 10; i < 30; i++) {
+    for (let i = 10; i < 10 + currLenghth; i++) {
       createCurriculums(i * -5000, 0.2, 0.6, 0.7);
     }
     setTimeout(function () {
@@ -986,6 +1013,7 @@ class Game {
 
 
   roundOver(round) {
+    // this.roundScores[round-1] = this.score;
     document.getElementById("curr").innerText = "";
     currManager.currWordDict = {};
     currManager.currCollision = {};
@@ -1025,6 +1053,7 @@ class Game {
         inputkeyBoolean = true;
         paused = true;
         gameOverInt = 1;
+        currManager.index = 0;
         }, 3000);
     }
   }
@@ -1053,11 +1082,19 @@ class Game {
         currHit += 1;
       }
     });
-
-    this.score = (objectHit + currHit) * 10;
+    // display.appendChild(curr);
+    // curr.remove();
+    // this.score =
     // 점수 화면에 반영하기
-    document.getElementById("score").innerHTML = this.score;
-    document.getElementById("curr").innerHTML = showCurr; //투두
+    if (objectManager.objects.length === 0) {
+      this.roundScore = 0;
+    }else {
+
+      this.roundScore = (objectHit + currHit) * 10;
+    }
+
+    document.getElementById("score").innerText = String(this.roundScore + this.score);
+    document.getElementById("curr").innerHTML = showCurr;
   }
 }
 
@@ -1072,7 +1109,7 @@ window.onload = function init() {
     explain12 = document.getElementById("explain12");
     explain22 = document.getElementById("explain22");
     explain32 = document.getElementById("explain32");
-    explain42 = document.getElementById("explain42");    
+    explain42 = document.getElementById("explain42");
 
     explain11.style.display = 'none';
     explain21.style.display = 'none';
@@ -1112,37 +1149,31 @@ window.onload = function init() {
         }
 
         if (paused) {
-          if (inputKey === spacebar) {
-            console.log("Count!" + count);
-            count++;
-            if(count == 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
-              console.log("Count!" + count);
-              if (roundNumber == null) {
-                  roundNumber = 1;
-                  gameManager.initRound(roundNumber);
-              } 
-              else if (roundNumber <= 4) {
-                if(roundNumber==1) {
-                  explain11.style.display = 'block';
-                }
-                else if(roundNumber==2) {
-                  explain21.style.display = 'block';
-                }
-                else if(roundNumber==3){
-                  explain31.style.display = 'block';
-                }
-                else if(roundNumber==4){
-                  explain41.style.display = 'block';
-                }                
-              }
-            }
-
-            else if(count == 2) { //첫번째 설명 지우고 두번째 설명 띄우기
-              console.log("Count!!" + count);
-              explain11.style.display = 'none';
-              explain21.style.display = 'none';
-              explain31.style.display = 'none';
-              explain41.style.display = 'none';         
+            if (inputKey === spacebar) {
+                console.log("Count!" + count);
+                count++;
+                if (count == 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
+                    console.log("Count!" + count);
+                    if (roundNumber == null) {
+                        roundNumber = 1;
+                        gameManager.initRound(roundNumber);
+                    } else if (roundNumber <= 4) {
+                        if (roundNumber == 1) {
+                            explain11.style.display = 'block';
+                        } else if (roundNumber == 2) {
+                            explain21.style.display = 'block';
+                        } else if (roundNumber == 3) {
+                            explain31.style.display = 'block';
+                        } else if (roundNumber == 4) {
+                            explain41.style.display = 'block';
+                        }
+                    }
+                } else if (count == 2) { //첫번째 설명 지우고 두번째 설명 띄우기
+                    console.log("Count!!" + count);
+                    explain11.style.display = 'none';
+                    explain21.style.display = 'none';
+                    explain31.style.display = 'none';
+                    explain41.style.display = 'none';
 
               if(roundNumber==1) {
                 explain12.style.display = 'block';
@@ -1196,6 +1227,7 @@ window.onload = function init() {
 
             }
           }
+
 
             if (inputKey === one) {
                 roundNumber = 1;
@@ -1341,22 +1373,22 @@ function createGround(dx, dy, dz, map, x, y, z, notFlatShading) {
   const materials = [
     new THREE.MeshBasicMaterial({
       map: loader.load(
-          "https://images.pexels.com/photos/13644281/pexels-photo-13644281.jpeg"
+          "/res/lane.png"
       ),
     }),
     new THREE.MeshBasicMaterial({
       map: loader.load(
-          "https://images.pexels.com/photos/13644281/pexels-photo-13644281.jpeg"
+          "/res/lane.png"
       ),
     }),
     new THREE.MeshBasicMaterial({
       map: loader.load(
-          "https://images.pexels.com/photos/13644281/pexels-photo-13644281.jpeg"
+          "/res/lane.png"
       ),
     }),
     new THREE.MeshBasicMaterial({
       map: loader.load(
-          "https://images.pexels.com/photos/13644281/pexels-photo-13644281.jpeg"
+          "/res/lane.png"
       ),
     }),
   ];
@@ -1382,24 +1414,43 @@ function createObjects(position, probability, minScale, maxScale) {
 }
 // 오브젝트를 생성하는 코드랑 비슷하게, 커리큘럼 오브젝트를 생성하는 코드
 function createCurriculums(position, probability, minScale, maxScale) {
-  for (let lane = -2; lane <= 2; lane++) {
-    let randomNum = Math.random();
-    if (randomNum < probability) {
-      let scale = minScale + (maxScale - minScale) * Math.random();
-      let object = currManager.createCurriculum(lane * 800, 0, position);
-      let tempContainer = [];
-      tempContainer.push(object);
-      tempContainer.push(currManager.index);
-      currManager.currs.push(tempContainer);
-      currManager.currWordDict[currManager.index] = "test Curr"+currManager.index;
-      currManager.currCollision[currManager.index] = false;
-      scene.add(object);
-      createSpotLight(lane * 800, 100, position);
-      createWord(lane * 800, 500, position, "test Curr"+currManager.index, 100);
-      currManager.index += 1;
 
+    shuffleArray(otherCurrName);
+    let otherCurrArray = otherCurrName.slice(0, 5);
+    console.log(otherCurrArray);
+
+
+    if (roundNumber === 1) {
+        SWcurrNameList = [...SWcurrName1, ...otherCurrArray];
+        shuffleArray(SWcurrNameList)
+    } else if (roundNumber === 2) {
+        SWcurrNameList = [...SWcurrName2, ...otherCurrArray];
+        shuffleArray(SWcurrNameList)
+    } else if (roundNumber === 3) {
+        SWcurrNameList = [...SWcurrName3, ...otherCurrArray];
+        shuffleArray(SWcurrNameList)
+    } else if (roundNumber === 4) {
+        SWcurrNameList = [...SWcurrName4, ...otherCurrArray];
+        shuffleArray(SWcurrNameList)
     }
-  }
+    let lane = Math.floor(Math.random() * 4) - 2
+
+    let scale = minScale + (maxScale - minScale) * Math.random();
+    let object = currManager.createCurriculum(lane * 800, 0, position);
+    let tempContainer = [];
+    tempContainer.push(object);
+    tempContainer.push(currManager.index);
+    currManager.currs.push(tempContainer);
+    currManager.currWordDict[currManager.index] = SWcurrNameList[currManager.index];
+    currManager.currCollision[currManager.index] = false;
+    scene.add(object);
+    createSpotLight(lane * 800, 100, position);
+    createWord(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
+    currManager.index += 1;
+    console.log(roundNumber, "roundNumber");
+    console.log("index", currManager.index);
+    console.log("SWcurrNameList[currManager.index]", SWcurrNameList[currManager.index]);
+
 }
 // createCurriculums에서 불리는 함수로, 생성된 커리큘럼 오브젝트 위에 글씨 만드는 코드
 function createWord(x,y, position, text, fontSize){
@@ -1472,4 +1523,8 @@ function createWordStatic(x, y, position, text, fontSize) {
     scene.add(textMesh);
     // currManager.currWords.push(textMesh);
   });
+}
+
+function shuffleArray(array) {
+    array.sort(() => Math.random() - 0.5);
 }
