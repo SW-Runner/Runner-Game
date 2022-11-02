@@ -1078,8 +1078,9 @@ class Game {
         currHit += 1;
       }
     });
-
-    this.score = (objectHit + currHit) * 10;
+    // display.appendChild(curr);
+    // curr.remove();
+    // this.score =
     // 점수 화면에 반영하기
     if (objectManager.objects.length === 0) {
       this.roundScore = 0;
