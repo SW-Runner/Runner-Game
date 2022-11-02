@@ -14,7 +14,7 @@ const SWcurrName3 = ["Mobile\nProgramming", "Software\nEngineering", "Software I
 const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCourse", "Graduation\nProjectsⅢ", "Data Management\nR&D Lab", "Chatbot\nR&D Lab", "system Architecture\nR&D Lab", "Human-Computer\nInteraction", "Advanced Topics\nin Software", "\nMarketing"]; // 10
 const otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
 
-let currLenghth;
+let currLength;
 let world;
 // 랜더러 오브젝트
 let renderer;
@@ -700,15 +700,9 @@ class CurriculumManager {
         // 먹은 오브젝트 글씨 정보를 매핑하기 위한 딕셔너리
         this.currWordDict = {};
 
-        this.SWcurrs = [];
-        // 커리큘럼 글씨들을 저장하는 리스트
-        this.SWcurrWords = [];
-        // 커리큘럼 이름을 저장하는 리스트
-        this.SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software\nDesign\nPatterns", "Robotics", "Enterprise\nand\nLeadership"]; // 6
-        this.SWcurrName2 = ["Data Structures", "Object Oriented Programming", "Operating Systems", "Probability and Statistics", "Algorithms", "Computer Networks", "Database Systems", "Principles of Economics"]; // 8
-        this.SWcurrName3 = ["Mobile Programming", "Software Engineering", "Software Industry Seminar", "Graduation ProjectsⅠ", "Principles of Management", "Computer Graphics", "Computer Architecture", "P-Practical Project", "Graduation ProjectsⅡ"]; // 9 + 2
-        this.SWcurrName4 = ["Computer Vision", "Technology Management", "You Make Course", "Graduation ProjectsⅢ", "Data Management R&D Lab", "Chatbot R&D Lab", "system Architecture R&D Lab", "Human-Computer Interaction", "Advanced Topics in Software", "Marketing"]; // 10
-        this.otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
+        this.SWcurrs = {};
+
+
 
         // 커리큘럼 오브젝트의 크기 변수
         this.dx = 500;
@@ -720,6 +714,8 @@ class CurriculumManager {
 
         // 커리큘럼 아이디를 위한 변수
         this.index = 0;
+        // 오브젝트와 겹치게 생성되는 것을 막기 위한 딕셔너리
+        this.currPositions = {};
     }
 
     // 커리큘럼 오브젝트 생성
@@ -762,9 +758,21 @@ class CurriculumManager {
                 && objMinY <= charMaxY && objMaxY >= charMinY
                 && objMinZ <= charMaxZ && objMaxZ >= charMinZ) {
                 console.log("collision check");
-                if (!currManager.currCollision[obj[1]]) {
-                    coinManager.queuedAction.push(i);
+                console.log(currManager.currWordDict[obj[1]]);
+                console.log(SWcurrNameList);
+                console.log(otherCurrName);
+                console.log(currManager.SWcurrs);
+                if (!currManager.SWcurrs[obj[1]]) {
+                    console.log("hahahahahahahahahah");
+                    if (!currManager.currCollision[obj[1]]) {
+                        cameraManager.rumbleQueue.push(q);
+                    }
+                } else {
+                    if (!currManager.currCollision[obj[1]]) {
+                        coinManager.queuedAction.push(i);
+                    }
                 }
+
                 // 충돌 여부를 확인했으면 true로 값을 변경한다.
                 currManager.currCollision[obj[1]] = true;
             }
@@ -894,8 +902,7 @@ class Game {
         this.score = 0;
         this.roundScore = 0;
         this.collision = false;
-        // this.roundScores = [0,0,0,0];
-        // this.round = 1;
+
     }
 
     // currManagaer랑 objectManager 딕셔너리 비우는 코드 추가해야한다
@@ -911,24 +918,23 @@ class Game {
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
             window.camera = camera;
-            currLenghth = SWcurrName1.length;
+            currLength = SWcurrName1.length + 5;
 
         } else if (round === 2) {
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, defaultDestY, defaultDestZ));
             window.camera = camera;
-            currLenghth = SWcurrName2.length;
+            currLength = SWcurrName2.length + 5;
         } else if (round === 3) {
-
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, -1000, defaultDestZ));
             window.camera = camera;
-            currLenghth = SWcurrName3.length;
+            currLength = SWcurrName3.length + 5;
         } else if (round === 4) {
             camera.position.set(cameraX, cameraY, cameraZ);
             camera.lookAt(new THREE.Vector3(defaultDestX, -1200, defaultDestZ));
             window.camera = camera;
-            currLenghth = SWcurrName4.length;
+            currLength = SWcurrName4.length + 5;
         }
         // 광원추가하기
         lightManager.backLight.position.set(0, 0, -2000);
@@ -993,19 +999,23 @@ class Game {
         let ground = createGround(4000, 20, 120000, Colors.olive, 0, -400, -60000);
         scene.add(ground);
 
+
+        // 텍스트 표현해보기
+        fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
+        createWord(0, 0, -8000, "Round " + round, 500);
+
+        // 커리큘럼 객체를 만들고 텍스트까지 매핑
+        shuffleCurriculum();
+        for (let i = 25; i < 25 + currLength; i++) {
+            createCurriculums(i * -4000, 0.2, 0.6, 0.7);
+        }
+
         // 장애물 & 오브젝트 만들기
         // TODO: 장애물 어떻게 만들어질지 정해야될듯
         for (let i = 10; i < 50; i++) {
             createObjects(i * -3000, 0.2, 0.6, 0.7);
         }
 
-        // 텍스트 표현해보기
-        fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-        createWord(0, 0, -8000, "Round " + round, 500);
-        // 커리큘럼 객체를 만들고 텍스트까지 매핑
-        for (let i = 10; i < 10 + currLenghth; i++) {
-            createCurriculums(i * -5000, 0.2, 0.6, 0.7);
-        }
         setTimeout(function () {
             paused = false;
             gameOver = false;
@@ -1051,7 +1061,7 @@ class Game {
                 inputkeyBoolean = true;
                 paused = true;
                 gameOverInt = 1;
-                currManager.index =0
+                currManager.index = 0
             }, 3000);
         }
     }
@@ -1062,12 +1072,9 @@ class Game {
     update() {
         let objectHit = 0;
         let currHit = 0;
-        // let display = document.getElementById("curr");
+
         let showCurr = "";
-        // let curr = document.createElement('div');
-        // for (const element of displayCurr.children) {
-        //   element.remove();
-        // }
+
         // 충돌 여부를 확인하는 코드를 돌려서 충돌한 커리큘럼, 오브젝트들 최신화
         objectManager.collisionCheck();
         currManager.collisionCheck();
@@ -1079,12 +1086,13 @@ class Game {
         });
         Object.keys(currManager.currCollision).forEach(function (value) {
             if (currManager.currCollision[value]) {
-                // const newCurr = document.createElement('p');
-                // const newCurr = document.createTextNode(currManager.currWordDict[value]);
-                // newCurr.innerText = currManager.currWordDict[value];
-                // curr.appendChild(newCurr);
-                showCurr += currManager.currWordDict[value] + "\n";
-                currHit += 1;
+                if (currManager.currWordDict[value] in otherCurrName) {
+                    objectHit -= 1;
+                }else {
+
+                    showCurr += currManager.currWordDict[value] + "\n";
+                    currHit += 1;
+                }
             }
         });
         // display.appendChild(curr);
@@ -1157,81 +1165,71 @@ window.onload = function init() {
             if (inputKey === spacebar) {
                 console.log("Count!" + count);
                 count++;
-                if (count == 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
+                if (count === 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
                     console.log("Count!" + count);
                     if (roundNumber == null) {
                         roundNumber = 1;
                         gameManager.initRound(roundNumber);
                     } else if (roundNumber <= 4) {
-                        if (roundNumber == 1) {
+                        if (roundNumber === 1) {
                             explain11.style.display = 'block';
-                        } else if (roundNumber == 2) {
+                        } else if (roundNumber === 2) {
                             explain21.style.display = 'block';
-                        } else if (roundNumber == 3) {
+                        } else if (roundNumber === 3) {
                             explain31.style.display = 'block';
-                        } else if (roundNumber == 4) {
+                        } else if (roundNumber === 4) {
                             explain41.style.display = 'block';
                         }
                     }
-                } else if (count == 2) { //첫번째 설명 지우고 두번째 설명 띄우기
+                } else if (count === 2) { //첫번째 설명 지우고 두번째 설명 띄우기
                     console.log("Count!!" + count);
                     explain11.style.display = 'none';
                     explain21.style.display = 'none';
                     explain31.style.display = 'none';
                     explain41.style.display = 'none';
 
-              if(roundNumber==1) {
-                explain12.style.display = 'block';
-                roundNumber++;
-              }
-              else if(roundNumber==2) {
-                explain22.style.display = 'block';
-                roundNumber++;
-              }
-              else if(roundNumber==3){
-                explain32.style.display = 'block';
-                roundNumber++;
-              }
-              else if(roundNumber==4){
-                explain42.style.display = 'block';
-                roundNumber++;
-              }
-            }
-
-            else if(count == 3) { //두번째 설명 지우고 다음 라운드 시작
-              console.log("Count!!" + count);
-              explain12.style.display = 'none';
-              explain22.style.display = 'none';
-              explain32.style.display = 'none';
-              explain42.style.display = 'none';
-
-              if(roundNumber==3) {
-                console.log(00);
-
-                var tracklist = document.getElementById("tracklist");
-                tracklist.style.display = 'block';
-                var track = document.getElementsByName('track');
-                var trackChoice; // 여기에 선택된 radio 버튼의 값이 담기게 된다.
-                for(var i=0; i<3; i++) {
-                  console.log(11);
-                    if(track[i].checked) { //체크 되면
-                        trackChoice = track[i].value;
-                        console.log("트랙: " + trackChoice)
-                        //해당 트랙으로 initRound(3)
-                        count=0;
-                        gameManager.initRound(roundNumber); //임시방편
+                    if (roundNumber === 1) {
+                        explain12.style.display = 'block';
+                        roundNumber++;
+                    } else if (roundNumber === 2) {
+                        explain22.style.display = 'block';
+                        roundNumber++;
+                    } else if (roundNumber === 3) {
+                        explain32.style.display = 'block';
+                        roundNumber++;
+                    } else if (roundNumber === 4) {
+                        explain42.style.display = 'block';
+                        roundNumber++;
                     }
+                } else if (count === 3) { //두번째 설명 지우고 다음 라운드 시작
+                    console.log("Count!!" + count);
+                    explain12.style.display = 'none';
+                    explain22.style.display = 'none';
+                    explain32.style.display = 'none';
+                    explain42.style.display = 'none';
+                    if (roundNumber === 3) {
+                        // console.log(00);
+
+                        var tracklist = document.getElementById("tracklist");
+                        tracklist.style.display = 'block';
+                        var track = document.getElementsByName('track');
+                        var trackChoice; // 여기에 선택된 radio 버튼의 값이 담기게 된다.
+                        for (var i = 0; i < 3; i++) {
+                            console.log(11);
+                            if (track[i].checked) { //체크 되면
+                                trackChoice = track[i].value;
+                                console.log("트랙: " + trackChoice)
+                                //해당 트랙으로 initRound(3)
+                                count = 0;
+                                gameManager.initRound(roundNumber); //임시방편
+                            }
+                        }
+                    } else if (roundNumber !== 5) {
+                        gameManager.initRound(roundNumber);
+                    }
+                    count = 0;
                 }
-              }
-
-
-              else if(roundNumber!==5){
-                gameManager.initRound(roundNumber);
-              }
-              count = 0;
-
             }
-          }
 
 
             if (inputKey === one) {
@@ -1303,7 +1301,8 @@ window.onload = function init() {
                 cameraManager.queuedChange.push(seven);
             }
             if (inputKey === eight && !paused) {
-                cameraManager.queuedChange.push(eight);
+                // cameraManager.queuedChange.push(eight);
+                console.log(SWcurrNameList);
             }
             // 흔들거리는 이펙트를 위한 인풋 매핑
             if (inputKey === r && !paused) {
@@ -1345,7 +1344,7 @@ window.onload = function init() {
 
     // 시각화하는 함수
     function animate() {
-        console.log(gameOverInt)
+        // console.log(gameOverInt)
         characterManager.update();
         coinManager.update();
         cameraManager.update();
@@ -1356,8 +1355,6 @@ window.onload = function init() {
             lightManager.update();
             gameManager.update();
             if (-5 < gameOverInt && gameOverInt <= 0) {
-                // gameManager.roundScores[gameManager.round-1] = this.score;
-                // gameManager.score = gameManager.roundScore;
                 gameManager.roundOver(roundNumber);
                 scene.children.forEach(function (obj) {
                     scene.remove(obj);
@@ -1380,22 +1377,22 @@ function createGround(dx, dy, dz, map, x, y, z, notFlatShading) {
     const materials = [
         new THREE.MeshBasicMaterial({
             map: loader.load(
-                "lane.png"
+                "/res/lane.png"
             ),
         }),
         new THREE.MeshBasicMaterial({
             map: loader.load(
-                "lane.png"
+                "/res/lane.png"
             ),
         }),
         new THREE.MeshBasicMaterial({
             map: loader.load(
-                "lane.png"
+                "/res/lane.png"
             ),
         }),
         new THREE.MeshBasicMaterial({
             map: loader.load(
-                "lane.png"
+                "/res/lane.png"
             ),
         }),
     ];
@@ -1414,7 +1411,7 @@ function createGround(dx, dy, dz, map, x, y, z, notFlatShading) {
 function createObjects(position, probability, minScale, maxScale) {
     for (let lane = -2; lane <= 2; lane++) {
         let randomNum = Math.random();
-        if (randomNum < probability) {
+        if (randomNum < probability && !(position in currManager.currPositions)) {
             let scale = minScale + (maxScale - minScale) * Math.random();
             objectManager.createObject(lane * 800, -400, position);
         }
@@ -1424,33 +1421,40 @@ function createObjects(position, probability, minScale, maxScale) {
 // 오브젝트를 생성하는 코드랑 비슷하게, 커리큘럼 오브젝트를 생성하는 코드
 function createCurriculums(position, probability, minScale, maxScale) {
 
-    shuffleArray(otherCurrName);
-    let otherCurrArray = otherCurrName.slice(0, 5);
-    console.log(otherCurrArray);
-
-
-    if (roundNumber === 1) {
-        SWcurrNameList = [...SWcurrName1, ...otherCurrArray];
-        shuffleArray(SWcurrNameList)
-    } else if (roundNumber === 2) {
-        SWcurrNameList = [...SWcurrName2, ...otherCurrArray];
-        shuffleArray(SWcurrNameList)
-    } else if (roundNumber === 3) {
-        SWcurrNameList = [...SWcurrName3, ...otherCurrArray];
-        shuffleArray(SWcurrNameList)
-    } else if (roundNumber === 4) {
-        SWcurrNameList = [...SWcurrName4, ...otherCurrArray];
-        shuffleArray(SWcurrNameList)
-    }
+    // shuffleArray(otherCurrName);
+    // let otherCurrArray = otherCurrName.slice(0, 5);
+    // console.log(otherCurrArray);
+    //
+    //
+    // if (roundNumber === 1) {
+    //     SWcurrNameList = [...SWcurrName1, ...otherCurrArray];
+    //     shuffleArray(SWcurrNameList)
+    // } else if (roundNumber === 2) {
+    //     SWcurrNameList = [...SWcurrName2, ...otherCurrArray];
+    //     shuffleArray(SWcurrNameList)
+    // } else if (roundNumber === 3) {
+    //     SWcurrNameList = [...SWcurrName3, ...otherCurrArray];
+    //     shuffleArray(SWcurrNameList)
+    // } else if (roundNumber === 4) {
+    //     SWcurrNameList = [...SWcurrName4, ...otherCurrArray];
+    //     shuffleArray(SWcurrNameList)
+    // }
     let lane = Math.floor(Math.random() * 4) - 2
 
     let scale = minScale + (maxScale - minScale) * Math.random();
     let object = currManager.createCurriculum(lane * 800, 0, position);
+    currManager.currPositions[position] = true;
     let tempContainer = [];
     tempContainer.push(object);
     tempContainer.push(currManager.index);
     currManager.currs.push(tempContainer);
     currManager.currWordDict[currManager.index] = SWcurrNameList[currManager.index];
+
+    if (!(SWcurrNameList[currManager.index] in otherCurrName)) {
+        currManager.SWcurrs[currManager.index] = true;
+    } else {
+        currManager.SWcurrs[currManager.index] = false;
+    }
     currManager.currCollision[currManager.index] = false;
     scene.add(object);
     createSpotLight(lane * 800, 100, position);
@@ -1540,3 +1544,25 @@ function createWordStatic(x, y, position, text, fontSize) {
 function shuffleArray(array) {
     array.sort(() => Math.random() - 0.5);
 }
+
+function shuffleCurriculum() {
+    shuffleArray(otherCurrName);
+    let otherCurrArray = otherCurrName.slice(0, 5);
+    console.log(otherCurrArray);
+
+
+    if (roundNumber === 1) {
+        SWcurrNameList = [...SWcurrName1, ...otherCurrArray];
+        shuffleArray(SWcurrNameList)
+    } else if (roundNumber === 2) {
+        SWcurrNameList = [...SWcurrName2, ...otherCurrArray];
+        shuffleArray(SWcurrNameList)
+    } else if (roundNumber === 3) {
+        SWcurrNameList = [...SWcurrName3, ...otherCurrArray];
+        shuffleArray(SWcurrNameList)
+    } else if (roundNumber === 4) {
+        SWcurrNameList = [...SWcurrName4, ...otherCurrArray];
+        shuffleArray(SWcurrNameList)
+    }
+}
+
