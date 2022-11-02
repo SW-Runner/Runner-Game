@@ -1003,7 +1003,7 @@ class Game {
         fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
         createWord(0, 0, -8000, "Round " + round, 500);
         // 커리큘럼 객체를 만들고 텍스트까지 매핑
-        for (let i = 10; i < 10 + 5 + currLenghth; i++) {
+        for (let i = 10; i < 10 + currLenghth; i++) {
             createCurriculums(i * -5000, 0.2, 0.6, 0.7);
         }
         setTimeout(function () {
@@ -1051,7 +1051,7 @@ class Game {
                 inputkeyBoolean = true;
                 paused = true;
                 gameOverInt = 1;
-                currManager.index =0 ;
+                currManager.index =0
             }, 3000);
         }
     }
@@ -1180,31 +1180,58 @@ window.onload = function init() {
                     explain31.style.display = 'none';
                     explain41.style.display = 'none';
 
-                    if (roundNumber == 1) {
-                        explain12.style.display = 'block';
-                        roundNumber++;
-                    } else if (roundNumber == 2) {
-                        explain22.style.display = 'block';
-                        roundNumber++;
-                    } else if (roundNumber == 3) {
-                        explain32.style.display = 'block';
-                        roundNumber++;
-                    } else if (roundNumber == 4) {
-                        explain42.style.display = 'block';
-                        roundNumber++;
-                    }
-                } else if (count == 3) { //두번째 설명 지우고 다음 라운드 시작
-                    console.log("Count!!" + count);
-                    explain12.style.display = 'none';
-                    explain22.style.display = 'none';
-                    explain32.style.display = 'none';
-                    explain42.style.display = 'none';
-                    if (roundNumber !== 5) {
-                        gameManager.initRound(roundNumber);
-                    }
-                    count = 0;
-                }
+              if(roundNumber==1) {
+                explain12.style.display = 'block';
+                roundNumber++;
+              }
+              else if(roundNumber==2) {
+                explain22.style.display = 'block';
+                roundNumber++;
+              }
+              else if(roundNumber==3){
+                explain32.style.display = 'block';
+                roundNumber++;
+              }
+              else if(roundNumber==4){
+                explain42.style.display = 'block';
+                roundNumber++;
+              }
             }
+
+            else if(count == 3) { //두번째 설명 지우고 다음 라운드 시작
+              console.log("Count!!" + count);
+              explain12.style.display = 'none';
+              explain22.style.display = 'none';
+              explain32.style.display = 'none';
+              explain42.style.display = 'none';
+
+              if(roundNumber==3) {
+                console.log(00);
+
+                var tracklist = document.getElementById("tracklist");
+                tracklist.style.display = 'block';
+                var track = document.getElementsByName('track');
+                var trackChoice; // 여기에 선택된 radio 버튼의 값이 담기게 된다.
+                for(var i=0; i<3; i++) {
+                  console.log(11);
+                    if(track[i].checked) { //체크 되면
+                        trackChoice = track[i].value;
+                        console.log("트랙: " + trackChoice)
+                        //해당 트랙으로 initRound(3)
+                        count=0;
+                        gameManager.initRound(roundNumber); //임시방편
+                    }
+                }
+              }
+
+
+              else if(roundNumber!==5){
+                gameManager.initRound(roundNumber);
+              }
+              count = 0;
+
+            }
+          }
 
 
             if (inputKey === one) {
@@ -1411,11 +1438,9 @@ function createCurriculums(position, probability, minScale, maxScale) {
     } else if (roundNumber === 3) {
         SWcurrNameList = [...SWcurrName3, ...otherCurrArray];
         shuffleArray(SWcurrNameList)
-        console.log(SWcurrNameList)
     } else if (roundNumber === 4) {
         SWcurrNameList = [...SWcurrName4, ...otherCurrArray];
         shuffleArray(SWcurrNameList)
-        console.log(SWcurrNameList)
     }
     let lane = Math.floor(Math.random() * 4) - 2
 
@@ -1431,7 +1456,9 @@ function createCurriculums(position, probability, minScale, maxScale) {
     createSpotLight(lane * 800, 100, position);
     createWord(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
     currManager.index += 1;
-
+    console.log(roundNumber, "roundNumber");
+    console.log("index", currManager.index);
+    console.log("SWcurrNameList[currManager.index]", SWcurrNameList[currManager.index]);
 
 }
 
