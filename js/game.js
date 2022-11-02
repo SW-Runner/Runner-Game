@@ -823,7 +823,6 @@ class CurriculumManager{
 // 커리큘럼 관리 객체
 let currManager = new CurriculumManager();
 
-
 // 광원 처리 관리를 위한 클래스
 class Light{
   constructor() {
@@ -1013,48 +1012,50 @@ class Game {
   }
 
 
-    roundOver(round) {
-        document.getElementById("curr").innerText = "";
-        currManager.currWordDict = {};
-        currManager.currCollision = {};
-        objectManager.objectCollision = {};
-        this.round = round;
-        if (round === 1) {
-            roundString = "The First Year Completed ";
-        } else if (round === 2) {
-            roundString = "The Second Year Completed ";
-        } else if (round === 3) {
-            roundString = "The Third Year Completed ";
-        } else if (round === 4) {
-            roundString = "The Last Year Completed ";
-        }
-        //의성) scene.remove를 하면 다 안지워져서 여러번 반복문을 돌리는 방식으로 구현
-        if (-5 < gameOverInt && gameOverInt <= 0) {
-            fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
-            if (roundNumber === 1 || roundNumber === 2) {
-                createWordStatic(0, 0, -8000, roundString, 500);
-            } else if (roundNumber === 3) {
-                createWordStatic(0, -2000, -7000, roundString, 500);
-            } else if (roundNumber === 4) {
-                createWordStatic(0, -2100, -7000, roundString, 500);
-            }
-            round++;
-            cancelAnimationFrame(animation);
-            scene.children.forEach(function (obj) {
-                scene.remove(obj);
-            });
-            setTimeout(function () {
-                scene.children.forEach(function (obj) {
-                    scene.remove(obj);
-                });
-                inputkeyBoolean = true;
-                paused = true;
-                gameOverInt = 1;
-                currManager.index = 0;
-
-            }, 3000);
-        }
+  roundOver(round) {
+    // this.roundScores[round-1] = this.score;
+    document.getElementById("curr").innerText = "";
+    currManager.currWordDict = {};
+    currManager.currCollision = {};
+    objectManager.objectCollision = {};
+    this.round = round;
+    if (round === 1) {
+      roundString = "The First Year Completed ";
+    } else if (round === 2) {
+      roundString = "The Second Year Completed ";
+    } else if (round === 3) {
+      roundString = "The Third Year Completed ";
+    } else if (round === 4) {
+      roundString = "The Last Year Completed ";
     }
+    //의성) scene.remove를 하면 다 안지워져서 여러번 반복문을 돌리는 방식으로 구현
+    if (-5 < gameOverInt && gameOverInt <= 0) {
+      fontLoader = new THREE.FontLoader(); // 폰트를 띄우기 위한 로더
+      if(roundNumber===1 || roundNumber === 2) {
+        createWordStatic(0, 0, -8000, roundString, 500);
+      }else if(roundNumber===3)
+      {
+        createWordStatic(0, -2000, -7000, roundString, 500);
+      }
+      else if(roundNumber===4)
+      {
+        createWordStatic(0, -2100, -7000, roundString, 500);
+      }
+      round++;
+      cancelAnimationFrame(animation);
+      scene.children.forEach(function (obj) {
+        scene.remove(obj);
+      });
+      setTimeout(function () {
+        scene.children.forEach(function (obj) {
+          scene.remove(obj);
+        });
+        inputkeyBoolean = true;
+        paused = true;
+        gameOverInt = 1;
+        }, 3000);
+    }
+  }
 
   // 게임을 진행하는 동안 animate 안에서 반복적으로 실행될 함수
   // 여기 안에서 충돌 관리, 라운드 관리, 점수관리를 하면 될 것 같다
@@ -1107,15 +1108,23 @@ let gameManager = new Game();
 window.onload = function init() {
     // HTML world랑 js 연결하기
     world = document.getElementById("world");
-    explain1 = document.getElementById("explain1");
-    explain2 = document.getElementById("explain2");
-    explain3 = document.getElementById("explain3");
-    explain4 = document.getElementById("explain4");
+    explain11 = document.getElementById("explain11");
+    explain21 = document.getElementById("explain21");
+    explain31 = document.getElementById("explain31");
+    explain41 = document.getElementById("explain41");
+    explain12 = document.getElementById("explain12");
+    explain22 = document.getElementById("explain22");
+    explain32 = document.getElementById("explain32");
+    explain42 = document.getElementById("explain42");
 
-    explain1.style.display = 'none';
-    explain2.style.display = 'none';
-    explain3.style.display = 'none';
-    explain4.style.display = 'none';
+    explain11.style.display = 'none';
+    explain21.style.display = 'none';
+    explain31.style.display = 'none';
+    explain41.style.display = 'none';
+    explain12.style.display = 'none';
+    explain22.style.display = 'none';
+    explain32.style.display = 'none';
+    explain42.style.display = 'none';
 
     // Renderer 설정하기
     renderer = new THREE.WebGLRenderer({
@@ -1147,40 +1156,64 @@ window.onload = function init() {
 
         if (paused) {
           if (inputKey === spacebar) {
+            console.log("Count!" + count);
             count++;
-            if(count === 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
-              console.log("Count" + count);
+            if(count == 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
+              console.log("Count!" + count);
               if (roundNumber == null) {
                   roundNumber = 1;
                   gameManager.initRound(roundNumber);
-              }
+              } 
               else if (roundNumber <= 4) {
-                if(roundNumber===1) {
-                  explain1.style.display = 'block';
-                  roundNumber++;
+                if(roundNumber==1) {
+                  explain11.style.display = 'block';
                 }
-                else if(roundNumber===2) {
-                  explain2.style.display = 'block';
-                  roundNumber++;
+                else if(roundNumber==2) {
+                  explain21.style.display = 'block';
                 }
-                else if(roundNumber===3){
-                  explain3.style.display = 'block';
-                  roundNumber++;
+                else if(roundNumber==3){
+                  explain31.style.display = 'block';
                 }
-                else if(roundNumber===4){
-                  explain4.style.display = 'block';
+                else if(roundNumber==4){
+                  explain41.style.display = 'block';
                 }
               }
             }
-            if(count === 2) { //설명 지우고 다음 라운드 넘어가기
-              console.log("Count" + count);
-              explain1.style.display = 'none';
-              explain2.style.display = 'none';
-              explain3.style.display = 'none';
-              explain4.style.display = 'none';
-              if(roundNumber!==4){
-                gameManager.initRound(roundNumber);
+
+            else if(count == 2) { //첫번째 설명 지우고 두번째 설명 띄우기
+              console.log("Count!!" + count);
+              explain11.style.display = 'none';
+              explain21.style.display = 'none';
+              explain31.style.display = 'none';
+              explain41.style.display = 'none';
+
+              if(roundNumber==1) {
+                explain12.style.display = 'block';
+                roundNumber++;
               }
+              else if(roundNumber==2) {
+                explain22.style.display = 'block';
+                roundNumber++;
+              }
+              else if(roundNumber==3){
+                explain32.style.display = 'block';
+                roundNumber++;
+              }
+              else if(roundNumber==4){
+                explain42.style.display = 'block';
+                roundNumber++;
+              }
+            }
+
+            else if(count == 3) { //두번째 설명 지우고 다음 라운드 시작
+              console.log("Count!!" + count);
+              explain12.style.display = 'none';
+              explain22.style.display = 'none';
+              explain32.style.display = 'none';
+              explain42.style.display = 'none';
+              if(roundNumber!==5){
+                gameManager.initRound(roundNumber);
+              }              
               count = 0;
             }
           }
@@ -1190,18 +1223,22 @@ window.onload = function init() {
             if (inputKey === one) {
                 roundNumber = 1;
                 gameManager.initRound(roundNumber);
+                count = 0;
             }
             if (inputKey === two) {
                 roundNumber = 2;
                 gameManager.initRound(roundNumber);
+                count = 0;
             }
             if (inputKey === three) {
                 roundNumber = 3;
                 gameManager.initRound(roundNumber);
+                count = 0;
             }
             if (inputKey === four) {
                 roundNumber = 4;
                 gameManager.initRound(roundNumber);
+                count = 0;
             }
 
             document.getElementById("variable-content").style.visibility = "hidden";
@@ -1388,7 +1425,7 @@ function createCurriculums(position, probability, minScale, maxScale) {
     tempContainer.push(object);
     tempContainer.push(currManager.index);
     currManager.currs.push(tempContainer);
-    currManager.currWordDict[currManager.index] = "test Curr" + currManager.index;
+    currManager.currWordDict[currManager.index] = SWcurrNameList[currManager.index];
     currManager.currCollision[currManager.index] = false;
     scene.add(object);
     createSpotLight(lane * 800, 100, position);
