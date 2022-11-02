@@ -172,7 +172,8 @@ td:nth-child(2) {
 .test1 {
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: 42%;
     display: inline-block;
-    
+    font-family: 'Open Sans', sans-serif;
+    font-size:1.3em;
 }

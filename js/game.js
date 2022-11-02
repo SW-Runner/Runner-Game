@@ -62,6 +62,36 @@ const otherCurrName = [
   "Food\nChemistry",
 ];
 
+// const g3 = [
+//   "Data\nScience",
+//   "Introduction\nto All",
+// ];
+
+// const g4 = [
+//   "Cloud Computing\nSystem",
+//   "Cyber\nSecurity"
+// ];
+
+const d3 = [
+  "Data\nScience",
+  "Machine\nLearning"
+]
+
+const d4 = [
+  "Deep\nLearning",
+  "Database2"
+]
+
+const s3 = [
+  "Sensor and Wireless\nSensor Networks",
+  "Drones and\nRobotics"
+];
+
+const s4 = [
+  "Embedded\nSystems",
+  "VR and\nVR"
+]
+
 let currLenghth;
 let world;
 // 랜더러 오브젝트
@@ -1280,8 +1310,6 @@ window.onload = function init() {
           explain42.style.display = "none";
 
           if (roundNumber == 3) {
-            console.log(00);
-
             var tracklist = document.getElementById("tracklist");
             tracklist.style.display = "block";
             var track = document.getElementsByName("track");
