@@ -8,6 +8,7 @@ let trackId;
 // y 값이 커질 수록 위로 올라가고
 // x 값이 커질 수록 오른쪽으로 간다
 // html 캔버스
+let finalCurr = [];
 //과목명
 const SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software Design\nPatterns", "\nRobotics", "Enterprise and\nLeadership"]; // 6
 const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operating\nSystems", "Probability and\nStatistics", "\nAlgorithms", "Computer\nNetworks", "Database\nSystems", "Principles of\nEconomics"]; // 8
@@ -1144,7 +1145,9 @@ class Game {
                 // const newCurr = document.createTextNode(currManager.currWordDict[value]);
                 // newCurr.innerText = currManager.currWordDict[value];
                 // curr.appendChild(newCurr);
+                //의성2)
                 showCurr += currManager.currWordDict[value] + "\n";
+                // finalCurr.push(currManager.currWordDict[value]);
                 currHit += 1;
             }
         });
