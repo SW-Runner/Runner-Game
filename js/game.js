@@ -1170,21 +1170,30 @@ window.onload = function init() {
               explain42.style.display = 'none';
 
               if(roundNumber==3) {
+                console.log(00);
+
+                var tracklist = document.getElementById("tracklist");
+                tracklist.style.display = 'block';
                 var track = document.getElementsByName('track');
                 var trackChoice; // 여기에 선택된 radio 버튼의 값이 담기게 된다.
                 for(var i=0; i<3; i++) {
-                    if(track[i].checked) {
+                  console.log(11);
+                    if(track[i].checked) { //체크 되면
                         trackChoice = track[i].value;
+                        console.log("트랙: " + trackChoice)
                         //해당 트랙으로 initRound(3)
+                        count=0;
+                        gameManager.initRound(roundNumber); //임시방편
                     }
                 }
               }
 
+              
               else if(roundNumber!==5){
                 gameManager.initRound(roundNumber);
               }              
-              
               count = 0;
+
             }
           }
 
