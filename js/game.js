@@ -8,10 +8,12 @@ let SWcurrNameList
 // x 값이 커질 수록 오른쪽으로 간다
 // html 캔버스
 //과목명
-const SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software\nDesign\nPatterns", "Robotics", "Enterprise\nand\nLeadership"]; // 6
-const SWcurrName2 = ["Data Structures", "Object Oriented Programming", "Operating Systems", "Probability and Statistics", "Algorithms", "Computer Networks", "Database Systems", "Principles of Economics"]; // 8
-const SWcurrName3 = ["Mobile Programming", "Software Engineering", "Software Industry Seminar", "Graduation ProjectsⅠ", "Principles of Management", "Computer Graphics", "Computer Architecture", "P-Practical Project", "Graduation ProjectsⅡ"]; // 9 + 2
-const SWcurrName4 = ["Computer Vision", "Technology Management", "You Make Course", "Graduation ProjectsⅢ", "Data Management R&D Lab", "Chatbot R&D Lab", "system Architecture R&D Lab", "Human-Computer Interaction", "Advanced Topics in Software", "Marketing"]; // 10
+const SWcurrName1 = [ "Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software Design\nPatterns", "\nRobotics", "Enterprise and\nLeadership"]; // 6
+const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operating\nSystems", "Probability and\nStatistics", "\nAlgorithms", "Computer\nNetworks", "Database\nSystems", "Principles of\nEconomics"]; // 8
+const SWcurrName3 = ["Mobile\nProgramming", "Software\nEngineering", "Software Industry\nSeminar", "Graduation\nProjectsⅠ", "Principles of\nManagement", "Computer\nGraphics", "Computer\nArchitecture", "P-Practical\nProject", "Graduation\nProjectsⅡ"]; // 9 + 2
+const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCourse", "Graduation\nProjectsⅢ", "Data Management\nR&D Lab", "Chatbot\nR&D Lab", "system Architecture\nR&D Lab", "Human-Computer\nInteraction", "Advanced Topics\nin Software", "\nMarketing"]; // 10
+const OtherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
+
 let currLenghth;
 let world;
 // 랜더러 오브젝트
@@ -820,6 +822,7 @@ class CurriculumManager{
 
 // 커리큘럼 관리 객체
 let currManager = new CurriculumManager();
+
 
 // 광원 처리 관리를 위한 클래스
 class Light{
