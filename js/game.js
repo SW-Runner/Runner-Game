@@ -1051,6 +1051,7 @@ class Game {
                 inputkeyBoolean = true;
                 paused = true;
                 gameOverInt = 1;
+                currManager.index =0 ;
             }, 3000);
         }
     }
