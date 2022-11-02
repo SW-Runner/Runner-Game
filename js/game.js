@@ -666,6 +666,8 @@ class ObjectsManager {
       return obj[0].position.z < 0;
     });
     if (this.objects.length === 0) {
+      gameManager.score += gameManager.roundScore;
+      gameManager.roundScore = 0;
       gameOverInt --;
     }
   }
@@ -871,8 +873,10 @@ let lightManager = new Light();
 class Game {
   constructor() {
     this.score = 0;
+    this.roundScore = 0;
     this.collision = false;
-
+    // this.roundScores = [0,0,0,0];
+    // this.round = 1;
   }
 
   // currManagaer랑 objectManager 딕셔너리 비우는 코드 추가해야한다
@@ -986,6 +990,7 @@ class Game {
 
 
   roundOver(round) {
+    // this.roundScores[round-1] = this.score;
     document.getElementById("curr").innerText = "";
     currManager.currWordDict = {};
     currManager.currCollision = {};
@@ -1035,9 +1040,12 @@ class Game {
   update(){
     let objectHit = 0;
     let currHit = 0;
-
+    // let display = document.getElementById("curr");
     let showCurr = "";
-
+    // let curr = document.createElement('div');
+    // for (const element of displayCurr.children) {
+    //   element.remove();
+    // }
     // 충돌 여부를 확인하는 코드를 돌려서 충돌한 커리큘럼, 오브젝트들 최신화
     objectManager.collisionCheck();
     currManager.collisionCheck();
@@ -1049,14 +1057,26 @@ class Game {
     });
     Object.keys(currManager.currCollision).forEach(function (value) {
       if (currManager.currCollision[value]) {
+        // const newCurr = document.createElement('p');
+        // const newCurr = document.createTextNode(currManager.currWordDict[value]);
+        // newCurr.innerText = currManager.currWordDict[value];
+        // curr.appendChild(newCurr);
         showCurr +=currManager.currWordDict[value]+"\n";
         currHit += 1;
       }
     });
-
-    this.score = (objectHit + currHit) * 10;
+    // display.appendChild(curr);
+    // curr.remove();
+    // this.score =
     // 점수 화면에 반영하기
-    document.getElementById("score").innerHTML = this.score;
+    if (objectManager.objects.length === 0) {
+      this.roundScore = 0;
+    }else {
+
+      this.roundScore = (objectHit + currHit) * 10;
+    }
+
+    document.getElementById("score").innerText = String(this.roundScore + this.score);
     document.getElementById("curr").innerHTML = showCurr;
   }
 }
@@ -1106,31 +1126,31 @@ window.onload = function init() {
         if (paused) {
           if (inputKey === spacebar) {
             count++;
-            if(count == 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
+            if(count === 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
               console.log("Count" + count);
               if (roundNumber == null) {
                   roundNumber = 1;
                   gameManager.initRound(roundNumber);
               } 
               else if (roundNumber <= 4) {
-                if(roundNumber==1) {
+                if(roundNumber===1) {
                   explain1.style.display = 'block';
                   roundNumber++;
                 }
-                else if(roundNumber==2) {
+                else if(roundNumber===2) {
                   explain2.style.display = 'block';
                   roundNumber++;
                 }
-                else if(roundNumber==3){
+                else if(roundNumber===3){
                   explain3.style.display = 'block';
                   roundNumber++;
                 }
-                else if(roundNumber==4){
+                else if(roundNumber===4){
                   explain4.style.display = 'block';
                 }                
               }
             }
-            if(count == 2) { //설명 지우고 다음 라운드 넘어가기
+            if(count === 2) { //설명 지우고 다음 라운드 넘어가기
               console.log("Count" + count);
               explain1.style.display = 'none';
               explain2.style.display = 'none';
@@ -1263,6 +1283,8 @@ window.onload = function init() {
         lightManager.update();
         gameManager.update();
         if (-5 < gameOverInt && gameOverInt <= 0) {
+          // gameManager.roundScores[gameManager.round-1] = this.score;
+          // gameManager.score = gameManager.roundScore;
           gameManager.roundOver(roundNumber);
           scene.children.forEach(function (obj) {
             scene.remove(obj);
