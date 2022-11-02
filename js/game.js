@@ -1168,7 +1168,18 @@ window.onload = function init() {
               explain22.style.display = 'none';
               explain32.style.display = 'none';
               explain42.style.display = 'none';
-              if(roundNumber!==5){
+
+              if(roundNumber==3) {
+                var track = document.getElementsByName('track');
+                var trackChoice; // 여기에 선택된 radio 버튼의 값이 담기게 된다.
+                for(var i=0; i<3; i++) {
+                    if(track[i].checked) {
+                        trackChoice = track[i].value;
+                    }
+                }
+              }
+
+              else if(roundNumber!==5){
                 gameManager.initRound(roundNumber);
               }              
               

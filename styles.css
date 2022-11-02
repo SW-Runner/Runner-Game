@@ -168,3 +168,11 @@ td:nth-child(2) {
     /* width: 1000px; */
     padding-top: 15px;
 }
+
+.test1 {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: inline-block;
+    
+}
