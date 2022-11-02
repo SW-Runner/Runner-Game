@@ -1394,7 +1394,7 @@ function createCurriculums(position, probability, minScale, maxScale) {
       tempContainer.push(object);
       tempContainer.push(currManager.index);
       currManager.currs.push(tempContainer);
-      currManager.currWordDict[currManager.index] = "test Curr" + currManager.index;
+      currManager.currWordDict[currManager.index] = SWcurrNameList[currManager.index];
       currManager.currCollision[currManager.index] = false;
       scene.add(object);
       createSpotLight(lane * 800, 100, position);
