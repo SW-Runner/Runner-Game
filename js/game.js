@@ -8,10 +8,12 @@ let SWcurrNameList
 // x 값이 커질 수록 오른쪽으로 간다
 // html 캔버스
 //과목명
-const SWcurrName1 = [ "Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software\nDesign\nPatterns", "Robotics", "Enterprise\nand\nLeadership" ]; // 6
-const SWcurrName2 = [ "Data Structures", "Object Oriented Programming", "Operating Systems", "Probability and Statistics", "Algorithms", "Computer Networks", "Database Systems", "Principles of Economics" ]; // 8
-const SWcurrName3 = [ "Mobile Programming", "Software Engineering", "Software Industry Seminar", "Graduation ProjectsⅠ", "Principles of Management", "Computer Graphics", "Computer Architecture", "P-Practical Project", "Graduation ProjectsⅡ" ]; // 9 + 2
-const SWcurrName4 = [ "Computer Vision", "Technology Management", "You Make Course", "Graduation ProjectsⅢ", "Data Management R&D Lab", "Chatbot R&D Lab", "system Architecture R&D Lab", "Human-Computer Interaction", "Advanced Topics in Software", "Marketing" ]; // 10
+const SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software Design\nPatterns", "\nRobotics", "Enterprise and\nLeadership"]; // 6
+const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operating\nSystems", "Probability and\nStatistics", "\nAlgorithms", "Computer\nNetworks", "Database\nSystems", "Principles of\nEconomics"]; // 8
+const SWcurrName3 = ["Mobile\nProgramming", "Software\nEngineering", "Software Industry\nSeminar", "Graduation\nProjectsⅠ", "Principles of\nManagement", "Computer\nGraphics", "Computer\nArchitecture", "P-Practical\nProject", "Graduation\nProjectsⅡ"]; // 9 + 2
+const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCourse", "Graduation\nProjectsⅢ", "Data Management\nR&D Lab", "Chatbot\nR&D Lab", "system Architecture\nR&D Lab", "Human-Computer\nInteraction", "Advanced Topics\nin Software", "\nMarketing"]; // 10
+const otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
+
 let currLenghth;
 let world;
 // 랜더러 오브젝트
@@ -699,11 +701,12 @@ class CurriculumManager{
     // 커리큘럼 글씨들을 저장하는 리스트
     this.SWcurrWords = [];
     // 커리큘럼 이름을 저장하는 리스트
-    this.SWcurrName1 = [ "Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software\nDesign\nPatterns", "Robotics", "Enterprise\nand\nLeadership" ]; // 6
-    this.SWcurrName2 = [ "Data Structures", "Object Oriented Programming", "Operating Systems", "Probability and Statistics", "Algorithms", "Computer Networks", "Database Systems", "Principles of Economics" ]; // 8
-    this.SWcurrName3 = [ "Mobile Programming", "Software Engineering", "Software Industry Seminar", "Graduation ProjectsⅠ", "Principles of Management", "Computer Graphics", "Computer Architecture", "P-Practical Project", "Graduation ProjectsⅡ" ]; // 9 + 2
-    this.SWcurrName4 = [ "Computer Vision", "Technology Management", "You Make Course", "Graduation ProjectsⅢ", "Data Management R&D Lab", "Chatbot R&D Lab", "system Architecture R&D Lab", "Human-Computer Interaction", "Advanced Topics in Software", "Marketing" ]; // 10
-    this.len = this.SWcurrName4.length;
+    this.SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software\nDesign\nPatterns", "Robotics", "Enterprise\nand\nLeadership"]; // 6
+    this.SWcurrName2 = ["Data Structures", "Object Oriented Programming", "Operating Systems", "Probability and Statistics", "Algorithms", "Computer Networks", "Database Systems", "Principles of Economics"]; // 8
+    this.SWcurrName3 = ["Mobile Programming", "Software Engineering", "Software Industry Seminar", "Graduation ProjectsⅠ", "Principles of Management", "Computer Graphics", "Computer Architecture", "P-Practical Project", "Graduation ProjectsⅡ"]; // 9 + 2
+    this.SWcurrName4 = ["Computer Vision", "Technology Management", "You Make Course", "Graduation ProjectsⅢ", "Data Management R&D Lab", "Chatbot R&D Lab", "system Architecture R&D Lab", "Human-Computer Interaction", "Advanced Topics in Software", "Marketing"]; // 10
+    this.otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
+
 
     // 커리큘럼 오브젝트의 크기 변수
     this.dx = 500;
@@ -1145,69 +1148,57 @@ window.onload = function init() {
         }
 
         if (paused) {
-          if (inputKey === spacebar) {
-            console.log("Count!" + count);
-            count++;
-            if(count == 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
-              console.log("Count!" + count);
-              if (roundNumber == null) {
-                  roundNumber = 1;
-                  gameManager.initRound(roundNumber);
-              } 
-              else if (roundNumber <= 4) {
-                if(roundNumber==1) {
-                  explain11.style.display = 'block';
+            if (inputKey === spacebar) {
+                console.log("Count!" + count);
+                count++;
+                if (count == 1) { //처음 시작하거나, 스트링 나오고 설명 나오게 하려는 부분
+                    console.log("Count!" + count);
+                    if (roundNumber == null) {
+                        roundNumber = 1;
+                        gameManager.initRound(roundNumber);
+                    } else if (roundNumber <= 4) {
+                        if (roundNumber == 1) {
+                            explain11.style.display = 'block';
+                        } else if (roundNumber == 2) {
+                            explain21.style.display = 'block';
+                        } else if (roundNumber == 3) {
+                            explain31.style.display = 'block';
+                        } else if (roundNumber == 4) {
+                            explain41.style.display = 'block';
+                        }
+                    }
+                } else if (count == 2) { //첫번째 설명 지우고 두번째 설명 띄우기
+                    console.log("Count!!" + count);
+                    explain11.style.display = 'none';
+                    explain21.style.display = 'none';
+                    explain31.style.display = 'none';
+                    explain41.style.display = 'none';
+
+                    if (roundNumber == 1) {
+                        explain12.style.display = 'block';
+                        roundNumber++;
+                    } else if (roundNumber == 2) {
+                        explain22.style.display = 'block';
+                        roundNumber++;
+                    } else if (roundNumber == 3) {
+                        explain32.style.display = 'block';
+                        roundNumber++;
+                    } else if (roundNumber == 4) {
+                        explain42.style.display = 'block';
+                        roundNumber++;
+                    }
+                } else if (count == 3) { //두번째 설명 지우고 다음 라운드 시작
+                    console.log("Count!!" + count);
+                    explain12.style.display = 'none';
+                    explain22.style.display = 'none';
+                    explain32.style.display = 'none';
+                    explain42.style.display = 'none';
+                    if (roundNumber !== 5) {
+                        gameManager.initRound(roundNumber);
+                    }
+                    count = 0;
                 }
-                else if(roundNumber==2) {
-                  explain21.style.display = 'block';
-                }
-                else if(roundNumber==3){
-                  explain31.style.display = 'block';
-                }
-                else if(roundNumber==4){
-                  explain41.style.display = 'block';
-                }
-              }
             }
-
-            else if(count == 2) { //첫번째 설명 지우고 두번째 설명 띄우기
-              console.log("Count!!" + count);
-              explain11.style.display = 'none';
-              explain21.style.display = 'none';
-              explain31.style.display = 'none';
-              explain41.style.display = 'none';
-
-              if(roundNumber==1) {
-                explain12.style.display = 'block';
-                roundNumber++;
-              }
-              else if(roundNumber==2) {
-                explain22.style.display = 'block';
-                roundNumber++;
-              }
-              else if(roundNumber==3){
-                explain32.style.display = 'block';
-                roundNumber++;
-              }
-              else if(roundNumber==4){
-                explain42.style.display = 'block';
-                roundNumber++;
-              }
-            }
-
-            else if(count == 3) { //두번째 설명 지우고 다음 라운드 시작
-              console.log("Count!!" + count);
-              explain12.style.display = 'none';
-              explain22.style.display = 'none';
-              explain32.style.display = 'none';
-              explain42.style.display = 'none';
-              if(roundNumber!==5){
-                gameManager.initRound(roundNumber);
-              }              
-              count = 0;
-            }
-          }
-
 
 
             if (inputKey === one) {
@@ -1396,38 +1387,41 @@ function createObjects(position, probability, minScale, maxScale) {
 // 오브젝트를 생성하는 코드랑 비슷하게, 커리큘럼 오브젝트를 생성하는 코드
 function createCurriculums(position, probability, minScale, maxScale) {
 
-  if(roundNumber ===1)
-  {
-     SWcurrNameList = [...SWcurrName1];
-  }
-  else if(roundNumber ===2)
-  {
-     SWcurrNameList = [...SWcurrName2];
-  }
-  else if(roundNumber ===3)
-  {
-     SWcurrNameList = [...SWcurrName3];
-  }
-  else if(roundNumber ===4)
-  {
-     SWcurrNameList = [...SWcurrName4];
-  }
-    let lane = Math.floor(Math.random() * 4 ) -2
+    shuffleArray(otherCurrName);
+    let otherCurrArray = otherCurrName.slice(0, 5);
+    console.log(otherCurrArray);
 
-    // if (randomNum < probability) {
-      let scale = minScale + (maxScale - minScale) * Math.random();
-      let object = currManager.createCurriculum(lane * 800, 0, position);
-      let tempContainer = [];
-      tempContainer.push(object);
-      tempContainer.push(currManager.index);
-      currManager.currs.push(tempContainer);
-      currManager.currWordDict[currManager.index] = SWcurrNameList[currManager.index];
-      currManager.currCollision[currManager.index] = false;
-      scene.add(object);
-      createSpotLight(lane * 800, 100, position);
-      createWord(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
-      currManager.index += 1;
-      console.log("index", currManager.index);
+
+    if (roundNumber === 1) {
+        SWcurrNameList = [...SWcurrName1, ...otherCurrArray];
+        shuffleArray(SWcurrNameList)
+    } else if (roundNumber === 2) {
+        SWcurrNameList = [...SWcurrName2, ...otherCurrArray];
+        shuffleArray(SWcurrNameList)
+    } else if (roundNumber === 3) {
+        SWcurrNameList = [...SWcurrName3, ...otherCurrArray];
+        shuffleArray(SWcurrNameList)
+    } else if (roundNumber === 4) {
+        SWcurrNameList = [...SWcurrName4, ...otherCurrArray];
+        shuffleArray(SWcurrNameList)
+    }
+    let lane = Math.floor(Math.random() * 4) - 2
+
+    let scale = minScale + (maxScale - minScale) * Math.random();
+    let object = currManager.createCurriculum(lane * 800, 0, position);
+    let tempContainer = [];
+    tempContainer.push(object);
+    tempContainer.push(currManager.index);
+    currManager.currs.push(tempContainer);
+    currManager.currWordDict[currManager.index] = SWcurrNameList[currManager.index];
+    currManager.currCollision[currManager.index] = false;
+    scene.add(object);
+    createSpotLight(lane * 800, 100, position);
+    createWord(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
+    currManager.index += 1;
+    console.log(roundNumber, "roundNumber");
+    console.log("index", currManager.index);
+    console.log("SWcurrNameList[currManager.index]", SWcurrNameList[currManager.index]);
 
 }
 // createCurriculums에서 불리는 함수로, 생성된 커리큘럼 오브젝트 위에 글씨 만드는 코드
@@ -1501,4 +1495,8 @@ function createWordStatic(x, y, position, text, fontSize) {
     scene.add(textMesh);
     // currManager.currWords.push(textMesh);
   });
+}
+
+function shuffleArray(array) {
+    array.sort(() => Math.random() - 0.5);
 }
