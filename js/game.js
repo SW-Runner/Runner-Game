@@ -979,7 +979,7 @@ class Game {
     setTimeout(function () {
       paused = false;
       gameOver = false;
-    }, 4000);
+    }, 6000);
   }
 
 
