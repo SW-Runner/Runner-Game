@@ -1111,7 +1111,7 @@ window.onload = function init() {
     explain32 = document.getElementById("explain32");
     explain42 = document.getElementById("explain42");
 
-    explain11.style.display = 'none';
+    explain11.style.display = 'block';
     explain21.style.display = 'none';
     explain31.style.display = 'none';
     explain41.style.display = 'none';
@@ -1207,23 +1207,33 @@ window.onload = function init() {
                 tracklist.style.display = 'block';
                 var track = document.getElementsByName('track');
                 var trackChoice; // 여기에 선택된 radio 버튼의 값이 담기게 된다.
-                for(var i=0; i<3; i++) {
-                  console.log(11);
-                    if(track[i].checked) { //체크 되면
-                        trackChoice = track[i].value;
-                        console.log("트랙: " + trackChoice)
-                        //해당 트랙으로 initRound(3)
-                        count=0;
-                        gameManager.initRound(roundNumber); //임시방편
-                    }
-                }
+                const radios = document.querySelectorAll('input[type=radio][name=track]');
+                radios.forEach((radio)=> {
+                  radio.addEventListener('change', (event) => {
+                    var a = event.currentTarget.value;
+                    console.log("track : " + a);
+                    count=0;
+                    tracklist.style.display = 'none';
+                    gameManager.initRound(roundNumber); //임시방편
+                  })
+                })
+                // for(var i=0; i<3; i++) {
+                //   console.log(track[i]);
+                //     if(track[i].checked) { //체크 되면
+                //         trackChoice = track[i].value;
+                //         console.log("트랙: " + trackChoice)
+                //         //해당 트랙으로 initRound(3)
+                //         count=0;
+                //         gameManager.initRound(roundNumber); //임시방편
+                //     }
+                // }
               }
 
               
               else if(roundNumber!==5){
+                count = 0;
                 gameManager.initRound(roundNumber);
               }              
-              count = 0;
 
             }
           }
