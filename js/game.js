@@ -1175,6 +1175,7 @@ window.onload = function init() {
                 for(var i=0; i<3; i++) {
                     if(track[i].checked) {
                         trackChoice = track[i].value;
+                        //해당 트랙으로 initRound(3)
                     }
                 }
               }
