@@ -1192,7 +1192,7 @@ window.onload = function init() {
     explain22.style.display = 'none';
     explain32.style.display = 'none';
     explain42.style.display = 'none';
-    explain33d.style.display = 'block'; //
+    explain33d.style.display = 'none'; 
     explain33s.style.display = 'none';
     explain43d.style.display = 'none';
     explain43s.style.display = 'none';
@@ -1268,7 +1268,7 @@ window.onload = function init() {
                         explain42.style.display = 'block';
                         roundNumber++;
                     }
-                } else if (count == 3) { //두번째 설명 지우고 다음 라운드 시작
+                } else if (count == 3) { //두번째 설명 지우고 1-라운드시작, 2-트랙선택, 34-세번째설명
                     console.log("Count!!" + count);
                     explain12.style.display = 'none';
                     explain22.style.display = 'none';
@@ -1279,7 +1279,7 @@ window.onload = function init() {
                         var tracklist = document.getElementById("tracklist");
                         tracklist.style.display = "block";
                         var track = document.getElementsByName("track");
-                        var trackChoice; // 여기에 선택된 radio 버튼의 값이 담기게 된다.
+                        var trackChoice; 
                         const radios = document.querySelectorAll(
                             "input[type=radio][name=track]"
                         );
@@ -1289,21 +1289,41 @@ window.onload = function init() {
                                 console.log("track : " + trackId);
                                 count = 0;
                                 tracklist.style.display = "none";
-                                gameManager.initRound(roundNumber); //임시방편
+                                gameManager.initRound(roundNumber); 
                             });
                         });
                     } 
-                    else if (roundNumber == 4) { //3 끝나면
-                      explain33.style.display = 'block';
+                    else if (roundNumber == 4) { //3 끝나면 
+                      if (trackId === "bigdata") {
+                        explain33d.style.display = 'block';
+                      }
+                      else if (trackId === "smart"){
+                        explain33s.style.display = 'block';
+                      }                      
                     }
                     else if (roundNumber == 5) { //4 끝나면
-                      explain43.style.display = 'block';
+                      if (trackId === "bigdata") {
+                        explain43d.style.display = 'block';
+                      }
+                      else if (trackId === "smart"){
+                        explain43s.style.display = 'block';
+                      }    
                     }                    
-                    else if (roundNumber < 4) { //1,2,3,4
+                    else if (roundNumber < 3) { //1라운드 끝나면
                       count = 0;
                       gameManager.initRound(roundNumber);
-                    }
-                    
+                    }                    
+                }
+                else if (count == 4) {
+                  explain33d.style.display = 'none';
+                  explain33s.style.display = 'none';
+                  explain43d.style.display = 'none';
+                  explain43s.style.display = 'none';
+                  count = 0;
+                  if(roundNumber == 4){ //3라운드 끝나면
+                    gameManager.initRound(roundNumber);
+                  }
+                  
                 }
             }
 
