@@ -4,16 +4,44 @@ let gameOverInt = 1;
 let inputkeyBoolean = true;
 // 우리학과 커리큘럼 & 다른학과 커리큘럼이 들어갈 리스트
 let SWcurrNameList
+let trackId;
 // 카메라 위치 설정
 // z 값이 커질 수록, 모니터에 가까워짐,
 // y 값이 커질 수록 위로 올라가고
 // x 값이 커질 수록 오른쪽으로 간다
+// html 캔버스
+let finalCurr = [];
+let finalHit = 0;
+//게임중 먹은 SW 커리큘럼, 다른 학과 커리큘럼 전부 누적
+let finalTotalCurr= [];
 //과목명
 const SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software Design\nPatterns", "\nRobotics", "Enterprise and\nLeadership"]; // 6
 const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operating\nSystems", "Probability and\nStatistics", "\nAlgorithms", "Computer\nNetworks", "Database\nSystems", "Principles of\nEconomics"]; // 8
 const SWcurrName3 = ["Mobile\nProgramming", "Software\nEngineering", "Software Industry\nSeminar", "Graduation\nProjectsⅠ", "Principles of\nManagement", "Computer\nGraphics", "Computer\nArchitecture", "P-Practical\nProject", "Graduation\nProjectsⅡ"]; // 9 + 2
 const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCourse", "Graduation\nProjectsⅢ", "Data Management\nR&D Lab", "Chatbot\nR&D Lab", "system Architecture\nR&D Lab", "Human-Computer\nInteraction", "Advanced Topics\nin Software", "\nMarketing"]; // 10
 const otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
+//우리학과 커리큘럼 전부 누적
+const TotalSWcurrName = [...SWcurrName1,...SWcurrName2,...SWcurrName3,...SWcurrName4];
+
+
+const dataTrack3 = [
+    "Data\nScience",
+    "Machine\nLearning"
+]
+
+const dataTrack4 = [
+    "Deep\nLearning",
+    "Database2"
+]
+const sensorTrack3 = [
+    "Sensor and Wireless\nSensor Networks",
+    "Drones and\nRobotics"
+];
+
+const sensorTrack4 = [
+    "Embedded\nSystems",
+    "VR and\nVR"
+]
 
 // 현재 커리큘럼 리스트의 길이
 let currLength;
@@ -701,8 +729,14 @@ class CurriculumManager {
         this.currWordDict = {};
 
         this.SWcurrs = {};
-
-
+        // 커리큘럼 글씨들을 저장하는 리스트
+        this.SWcurrWords = [];
+        // 커리큘럼 이름을 저장하는 리스트
+        this.SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software\nDesign\nPatterns", "Robotics", "Enterprise\nand\nLeadership"]; // 6
+        this.SWcurrName2 = ["Data Structures", "Object Oriented Programming", "Operating Systems", "Probability and Statistics", "Algorithms", "Computer Networks", "Database Systems", "Principles of Economics"]; // 8
+        this.SWcurrName3 = ["Mobile Programming", "Software Engineering", "Software Industry Seminar", "Graduation ProjectsⅠ", "Principles of Management", "Computer Graphics", "Computer Architecture", "P-Practical Project", "Graduation ProjectsⅡ"]; // 9 + 2
+        this.SWcurrName4 = ["Computer Vision", "Technology Management", "You Make Course", "Graduation ProjectsⅢ", "Data Management R&D Lab", "Chatbot R&D Lab", "system Architecture R&D Lab", "Human-Computer Interaction", "Advanced Topics in Software", "Marketing"]; // 10
+        this.otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
 
         // 커리큘럼 오브젝트의 크기 변수
         this.dx = 500;
@@ -769,7 +803,6 @@ class CurriculumManager {
                         coinManager.queuedAction.push(i);
                     }
                 }
-
                 // 충돌 여부를 확인했으면 true로 값을 변경한다.
                 currManager.currCollision[obj[1]] = true;
             }
@@ -1042,6 +1075,11 @@ class Game {
             } else if (roundNumber === 4) {
                 createWordStatic(0, -2100, -7000, roundString, 500);
             }
+            if(gameOverInt === -1) {
+                finalTotalCurr = [...finalTotalCurr, ...finalCurr]
+                console.log(finalTotalCurr)
+                finalCurr = [];
+            }
             round++;
             cancelAnimationFrame(animation);
             scene.children.forEach(function (obj) {
@@ -1086,6 +1124,8 @@ class Game {
                     showCurr += "<p>"+currManager.currWordDict[value] + "</p>";
                     currHit += 1;
                 }
+                finalCurr[currHit] = currManager.currWordDict[value];
+
             }
         });
 
@@ -1198,27 +1238,68 @@ window.onload = function init() {
                     explain22.style.display = 'none';
                     explain32.style.display = 'none';
                     explain42.style.display = 'none';
-                    if (roundNumber === 3) {
-                        // console.log(00);
 
+                    if (roundNumber === 3) {
                         var tracklist = document.getElementById("tracklist");
-                        tracklist.style.display = 'block';
-                        var track = document.getElementsByName('track');
+                        tracklist.style.display = "block";
+                        var track = document.getElementsByName("track");
                         var trackChoice; // 여기에 선택된 radio 버튼의 값이 담기게 된다.
-                        for (var i = 0; i < 3; i++) {
-                            console.log(11);
-                            if (track[i].checked) { //체크 되면
-                                trackChoice = track[i].value;
-                                console.log("트랙: " + trackChoice)
-                                //해당 트랙으로 initRound(3)
+                        const radios = document.querySelectorAll(
+                            "input[type=radio][name=track]"
+                        );
+                        radios.forEach((radio) => {
+                            radio.addEventListener("change", (event) => {
+                                trackId = event.currentTarget.value;
+                                console.log("track : " + trackId);
                                 count = 0;
+                                tracklist.style.display = "none";
                                 gameManager.initRound(roundNumber); //임시방편
-                            }
-                        }
+                            });
+                        });
                     } else if (roundNumber !== 5) {
                         gameManager.initRound(roundNumber);
                     }
+                    else if(roundNumber === 5) //TODO 의성: 최종 결과 html에 출력해야함
+                    {
+                        //finalTotalCurr : 게임중 먹은 SW 커리큘럼, 다른 학과 커리큘럼 전부 누적
+                        //TotalSWcurrName : 우리 학과 전체 커리큘럼 배열
+
+                        //SWFinalResult : 게임중 먹은 SW 커리큘럼 저장
+                        const SWFinalResult = finalTotalCurr.reduce((prev,cur)=> {
+                            if(TotalSWcurrName.includes(cur))
+                            {
+                                prev.push(cur);
+                            }
+                            return prev;
+                        },[])
+
+                        //OtherFinalResult : 게임중 먹은 다른 학과 커리큘럼 저장
+                        const OtherFinalResult = finalTotalCurr.reduce((prev,cur)=> {
+                            if(otherCurrName.includes(cur))
+                            {
+                                prev.push(cur);
+                            }
+                            return prev;
+                        },[])
+
+                        //FailSWFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
+                        const FailSWFinalResult = TotalSWcurrName.reduce((prev,cur)=>{
+                            if(!SWFinalResult.includes(cur))
+                            {
+                                prev.push(cur);
+                            }
+                            return prev;
+                        },[])
+
+                        console.log("SWFinalResult : SW 커리큘럼 먹은 것");
+                        console.log(SWFinalResult);
+                        console.log("FailSWFinalResult : SW 커리큘럼 못 먹은 것");
+                        console.log(FailSWFinalResult);
+                        console.log("OtherFinalResult : 다른 학과 커리큘럼 먹은 것");
+                        console.log(OtherFinalResult);
+                    }
                     count = 0;
+
                 }
             }
 
@@ -1438,9 +1519,7 @@ function createCurriculums(position, probability, minScale, maxScale) {
     }
     createWord(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
     currManager.index += 1;
-    console.log(roundNumber, "roundNumber");
-    console.log("index", currManager.index);
-    console.log("SWcurrNameList[currManager.index]", SWcurrNameList[currManager.index]);
+
 
 }
 
