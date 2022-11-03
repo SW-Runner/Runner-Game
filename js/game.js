@@ -10,6 +10,7 @@ let trackId;
 // html 캔버스
 let finalCurr = [];
 let finalHit = 0;
+//게임중 먹은 SW 커리큘럼, 다른 학과 커리큘럼 전부 누적
 let finalTotalCurr= [];
 //과목명
 const SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software Design\nPatterns", "\nRobotics", "Enterprise and\nLeadership"]; // 6
@@ -17,17 +18,9 @@ const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operat
 const SWcurrName3 = ["Mobile\nProgramming", "Software\nEngineering", "Software Industry\nSeminar", "Graduation\nProjectsⅠ", "Principles of\nManagement", "Computer\nGraphics", "Computer\nArchitecture", "P-Practical\nProject", "Graduation\nProjectsⅡ"]; // 9 + 2
 const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCourse", "Graduation\nProjectsⅢ", "Data Management\nR&D Lab", "Chatbot\nR&D Lab", "system Architecture\nR&D Lab", "Human-Computer\nInteraction", "Advanced Topics\nin Software", "\nMarketing"]; // 10
 const otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
+//우리학과 커리큘럼 전부 누적
 const TotalSWcurrName = [...SWcurrName1,...SWcurrName2,...SWcurrName3,...SWcurrName4];
 
-// const generalTrack3 = [
-//     "Data\nScience",
-//     "Introduction\nto All",
-// ];
-//
-// const generalTrack4 = [
-//     "Cloud Computing\nSystem",
-//     "Cyber\nSecurity"
-// ];
 
 const dataTrack3 = [
     "Data\nScience",
@@ -1295,10 +1288,12 @@ window.onload = function init() {
                     } else if (roundNumber !== 5) {
                         gameManager.initRound(roundNumber);
                     }
-                    else if(roundNumber === 5)
+                    else if(roundNumber === 5) //TODO 의성: 최종 결과 html에 출력해야함
                     {
-                        console.log("This is " , roundNumber);
-                        console.log(finalTotalCurr);
+                        //finalTotalCurr : 게임중 먹은 SW 커리큘럼, 다른 학과 커리큘럼 전부 누적
+                        //TotalSWcurrName : 우리 학과 전체 커리큘럼 배열
+
+                        //SWFinalResult : 게임중 먹은 SW 커리큘럼 저장
                         const SWFinalResult = finalTotalCurr.reduce((prev,cur)=> {
                             if(TotalSWcurrName.includes(cur))
                             {
@@ -1307,6 +1302,7 @@ window.onload = function init() {
                             return prev;
                         },[])
 
+                        //OtherFinalResult : 게임중 먹은 다른 학과 커리큘럼 저장
                         const OtherFinalResult = finalTotalCurr.reduce((prev,cur)=> {
                             if(otherCurrName.includes(cur))
                             {
@@ -1315,6 +1311,7 @@ window.onload = function init() {
                             return prev;
                         },[])
 
+                        //FailSWFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
                         const FailSWFinalResult = TotalSWcurrName.reduce((prev,cur)=>{
                             if(!SWFinalResult.includes(cur))
                             {
