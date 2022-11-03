@@ -1085,7 +1085,7 @@ class Game {
                     objectHit -= 1;
                 } else {
 
-                    showCurr += currManager.currWordDict[value] + "\n";
+                    showCurr += "<p>"+currManager.currWordDict[value] + "</p>";
                     currHit += 1;
                 }
             }
