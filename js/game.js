@@ -195,9 +195,7 @@ class Character {
                 coin.position.x -= 200;
                 let offset = this.currentLane * 800 - runningCharacter.position.x;
                 if (offset > 800) {
-                    // if (this.currentLane === -2) {
-                    //   this.currentLane = -1;
-                    // }
+
                     this.currentLane -= 1;
                     runningCharacter.position.x = this.currentLane * 800;
                     coin.position.x = this.currentLane * 800;
@@ -656,19 +654,19 @@ class ObjectsManager {
         //roundspeed 1)라운드 별 object(장애물) 속도 설정
         if (roundNumber === 1) {
             this.objects.forEach(function (obj) {
-                obj[0].position.z += 150;
+                obj[0].position.z += 70;
             });
         } else if (roundNumber === 2) {
             this.objects.forEach(function (obj) {
-                obj[0].position.z += 200;
+                obj[0].position.z += 90;
             });
         } else if (roundNumber === 3) {
             this.objects.forEach(function (obj) {
-                obj[0].position.z += 220;
+                obj[0].position.z += 110;
             });
         } else if (roundNumber === 4) {
             this.objects.forEach(function (obj) {
-                obj[0].position.z += 250;
+                obj[0].position.z += 130;
             });
         }
 
@@ -758,10 +756,7 @@ class CurriculumManager {
                 && objMinY <= charMaxY && objMaxY >= charMinY
                 && objMinZ <= charMaxZ && objMaxZ >= charMinZ) {
                 console.log("collision check");
-                console.log(currManager.currWordDict[obj[1]]);
-                console.log(SWcurrNameList);
-                console.log(otherCurrName);
-                console.log(currManager.SWcurrs);
+
                 if (!currManager.SWcurrs[obj[1]]) {
                     console.log("hahahahahahahahahah");
                     if (!currManager.currCollision[obj[1]]) {
@@ -787,35 +782,35 @@ class CurriculumManager {
         //roundspeed 2)라운드 별 커리큘럼 속도와 커리큘럼 word 속도
         if (roundNumber === 1) {
             this.currs.forEach(function (obj) {
-                obj[0].position.z += 150;
+                obj[0].position.z += 70;
             });
 
             this.currWords.forEach(function (obj) {
-                obj.position.z += 150;
+                obj.position.z += 70;
             });
         } else if (roundNumber === 2) {
             this.currs.forEach(function (obj) {
-                obj[0].position.z += 200;
+                obj[0].position.z += 90;
             });
 
             this.currWords.forEach(function (obj) {
-                obj.position.z += 200;
+                obj.position.z += 90;
             });
         } else if (roundNumber === 3) {
             this.currs.forEach(function (obj) {
-                obj[0].position.z += 220;
+                obj[0].position.z += 110;
             });
 
             this.currWords.forEach(function (obj) {
-                obj.position.z += 220;
+                obj.position.z += 110;
             });
         } else if (roundNumber === 4) {
             this.currs.forEach(function (obj) {
-                obj[0].position.z += 250;
+                obj[0].position.z += 130;
             });
 
             this.currWords.forEach(function (obj) {
-                obj.position.z += 250;
+                obj.position.z += 130;
             });
         }
 
@@ -861,23 +856,23 @@ class Light {
         //roundspeed 3)
         if (roundNumber === 1) {
             this.spotLights.forEach(function (obj) {
-                obj.position.z += 150;
-                obj.target.position.z += 150;
+                obj.position.z += 70;
+                obj.target.position.z += 70;
             });
         } else if (roundNumber === 2) {
             this.spotLights.forEach(function (obj) {
-                obj.position.z += 200;
-                obj.target.position.z += 200;
+                obj.position.z += 90;
+                obj.target.position.z += 90;
             });
         } else if (roundNumber === 3) {
             this.spotLights.forEach(function (obj) {
-                obj.position.z += 220;
-                obj.target.position.z += 220;
+                obj.position.z += 110;
+                obj.target.position.z += 110;
             });
         } else if (roundNumber === 4) {
             this.spotLights.forEach(function (obj) {
-                obj.position.z += 250;
-                obj.target.position.z += 250;
+                obj.position.z += 130;
+                obj.target.position.z += 130;
             });
         }
 
@@ -902,6 +897,7 @@ class Game {
         this.score = 0;
         this.roundScore = 0;
         this.collision = false;
+        this.finalCurr = [];
 
     }
 
@@ -927,12 +923,12 @@ class Game {
             currLength = SWcurrName2.length + 5;
         } else if (round === 3) {
             camera.position.set(cameraX, cameraY, cameraZ);
-            camera.lookAt(new THREE.Vector3(defaultDestX, -1000, defaultDestZ));
+            camera.lookAt(new THREE.Vector3(defaultDestX, -500, defaultDestZ));
             window.camera = camera;
             currLength = SWcurrName3.length + 5;
         } else if (round === 4) {
             camera.position.set(cameraX, cameraY, cameraZ);
-            camera.lookAt(new THREE.Vector3(defaultDestX, -1200, defaultDestZ));
+            camera.lookAt(new THREE.Vector3(defaultDestX, -700, defaultDestZ));
             window.camera = camera;
             currLength = SWcurrName4.length + 5;
         }
@@ -1007,13 +1003,13 @@ class Game {
         // 커리큘럼 객체를 만들고 텍스트까지 매핑
         shuffleCurriculum();
         for (let i = 25; i < 25 + currLength; i++) {
-            createCurriculums(i * -4000, 0.2, 0.6, 0.7);
+            createCurriculums(i * -3000, 0.2, 0.6, 0.7);
         }
 
         // 장애물 & 오브젝트 만들기
         // TODO: 장애물 어떻게 만들어질지 정해야될듯
-        for (let i = 10; i < 50; i++) {
-            createObjects(i * -3000, 0.2, 0.6, 0.7);
+        for (let i = 10; i < 25+currLength+1; i++) {
+            createObjects(i * -3000, 0.3, 0.6, 0.7);
         }
 
         setTimeout(function () {
@@ -1026,6 +1022,7 @@ class Game {
     roundOver(round) {
         // this.roundScores[round-1] = this.score;
         document.getElementById("curr").innerText = "";
+        // 여기에 먹은 커리큘럼들 this.finalCurr에 추가하는 코드 추가해야함
         currManager.currWordDict = {};
         currManager.currCollision = {};
         objectManager.objectCollision = {};
@@ -1086,9 +1083,9 @@ class Game {
         });
         Object.keys(currManager.currCollision).forEach(function (value) {
             if (currManager.currCollision[value]) {
-                if (currManager.currWordDict[value] in otherCurrName) {
+                if (currManager.SWcurrs[value] === false) {
                     objectHit -= 1;
-                }else {
+                } else {
 
                     showCurr += currManager.currWordDict[value] + "\n";
                     currHit += 1;
@@ -1411,7 +1408,7 @@ function createGround(dx, dy, dz, map, x, y, z, notFlatShading) {
 function createObjects(position, probability, minScale, maxScale) {
     for (let lane = -2; lane <= 2; lane++) {
         let randomNum = Math.random();
-        if (randomNum < probability && !(position in currManager.currPositions)) {
+        if (randomNum < probability && !(currManager.currPositions[position] === lane)) {
             let scale = minScale + (maxScale - minScale) * Math.random();
             objectManager.createObject(lane * 800, -400, position);
         }
@@ -1421,43 +1418,30 @@ function createObjects(position, probability, minScale, maxScale) {
 // 오브젝트를 생성하는 코드랑 비슷하게, 커리큘럼 오브젝트를 생성하는 코드
 function createCurriculums(position, probability, minScale, maxScale) {
 
-    // shuffleArray(otherCurrName);
-    // let otherCurrArray = otherCurrName.slice(0, 5);
-    // console.log(otherCurrArray);
-    //
-    //
-    // if (roundNumber === 1) {
-    //     SWcurrNameList = [...SWcurrName1, ...otherCurrArray];
-    //     shuffleArray(SWcurrNameList)
-    // } else if (roundNumber === 2) {
-    //     SWcurrNameList = [...SWcurrName2, ...otherCurrArray];
-    //     shuffleArray(SWcurrNameList)
-    // } else if (roundNumber === 3) {
-    //     SWcurrNameList = [...SWcurrName3, ...otherCurrArray];
-    //     shuffleArray(SWcurrNameList)
-    // } else if (roundNumber === 4) {
-    //     SWcurrNameList = [...SWcurrName4, ...otherCurrArray];
-    //     shuffleArray(SWcurrNameList)
-    // }
+
     let lane = Math.floor(Math.random() * 4) - 2
 
     let scale = minScale + (maxScale - minScale) * Math.random();
     let object = currManager.createCurriculum(lane * 800, 0, position);
-    currManager.currPositions[position] = true;
+    currManager.currPositions[position] = lane;
     let tempContainer = [];
     tempContainer.push(object);
     tempContainer.push(currManager.index);
     currManager.currs.push(tempContainer);
     currManager.currWordDict[currManager.index] = SWcurrNameList[currManager.index];
-
-    if (!(SWcurrNameList[currManager.index] in otherCurrName)) {
-        currManager.SWcurrs[currManager.index] = true;
-    } else {
-        currManager.SWcurrs[currManager.index] = false;
+    currManager.SWcurrs[currManager.index] = true;
+    for (const otherElement of otherCurrName) {
+        if (SWcurrNameList[currManager.index] === otherElement) {
+            currManager.SWcurrs[currManager.index] = false;
+            console.log("이거 떠야함 ㄹㅇ");
+        }
     }
+
     currManager.currCollision[currManager.index] = false;
     scene.add(object);
-    createSpotLight(lane * 800, 100, position);
+    if (currManager.SWcurrs[currManager.index]) {
+        createSpotLight(lane * 800, 100, position);
+    }
     createWord(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
     currManager.index += 1;
     console.log(roundNumber, "roundNumber");
@@ -1501,9 +1485,9 @@ function createWord(x, y, position, text, fontSize) {
 function createSpotLight(x, y, position) {
     let spotLight = new THREE.SpotLight();
     // y좌표가 5000이니까 위에서 아래로 스포트라이트가 향하게 설정
-    spotLight.position.set(x, 5000, position);
+    spotLight.position.set(x, 6000, position);
     // 조명 강도
-    spotLight.intensity = 8;
+    spotLight.intensity = 6;
     // 이 값을 줄이면 스포트라이트의 원이 커진다
     spotLight.angle = Math.PI / 30;
     spotLight.target.position.set(x, y, position);
