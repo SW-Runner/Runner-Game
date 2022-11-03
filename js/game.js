@@ -838,7 +838,7 @@ class Light {
         // 광원처리를 위한 시간
         this.time = new Date() / 1000;
         // 광원처리 이펙트 루프 시간
-        this.loopTime = 4;
+        this.loopTime = 3;
         // 커리큘럼을 비추는 스포트라이트 리스트
         this.spotLights = [];
     }
@@ -850,10 +850,8 @@ class Light {
         let curTime = new Date() / 1000;
         let timeDiff = curTime - this.time;
 
-        this.backLight.intensity = 8 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)) + 0.1);
-        this.upLight.intensity = 8 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)) + 0.1);
-
-        //roundspeed 3)
+        this.backLight.intensity = 4 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)))+4;
+        this.upLight.intensity = 4 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)))+4;44        //roundspeed 3)
         if (roundNumber === 1) {
             this.spotLights.forEach(function (obj) {
                 obj.position.z += 70;
