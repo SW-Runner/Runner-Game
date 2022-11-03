@@ -17,7 +17,7 @@ const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operat
 const SWcurrName3 = ["Mobile\nProgramming", "Software\nEngineering", "Software Industry\nSeminar", "Graduation\nProjectsⅠ", "Principles of\nManagement", "Computer\nGraphics", "Computer\nArchitecture", "P-Practical\nProject", "Graduation\nProjectsⅡ"]; // 9 + 2
 const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCourse", "Graduation\nProjectsⅢ", "Data Management\nR&D Lab", "Chatbot\nR&D Lab", "system Architecture\nR&D Lab", "Human-Computer\nInteraction", "Advanced Topics\nin Software", "\nMarketing"]; // 10
 const otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
-
+const TotalSWcurrName = [...SWcurrName1,...SWcurrName2,...SWcurrName3,...SWcurrName4];
 
 // const generalTrack3 = [
 //     "Data\nScience",
@@ -734,7 +734,7 @@ class CurriculumManager {
         // 먹은 오브젝트 글씨 정보를 매핑하기 위한 딕셔너리
         this.currWordDict = {};
 
-        this.SWcurrs = [];
+        this.SWcurrs = {};
         // 커리큘럼 글씨들을 저장하는 리스트
         this.SWcurrWords = [];
         // 커리큘럼 이름을 저장하는 리스트
@@ -1295,6 +1295,41 @@ window.onload = function init() {
                     } else if (roundNumber !== 5) {
                         gameManager.initRound(roundNumber);
                     }
+                    else if(roundNumber === 5)
+                    {
+                        console.log("This is " , roundNumber);
+                        console.log(finalTotalCurr);
+                        const SWFinalResult = finalTotalCurr.reduce((prev,cur)=> {
+                            if(TotalSWcurrName.includes(cur))
+                            {
+                                prev.push(cur);
+                            }
+                            return prev;
+                        },[])
+
+                        const OtherFinalResult = finalTotalCurr.reduce((prev,cur)=> {
+                            if(otherCurrName.includes(cur))
+                            {
+                                prev.push(cur);
+                            }
+                            return prev;
+                        },[])
+
+                        const FailSWFinalResult = TotalSWcurrName.reduce((prev,cur)=>{
+                            if(!SWFinalResult.includes(cur))
+                            {
+                                prev.push(cur);
+                            }
+                            return prev;
+                        },[])
+
+                        console.log("SWFinalResult : SW 커리큘럼 먹은 것");
+                        console.log(SWFinalResult);
+                        console.log("FailSWFinalResult : SW 커리큘럼 못 먹은 것");
+                        console.log(FailSWFinalResult);
+                        console.log("OtherFinalResult : 다른 학과 커리큘럼 먹은 것");
+                        console.log(OtherFinalResult);
+                    }
                     count = 0;
 
                 }
@@ -1321,6 +1356,7 @@ window.onload = function init() {
                 gameManager.initRound(roundNumber);
                 count = 0;
             }
+
 
             document.getElementById("variable-content").style.visibility = "hidden";
             document.getElementById("controls").style.visibility = "hidden";
