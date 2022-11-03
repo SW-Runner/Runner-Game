@@ -176,3 +176,7 @@ td:nth-child(2) {
     display: inline-block;
     
 }
+
+.curr{
+    font-size: 0.5em;
+}
