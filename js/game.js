@@ -13,7 +13,7 @@ let trackId;
 let finalCurr = [];
 let finalHit = 0;
 //게임중 먹은 SW 커리큘럼, 다른 학과 커리큘럼 전부 누적
-let finalTotalCurr= [];
+let finalTotalCurr = [];
 //과목명
 const SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software Design\nPatterns", "\nRobotics", "Enterprise and\nLeadership"]; // 6
 const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operating\nSystems", "Probability and\nStatistics", "\nAlgorithms", "Computer\nNetworks", "Database\nSystems", "Principles of\nEconomics"]; // 8
@@ -21,7 +21,7 @@ const SWcurrName3 = ["Mobile\nProgramming", "Software\nEngineering", "Software I
 const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCourse", "Graduation\nProjectsⅢ", "Data Management\nR&D Lab", "Chatbot\nR&D Lab", "system Architecture\nR&D Lab", "Human-Computer\nInteraction", "Advanced Topics\nin Software", "\nMarketing"]; // 10
 const otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
 //우리학과 커리큘럼 전부 누적
-const TotalSWcurrName = [...SWcurrName1,...SWcurrName2,...SWcurrName3,...SWcurrName4];
+const TotalSWcurrName = [...SWcurrName1, ...SWcurrName2, ...SWcurrName3, ...SWcurrName4];
 
 
 const dataTrack3 = [
@@ -885,8 +885,8 @@ class Light {
         let curTime = new Date() / 1000;
         let timeDiff = curTime - this.time;
 
-        this.backLight.intensity = 4 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)))+4;
-        this.upLight.intensity = 4 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)))+4;
+        this.backLight.intensity = 4 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff))) + 4;
+        this.upLight.intensity = 4 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff))) + 4;
         //roundspeed 3)
         if (roundNumber === 1) {
             this.spotLights.forEach(function (obj) {
@@ -1038,7 +1038,7 @@ class Game {
 
         // 장애물 & 오브젝트 만들기
         // TODO: 장애물 어떻게 만들어질지 정해야될듯
-        for (let i = 10; i < 25+currLength+1; i++) {
+        for (let i = 10; i < 25 + currLength + 1; i++) {
             createObjects(i * -3000, 0.3, 0.6, 0.7);
         }
 
@@ -1075,7 +1075,7 @@ class Game {
             } else if (roundNumber === 4) {
                 createWordStatic(0, -2100, -7000, roundString, 500);
             }
-            if(gameOverInt === -1) {
+            if (gameOverInt === -1) {
                 finalTotalCurr = [...finalTotalCurr, ...finalCurr]
                 console.log(finalTotalCurr)
                 finalCurr = [];
@@ -1121,7 +1121,7 @@ class Game {
                     objectHit -= 1;
                 } else {
 
-                    showCurr += "<p>"+currManager.currWordDict[value] + "</p>";
+                    showCurr += "<p>" + currManager.currWordDict[value] + "</p>";
                     currHit += 1;
                 }
                 finalCurr[currHit] = currManager.currWordDict[value];
@@ -1258,38 +1258,34 @@ window.onload = function init() {
                         });
                     } else if (roundNumber !== 5) {
                         gameManager.initRound(roundNumber);
-                    }
-                    else if(roundNumber === 5) //TODO 의성: 최종 결과 html에 출력해야함
+                    } else if (roundNumber === 5) //TODO 의성: 최종 결과 html에 출력해야함
                     {
                         //finalTotalCurr : 게임중 먹은 SW 커리큘럼, 다른 학과 커리큘럼 전부 누적
                         //TotalSWcurrName : 우리 학과 전체 커리큘럼 배열
 
                         //SWFinalResult : 게임중 먹은 SW 커리큘럼 저장
-                        const SWFinalResult = finalTotalCurr.reduce((prev,cur)=> {
-                            if(TotalSWcurrName.includes(cur))
-                            {
+                        const SWFinalResult = finalTotalCurr.reduce((prev, cur) => {
+                            if (TotalSWcurrName.includes(cur)) {
                                 prev.push(cur);
                             }
                             return prev;
-                        },[])
+                        }, [])
 
                         //OtherFinalResult : 게임중 먹은 다른 학과 커리큘럼 저장
-                        const OtherFinalResult = finalTotalCurr.reduce((prev,cur)=> {
-                            if(otherCurrName.includes(cur))
-                            {
+                        const OtherFinalResult = finalTotalCurr.reduce((prev, cur) => {
+                            if (otherCurrName.includes(cur)) {
                                 prev.push(cur);
                             }
                             return prev;
-                        },[])
+                        }, [])
 
                         //FailSWFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
-                        const FailSWFinalResult = TotalSWcurrName.reduce((prev,cur)=>{
-                            if(!SWFinalResult.includes(cur))
-                            {
+                        const FailSWFinalResult = TotalSWcurrName.reduce((prev, cur) => {
+                            if (!SWFinalResult.includes(cur)) {
                                 prev.push(cur);
                             }
                             return prev;
-                        },[])
+                        }, [])
 
                         console.log("SWFinalResult : SW 커리큘럼 먹은 것");
                         console.log(SWFinalResult);
@@ -1517,7 +1513,12 @@ function createCurriculums(position, probability, minScale, maxScale) {
     if (currManager.SWcurrs[currManager.index]) {
         createSpotLight(lane * 800, 100, position);
     }
-    createWord(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
+    if (currManager.SWcurrs[currManager.index]) {
+
+        createWord(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
+    }else {
+        createWordOthercurr(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
+    }
     currManager.index += 1;
 
 
@@ -1542,6 +1543,36 @@ function createWord(x, y, position, text, fontSize) {
         // 글씨 색 지정
         let fontMat = new THREE.MeshBasicMaterial({
             color: 0x5F9DF7,
+            wireframe: true
+        })
+        // 글씨 오브젝트 생성
+        let textMesh = new THREE.Mesh(fontGeo, fontMat);
+        // 글씨 위치 지정
+        textMesh.position.set(x, y, position);
+        // 씬에 추가
+        scene.add(textMesh)
+        currManager.currWords.push(textMesh);
+    });
+}
+
+function createWordOthercurr(x, y, position, text, fontSize) {
+    fontLoader.load(fontURL, (font) => {
+        // 쓸 글씨
+        let fontGeo = new THREE.TextGeometry(
+            text, {
+                font: font,
+                size: fontSize, // 글씨 크기
+                height: 100, // 글씨 두께
+                curveSegments: 12
+            }
+        )
+        // 효과를 위한 코드
+        fontGeo.computeBoundingBox();
+        let xMid = -0.5 * (fontGeo.boundingBox.max.x - fontGeo.boundingBox.min.x);
+        fontGeo.translate(xMid, 0, 0);
+        // 글씨 색 지정
+        let fontMat = new THREE.MeshBasicMaterial({
+            color: 0xE97777,
             wireframe: true
         })
         // 글씨 오브젝트 생성
