@@ -9,6 +9,8 @@ let trackId;
 // x 값이 커질 수록 오른쪽으로 간다
 // html 캔버스
 let finalCurr = [];
+let finalHit = 0;
+let finalTotalCurr= [];
 //과목명
 const SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software Design\nPatterns", "\nRobotics", "Enterprise and\nLeadership"]; // 6
 const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operating\nSystems", "Probability and\nStatistics", "\nAlgorithms", "Computer\nNetworks", "Database\nSystems", "Principles of\nEconomics"]; // 8
@@ -1101,6 +1103,11 @@ class Game {
             } else if (roundNumber === 4) {
                 createWordStatic(0, -2100, -7000, roundString, 500);
             }
+            if(gameOverInt == -1) {
+                finalTotalCurr = [...finalTotalCurr, ...finalCurr]
+                console.log(finalTotalCurr)
+                finalCurr = [];
+            }
             round++;
             cancelAnimationFrame(animation);
             scene.children.forEach(function (obj) {
@@ -1148,7 +1155,11 @@ class Game {
                 //의성2)
                 showCurr += currManager.currWordDict[value] + "\n";
                 // finalCurr.push(currManager.currWordDict[value]);
+                finalCurr[currHit] = currManager.currWordDict[value];
                 currHit += 1;
+                // finalHit += 1;
+                console.log(finalCurr)
+                console.log(currHit);
             }
         });
         // display.appendChild(curr);
