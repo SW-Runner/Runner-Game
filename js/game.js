@@ -1,12 +1,13 @@
+// 게임오버 판단하는 정수
 let gameOverInt = 1;
 //라운드 종료시에 inputkey 다시 눌릴 수 있게 하는 변수
 let inputkeyBoolean = true;
+// 우리학과 커리큘럼 & 다른학과 커리큘럼이 들어갈 리스트
 let SWcurrNameList
 // 카메라 위치 설정
 // z 값이 커질 수록, 모니터에 가까워짐,
 // y 값이 커질 수록 위로 올라가고
 // x 값이 커질 수록 오른쪽으로 간다
-// html 캔버스
 //과목명
 const SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software Design\nPatterns", "\nRobotics", "Enterprise and\nLeadership"]; // 6
 const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operating\nSystems", "Probability and\nStatistics", "\nAlgorithms", "Computer\nNetworks", "Database\nSystems", "Principles of\nEconomics"]; // 8
@@ -14,6 +15,7 @@ const SWcurrName3 = ["Mobile\nProgramming", "Software\nEngineering", "Software I
 const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCourse", "Graduation\nProjectsⅢ", "Data Management\nR&D Lab", "Chatbot\nR&D Lab", "system Architecture\nR&D Lab", "Human-Computer\nInteraction", "Advanced Topics\nin Software", "\nMarketing"]; // 10
 const otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
 
+// 현재 커리큘럼 리스트의 길이
 let currLength;
 let world;
 // 랜더러 오브젝트
@@ -851,7 +853,8 @@ class Light {
         let timeDiff = curTime - this.time;
 
         this.backLight.intensity = 4 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)))+4;
-        this.upLight.intensity = 4 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)))+4;44        //roundspeed 3)
+        this.upLight.intensity = 4 * (Math.abs(Math.sin((1 / this.loopTime) * Math.PI * timeDiff)))+4;
+        //roundspeed 3)
         if (roundNumber === 1) {
             this.spotLights.forEach(function (obj) {
                 obj.position.z += 70;
@@ -933,11 +936,7 @@ class Game {
         // 광원추가하기
         lightManager.backLight.position.set(0, 0, -2000);
         lightManager.upLight.position.set(0, 3000, -4000);
-        // hemisphereLight을 쓰면 그냥 그림자도 안생기고 캐릭터의 입체감은 좀 덜하다
-        // let light = new THREE.HemisphereLight(0xffffff, 0xffffff, 1);
-        // scene.add(light);
-        // 포인트 라이트를 쓰면 촬영장에서 조명킨것처럼 그림자도 생기고, 빛이 덜 가는 부분에 윤곽선도 생겨서 좀 더 입체적으로 보인다
-        // 이 상황에서 코드를 실행시켜보면, pointlight를 써서 좌우로 레인을 옮기면 캐릭터가 어두워지는 것을 볼 수 있음,
+
         scene.add(lightManager.backLight);
         scene.add(lightManager.upLight);
 
@@ -1018,7 +1017,6 @@ class Game {
 
 
     roundOver(round) {
-        // this.roundScores[round-1] = this.score;
         document.getElementById("curr").innerText = "";
         // 여기에 먹은 커리큘럼들 this.finalCurr에 추가하는 코드 추가해야함
         currManager.currWordDict = {};
@@ -1090,9 +1088,7 @@ class Game {
                 }
             }
         });
-        // display.appendChild(curr);
-        // curr.remove();
-        // this.score =
+
         // 점수 화면에 반영하기
         if (objectManager.objects.length === 0) {
             this.roundScore = 0;
