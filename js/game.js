@@ -1488,7 +1488,6 @@ window.onload = function init() {
                         finalscore.append(finalScore);
 
 
-
                         final.style.display = 'block';
                     }
                 }
