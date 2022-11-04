@@ -225,14 +225,14 @@ td:nth-child(2) {
     transform: translate(-50%, -50%);
     padding-top: 15px;
     font-family: 'Merriweather Sans', sans-serif;
-
-    /* font-family: 'Playfair Display', serif; */
-    /* animation: box-ani 2s linear forwards; */
+     animation: box-ani 2s linear forwards;
 }
 
 .innerfinal {
     font-family: 'Merriweather Sans', sans-serif;
 }
+
+
 
 @keyframes box-ani {
 	from {
@@ -245,4 +245,8 @@ td:nth-child(2) {
 
 .curr{
     font-size: 0.5em;
+}
+
+ul {
+    list-style:none;
 }
