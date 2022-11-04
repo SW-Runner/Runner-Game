@@ -14,6 +14,8 @@ let finalCurr = [];
 let finalHit = 0;
 //게임중 먹은 SW 커리큘럼, 다른 학과 커리큘럼 전부 누적
 let finalTotalCurr = [];
+let FailSWDataTrackFinalResult;
+let FailSWSensorTrackFinalResult;
 //과목명
 const SWcurrName1 = ["Computer\nProgramming", "Web\nProgramming", "Software\nMathematics", "Software Design\nPatterns", "\nRobotics", "Enterprise and\nLeadership"]; // 6
 const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operating\nSystems", "Probability and\nStatistics", "\nAlgorithms", "Computer\nNetworks", "Database\nSystems", "Principles of\nEconomics"]; // 8
@@ -22,7 +24,8 @@ const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCo
 const otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
 //우리학과 커리큘럼 전부 누적
 const TotalSWcurrName = [...SWcurrName1, ...SWcurrName2, ...SWcurrName3, ...SWcurrName4];
-
+const TotalDataTrackSWcurrName = [...TotalSWcurrName,...dataTrack3,...dataTrack4];
+const TotalSensorTrackSWcurrName = [...TotalSWcurrName,...sensorTrack3,...sensorTrack4];
 
 const dataTrack3 = [
     "Data\nScience",
@@ -1120,7 +1123,6 @@ class Game {
                 if (currManager.SWcurrs[value] === false) {
                     objectHit -= 1;
                 } else {
-
                     showCurr += "<p>" + currManager.currWordDict[value] + "</p>";
                     currHit += 1;
                 }
@@ -1133,7 +1135,6 @@ class Game {
         if (objectManager.objects.length === 0) {
             this.roundScore = 0;
         } else {
-
             this.roundScore = (objectHit + currHit) * 10;
         }
 
@@ -1160,6 +1161,8 @@ window.onload = function init() {
     explain43d = document.getElementById("explain43d");
     explain43s = document.getElementById("explain43s");
     final = document.getElementById("final");
+    final_track = document.getElementById("final_track");
+
 
 
     explain11.style.display = 'none';
@@ -1174,7 +1177,30 @@ window.onload = function init() {
     explain33s.style.display = 'none';
     explain43d.style.display = 'none';
     explain43s.style.display = 'none';
-    final.style.display = 'none';
+    final.style.display = 'block';
+
+    getList = document.getElementById("get-list");
+    missList = document.getElementById("miss-list");
+    otherList = document.getElementById("other-list");
+
+    final_track.innerText = "Smart System Track";
+
+                    // for (let i = 0; i < TotalSWcurrName.length; i++)
+                    // {
+                    //   const li = document.createElement("li");
+                    //   let xTotalSWcurrName = TotalSWcurrName[i].replace('\n', ' ');
+                    //   li.innerText = xTotalSWcurrName;
+                    //   totalList.appendChild(li);
+                    // }
+
+                    
+                    // final.style.display = 'block';
+
+
+
+
+
+    
 
 
     // Renderer 설정하기
@@ -1289,6 +1315,9 @@ window.onload = function init() {
                         //TotalSWcurrName : 우리 학과 전체 커리큘럼 배열
 
                         //SWFinalResult : 게임중 먹은 SW 커리큘럼 저장
+                        
+                        
+                        
                         const SWFinalResult = finalTotalCurr.reduce((prev, cur) => {
                             if (TotalSWcurrName.includes(cur)) {
                                 prev.push(cur);
@@ -1304,21 +1333,34 @@ window.onload = function init() {
                             return prev;
                         }, [])
 
-                        //FailSWFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
-                        const FailSWFinalResult = TotalSWcurrName.reduce((prev, cur) => {
-                            if (!SWFinalResult.includes(cur)) {
-                                prev.push(cur);
-                            }
-                            return prev;
-                        }, [])
+                        if(trackId ==="bigdata")
+                        {
+                            //FailSWDataFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
+                             FailSWDataTrackFinalResult = TotalDataTrackSWcurrName.reduce((prev, cur) => {
+                                if (!SWFinalResult.includes(cur)) {
+                                    prev.push(cur);
+                                }
+                                return prev;
+                            }, [])
+                        }else if(trackId ==="smart")
+                        {
+                            //FailSWSesnsorFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
+                             FailSWSensorTrackFinalResult = TotalDataTrackSWcurrName.reduce((prev, cur) => {
+                                if (!SWFinalResult.includes(cur)) {
+                                    prev.push(cur);
+                                }
+                                return prev;
+                            }, [])
+                        }
 
                         console.log("SWFinalResult : SW 커리큘럼 먹은 것");
                         console.log(SWFinalResult);
-                        console.log("FailSWFinalResult : SW 커리큘럼 못 먹은 것");
-                        console.log(FailSWFinalResult);
+                        console.log("FailSWDataTrackFinalResult : SW Datatrack 커리큘럼 못 먹은 것");
+                        console.log(FailSWDataTrackFinalResult);
+                        console.log("FailSWSensorTrackFinalResult : SW SensorTrack 커리큘럼 못 먹은 것");
+                        console.log(FailSWSensorTrackFinalResult);
                         console.log("OtherFinalResult : 다른 학과 커리큘럼 먹은 것");
                         console.log(OtherFinalResult);
-
                     }
                     else if (roundNumber < 3) { //1라운드 끝나면
                       count = 0;
@@ -1336,7 +1378,25 @@ window.onload = function init() {
                     gameManager.initRound(roundNumber);
                   }
                   else if (roundNumber === 5) {
-                    //여기에 최종 결과
+                    //여기에 최종 결과                                   
+
+                    for (let i = 0; i < TotalSWcurrName.length; i++)
+                    {
+                      const li = document.createElement("li");
+                      let xTotalSWcurrName = TotalSWcurrName[i].replace('\n', ' ');
+                      li.innerText = xTotalSWcurrName;
+                      totalList.appendChild(li);
+                    }
+
+
+                    if(trackId === "smart") {
+                      final_track.innerText = "Smart System Track";
+                    }
+                    else if(trackId === "bigdata") {
+                      final_track.innerText = "Big Data Track";
+                    }         
+
+                    
                     final.style.display = 'block';
                   }
                 }
