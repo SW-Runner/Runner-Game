@@ -47,8 +47,8 @@ const sensorTrack4 = [
 
 //우리학과 커리큘럼 전부 누적
 const TotalSWcurrName = [...SWcurrName1, ...SWcurrName2, ...SWcurrName3, ...SWcurrName4];
-const TotalDataTrackSWcurrName = [...TotalSWcurrName,...dataTrack3,...dataTrack4];
-const TotalSensorTrackSWcurrName = [...TotalSWcurrName,...sensorTrack3,...sensorTrack4];
+const TotalDataTrackSWcurrName = [...TotalSWcurrName, ...dataTrack3, ...dataTrack4];
+const TotalSensorTrackSWcurrName = [...TotalSWcurrName, ...sensorTrack3, ...sensorTrack4];
 
 
 // 현재 커리큘럼 리스트의 길이
@@ -1169,7 +1169,6 @@ window.onload = function init() {
     final_track = document.getElementById("final_track");
 
 
-
     explain11.style.display = 'none';
     explain21.style.display = 'none';
     explain31.style.display = 'none';
@@ -1280,31 +1279,26 @@ window.onload = function init() {
                                 setTimeout(() => gameManager.initRound(roundNumber), 1000);
                             });
                         });
-                    }
-                    else if (roundNumber === 4) { //3 끝나면
-                      if (trackId === "bigdata") {
-                        explain33d.style.display = 'block';
-                      }
-                      else if (trackId === "smart"){
-                        explain33s.style.display = 'block';
-                      }
-                    }
-                    else if (roundNumber === 5) { //4 끝나면
-                      if (trackId === "bigdata") {
-                        explain43d.style.display = 'block';
-                      }
-                      else if (trackId === "smart"){
-                        explain43s.style.display = 'block';
-                      }
+                    } else if (roundNumber === 4) { //3 끝나면
+                        if (trackId === "bigdata") {
+                            explain33d.style.display = 'block';
+                        } else if (trackId === "smart") {
+                            explain33s.style.display = 'block';
+                        }
+                    } else if (roundNumber === 5) { //4 끝나면
+                        if (trackId === "bigdata") {
+                            explain43d.style.display = 'block';
+                        } else if (trackId === "smart") {
+                            explain43s.style.display = 'block';
+                        }
 
                         //finalTotalCurr : 게임중 먹은 SW 커리큘럼, 다른 학과 커리큘럼 전부 누적
                         //TotalSWcurrName : 우리 학과 전체 커리큘럼 배열
 
                         //SWFinalResult : 게임중 먹은 SW 커리큘럼 저장
-                        
-                        
-                        
-                       SWFinalResult = finalTotalCurr.reduce((prev, cur) => {
+
+
+                        SWFinalResult = finalTotalCurr.reduce((prev, cur) => {
                             if (TotalSWcurrName.includes(cur)) {
                                 prev.push(cur);
                             }
@@ -1319,25 +1313,24 @@ window.onload = function init() {
                             return prev;
                         }, [])
 
-                        if(trackId ==="bigdata")
-                        {
+                        if (trackId === "bigdata") {
                             //FailSWDataFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
-                             FailSWDataTrackFinalResult = TotalDataTrackSWcurrName.reduce((prev, cur) => {
+                            FailSWDataTrackFinalResult = TotalDataTrackSWcurrName.reduce((prev, cur) => {
                                 if (!SWFinalResult.includes(cur)) {
                                     prev.push(cur);
                                 }
                                 return prev;
                             }, [])
-                        }else if(trackId ==="smart")
-                        {
+                        } else if (trackId === "smart") {
                             //FailSWSesnsorFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
-                             FailSWSensorTrackFinalResult = TotalSensorTrackSWcurrName.reduce((prev, cur) => {
+                            FailSWSensorTrackFinalResult = TotalSensorTrackSWcurrName.reduce((prev, cur) => {
                                 if (!SWFinalResult.includes(cur)) {
                                     prev.push(cur);
                                 }
                                 return prev;
                             }, [])
                         }
+
 
                         console.log("SWFinalResult : SW 커리큘럼 먹은 것");
                         console.log(SWFinalResult);
@@ -1347,66 +1340,60 @@ window.onload = function init() {
                         console.log(FailSWSensorTrackFinalResult);
                         console.log("OtherFinalResult : 다른 학과 커리큘럼 먹은 것");
                         console.log(OtherFinalResult);
+                    } else if (roundNumber < 3) { //1라운드 끝나면
+                        count = 0;
+                        gameManager.initRound(roundNumber);
                     }
-                    else if (roundNumber < 3) { //1라운드 끝나면
-                      count = 0;
-                      gameManager.initRound(roundNumber);
+                } else if (count === 4) {
+                    explain33d.style.display = 'none';
+                    explain33s.style.display = 'none';
+                    explain43d.style.display = 'none';
+                    explain43s.style.display = 'none';
+
+                    if (roundNumber === 4) { //3라운드 끝나면
+                        count = 0;
+                        gameManager.initRound(roundNumber);
+                    } else if (roundNumber === 5) {
+                        //여기에 최종 결과
+
+                        for (let i = 0; i < SWFinalResult.length; i++) //1번째
+                        {
+                            const li = document.createElement("li");
+                            let xTotalSWcurrName = SWFinalResult[i].replace('\n', ' ');
+                            li.innerText = xTotalSWcurrName;
+                            getList.appendChild(li);
+                        }
+
+
+                        if (trackId === "smart") {
+                            final_track.innerText = "Smart System Track";
+                            for (let i = 0; i < FailSWSensorTrackFinalResult.length; i++) {
+                                const li = document.createElement("li");
+                                let xTotalSWcurrName = FailSWSensorTrackFinalResult[i].replace('\n', ' ');
+                                li.innerText = xTotalSWcurrName;
+                                missList.appendChild(li);
+                            }
+                        } else if (trackId === "bigdata") {
+                            final_track.innerText = "Big Data Track";
+                            for (let i = 0; i < FailSWDataTrackFinalResult.length; i++) {
+                                const li = document.createElement("li");
+                                let xTotalSWcurrName = FailSWDataTrackFinalResult[i].replace('\n', ' ');
+                                li.innerText = xTotalSWcurrName;
+                                missList.appendChild(li);
+                            }
+                        }
+
+                        for (let i = 0; i < OtherFinalResult.length; i++) //3번째
+                        {
+                            const li = document.createElement("li");
+                            let xTotalSWcurrName = OtherFinalResult[i].replace('\n', ' ');
+                            li.innerText = xTotalSWcurrName;
+                            otherList.appendChild(li);
+                        }
+
+
+                        final.style.display = 'block';
                     }
-                }
-                else if (count === 4) {
-                  explain33d.style.display = 'none';
-                  explain33s.style.display = 'none';
-                  explain43d.style.display = 'none';
-                  explain43s.style.display = 'none';
-
-                  if(roundNumber === 4){ //3라운드 끝나면
-                    count = 0;
-                    gameManager.initRound(roundNumber);
-                  }
-                  else if (roundNumber === 5) {
-                    //여기에 최종 결과                                               
-
-                    for (let i = 0; i < SWFinalResult.length; i++) //1번째
-                      {
-                        const li = document.createElement("li");
-                        let xTotalSWcurrName = SWFinalResult[i].replace('\n', ' ');
-                        li.innerText = xTotalSWcurrName;
-                        getList.appendChild(li);
-                      }
-
-
-                    if(trackId === "smart") {
-                      final_track.innerText = "Smart System Track";
-                      for (let i = 0; i < FailSWSensorTrackFinalResult.length; i++)
-                      {
-                        const li = document.createElement("li");
-                        let xTotalSWcurrName = FailSWSensorTrackFinalResult[i].replace('\n', ' ');
-                        li.innerText = xTotalSWcurrName;
-                        missList.appendChild(li);
-                      }
-                    }
-                    else if(trackId === "bigdata") {
-                      final_track.innerText = "Big Data Track";
-                      for (let i = 0; i < FailSWDataTrackFinalResult.length; i++)
-                      {
-                        const li = document.createElement("li");
-                        let xTotalSWcurrName = FailSWDataTrackFinalResult[i].replace('\n', ' ');
-                        li.innerText = xTotalSWcurrName;
-                        missList.appendChild(li);
-                      }
-                    }         
-
-                    for (let i = 0; i < OtherFinalResult.length; i++) //3번째
-                      {
-                        const li = document.createElement("li");
-                        let xTotalSWcurrName = OtherFinalResult[i].replace('\n', ' ');
-                        li.innerText = xTotalSWcurrName;
-                        otherList.appendChild(li);
-                      }
-
-                    
-                    final.style.display = 'block';
-                  }
                 }
             }
 
