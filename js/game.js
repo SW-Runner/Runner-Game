@@ -1328,7 +1328,7 @@ window.onload = function init() {
                         }else if(trackId ==="smart")
                         {
                             //FailSWSesnsorFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
-                             FailSWSensorTrackFinalResult = TotalDataTrackSWcurrName.reduce((prev, cur) => {
+                             FailSWSensorTrackFinalResult = TotalSensorTrackSWcurrName.reduce((prev, cur) => {
                                 if (!SWFinalResult.includes(cur)) {
                                     prev.push(cur);
                                 }
