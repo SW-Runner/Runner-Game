@@ -1,3 +1,6 @@
+let FailSWDataTrackFinalResult;
+let FailSWSensorTrackFinalResult;
+
 // 게임오버 판단하는 정수
 let gameOverInt = 1;
 //라운드 종료시에 inputkey 다시 눌릴 수 있게 하는 변수
@@ -20,9 +23,6 @@ const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operat
 const SWcurrName3 = ["Mobile\nProgramming", "Software\nEngineering", "Software Industry\nSeminar", "Graduation\nProjectsⅠ", "Principles of\nManagement", "Computer\nGraphics", "Computer\nArchitecture", "P-Practical\nProject", "Graduation\nProjectsⅡ"]; // 9 + 2
 const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCourse", "Graduation\nProjectsⅢ", "Data Management\nR&D Lab", "Chatbot\nR&D Lab", "system Architecture\nR&D Lab", "Human-Computer\nInteraction", "Advanced Topics\nin Software", "\nMarketing"]; // 10
 const otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
-//우리학과 커리큘럼 전부 누적
-const TotalSWcurrName = [...SWcurrName1, ...SWcurrName2, ...SWcurrName3, ...SWcurrName4];
-
 
 const dataTrack3 = [
     "Data\nScience",
@@ -42,6 +42,10 @@ const sensorTrack4 = [
     "Embedded\nSystems",
     "VR and\nVR"
 ]
+//우리학과 커리큘럼 전부 누적
+const TotalSWcurrName = [...SWcurrName1, ...SWcurrName2, ...SWcurrName3, ...SWcurrName4];
+const TotalDataTrackSWcurrName = [...TotalSWcurrName,...dataTrack3,...dataTrack4];
+const TotalSensorTrackSWcurrName = [...TotalSWcurrName,...sensorTrack3,...sensorTrack4];
 
 // 현재 커리큘럼 리스트의 길이
 let currLength;
@@ -1304,18 +1308,41 @@ window.onload = function init() {
                             return prev;
                         }, [])
 
-                        //FailSWFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
-                        const FailSWFinalResult = TotalSWcurrName.reduce((prev, cur) => {
-                            if (!SWFinalResult.includes(cur)) {
-                                prev.push(cur);
-                            }
-                            return prev;
-                        }, [])
+                        // //FailSWFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
+                        // const FailSWFinalResult = TotalSWcurrName.reduce((prev, cur) => {
+                        //     if (!SWFinalResult.includes(cur)) {
+                        //         prev.push(cur);
+                        //     }
+                        //     return prev;
+                        // }, [])
+                        //
+                        if(trackId ==="bigdata")
+                        {
+                            //FailSWDataFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
+                             FailSWDataTrackFinalResult = TotalDataTrackSWcurrName.reduce((prev, cur) => {
+                                if (!SWFinalResult.includes(cur)) {
+                                    prev.push(cur);
+                                }
+                                return prev;
+                            }, [])
+                        }else if(trackId ==="smart")
+                        {
+                            //FailSWSesnsorFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
+                             FailSWSensorTrackFinalResult = TotalDataTrackSWcurrName.reduce((prev, cur) => {
+                                if (!SWFinalResult.includes(cur)) {
+                                    prev.push(cur);
+                                }
+                                return prev;
+                            }, [])
+                        }
 
                         console.log("SWFinalResult : SW 커리큘럼 먹은 것");
                         console.log(SWFinalResult);
-                        console.log("FailSWFinalResult : SW 커리큘럼 못 먹은 것");
-                        console.log(FailSWFinalResult);
+                        console.log("FailSWDataTrackFinalResult : SW Datatrack 커리큘럼 못 먹은 것");
+                        console.log(FailSWDataTrackFinalResult);
+                        console.log("FailSWSensorTrackFinalResult : SW SensorTrack 커리큘럼 못 먹은 것");
+                        console.log(FailSWSensorTrackFinalResult);
+
                         console.log("OtherFinalResult : 다른 학과 커리큘럼 먹은 것");
                         console.log(OtherFinalResult);
 
