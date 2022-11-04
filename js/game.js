@@ -1275,7 +1275,7 @@ window.onload = function init() {
     explain43d.style.display = 'none';
     explain43s.style.display = 'none';
     final.style.display = 'none';
-
+    
     getList = document.getElementById("get-list");
     missList = document.getElementById("miss-list");
     otherList = document.getElementById("other-list");
@@ -1486,8 +1486,6 @@ window.onload = function init() {
 
                         finalscore = document.getElementById("finalscore");
                         finalscore.append(finalScore);
-
-
                         final.style.display = 'block';
                     }
                 }

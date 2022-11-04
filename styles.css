@@ -250,3 +250,7 @@ td:nth-child(2) {
 ul {
     list-style:none;
 }
+
+.box::-webkit-scrollbar {
+    /* display: none;  */
+}
