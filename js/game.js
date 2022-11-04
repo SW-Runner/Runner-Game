@@ -1,3 +1,6 @@
+let SWFinalResult;
+let OtherFinalResult;
+
 // 게임오버 판단하는 정수
 let gameOverInt = 1;
 //라운드 종료시에 inputkey 다시 눌릴 수 있게 하는 변수
@@ -22,10 +25,6 @@ const SWcurrName2 = ["Data\nStructures", "Object Oriented\nProgramming", "Operat
 const SWcurrName3 = ["Mobile\nProgramming", "Software\nEngineering", "Software Industry\nSeminar", "Graduation\nProjectsⅠ", "Principles of\nManagement", "Computer\nGraphics", "Computer\nArchitecture", "P-Practical\nProject", "Graduation\nProjectsⅡ"]; // 9 + 2
 const SWcurrName4 = ["Computer\nVision", "Technology\nManagement", "You Make\nCourse", "Graduation\nProjectsⅢ", "Data Management\nR&D Lab", "Chatbot\nR&D Lab", "system Architecture\nR&D Lab", "Human-Computer\nInteraction", "Advanced Topics\nin Software", "\nMarketing"]; // 10
 const otherCurrName = ["Bioethics", "Digital\nSound", "Smart\nTourism", "Customs\nlaw", "Health\nAdministration", "Advanced\nIT", "Biomaterial\nAnalysis", "Anatomy", "Public\nHealth", "Food\nChemistry"];
-//우리학과 커리큘럼 전부 누적
-const TotalSWcurrName = [...SWcurrName1, ...SWcurrName2, ...SWcurrName3, ...SWcurrName4];
-const TotalDataTrackSWcurrName = [...TotalSWcurrName,...dataTrack3,...dataTrack4];
-const TotalSensorTrackSWcurrName = [...TotalSWcurrName,...sensorTrack3,...sensorTrack4];
 
 const dataTrack3 = [
     "Data\nScience",
@@ -45,6 +44,12 @@ const sensorTrack4 = [
     "Embedded\nSystems",
     "VR and\nVR"
 ]
+
+//우리학과 커리큘럼 전부 누적
+const TotalSWcurrName = [...SWcurrName1, ...SWcurrName2, ...SWcurrName3, ...SWcurrName4];
+const TotalDataTrackSWcurrName = [...TotalSWcurrName,...dataTrack3,...dataTrack4];
+const TotalSensorTrackSWcurrName = [...TotalSWcurrName,...sensorTrack3,...sensorTrack4];
+
 
 // 현재 커리큘럼 리스트의 길이
 let currLength;
@@ -1177,30 +1182,11 @@ window.onload = function init() {
     explain33s.style.display = 'none';
     explain43d.style.display = 'none';
     explain43s.style.display = 'none';
-    final.style.display = 'block';
+    final.style.display = 'none';
 
     getList = document.getElementById("get-list");
     missList = document.getElementById("miss-list");
     otherList = document.getElementById("other-list");
-
-    final_track.innerText = "Smart System Track";
-
-                    // for (let i = 0; i < TotalSWcurrName.length; i++)
-                    // {
-                    //   const li = document.createElement("li");
-                    //   let xTotalSWcurrName = TotalSWcurrName[i].replace('\n', ' ');
-                    //   li.innerText = xTotalSWcurrName;
-                    //   totalList.appendChild(li);
-                    // }
-
-                    
-                    // final.style.display = 'block';
-
-
-
-
-
-    
 
 
     // Renderer 설정하기
@@ -1318,7 +1304,7 @@ window.onload = function init() {
                         
                         
                         
-                        const SWFinalResult = finalTotalCurr.reduce((prev, cur) => {
+                       SWFinalResult = finalTotalCurr.reduce((prev, cur) => {
                             if (TotalSWcurrName.includes(cur)) {
                                 prev.push(cur);
                             }
@@ -1326,7 +1312,7 @@ window.onload = function init() {
                         }, [])
 
                         //OtherFinalResult : 게임중 먹은 다른 학과 커리큘럼 저장
-                        const OtherFinalResult = finalTotalCurr.reduce((prev, cur) => {
+                        OtherFinalResult = finalTotalCurr.reduce((prev, cur) => {
                             if (otherCurrName.includes(cur)) {
                                 prev.push(cur);
                             }
@@ -1345,7 +1331,7 @@ window.onload = function init() {
                         }else if(trackId ==="smart")
                         {
                             //FailSWSesnsorFinalResult : 게임중 못 먹은 SW 학과 커리큘럼 저장
-                             FailSWSensorTrackFinalResult = TotalDataTrackSWcurrName.reduce((prev, cur) => {
+                             FailSWSensorTrackFinalResult = TotalSensorTrackSWcurrName.reduce((prev, cur) => {
                                 if (!SWFinalResult.includes(cur)) {
                                     prev.push(cur);
                                 }
@@ -1378,23 +1364,45 @@ window.onload = function init() {
                     gameManager.initRound(roundNumber);
                   }
                   else if (roundNumber === 5) {
-                    //여기에 최종 결과                                   
+                    //여기에 최종 결과                                               
 
-                    for (let i = 0; i < TotalSWcurrName.length; i++)
-                    {
-                      const li = document.createElement("li");
-                      let xTotalSWcurrName = TotalSWcurrName[i].replace('\n', ' ');
-                      li.innerText = xTotalSWcurrName;
-                      totalList.appendChild(li);
-                    }
+                    for (let i = 0; i < SWFinalResult.length; i++) //1번째
+                      {
+                        const li = document.createElement("li");
+                        let xTotalSWcurrName = SWFinalResult[i].replace('\n', ' ');
+                        li.innerText = xTotalSWcurrName;
+                        getList.appendChild(li);
+                      }
 
 
                     if(trackId === "smart") {
                       final_track.innerText = "Smart System Track";
+                      for (let i = 0; i < FailSWSensorTrackFinalResult.length; i++)
+                      {
+                        const li = document.createElement("li");
+                        let xTotalSWcurrName = FailSWSensorTrackFinalResult[i].replace('\n', ' ');
+                        li.innerText = xTotalSWcurrName;
+                        missList.appendChild(li);
+                      }
                     }
                     else if(trackId === "bigdata") {
                       final_track.innerText = "Big Data Track";
+                      for (let i = 0; i < FailSWDataTrackFinalResult.length; i++)
+                      {
+                        const li = document.createElement("li");
+                        let xTotalSWcurrName = FailSWDataTrackFinalResult[i].replace('\n', ' ');
+                        li.innerText = xTotalSWcurrName;
+                        missList.appendChild(li);
+                      }
                     }         
+
+                    for (let i = 0; i < OtherFinalResult.length; i++) //3번째
+                      {
+                        const li = document.createElement("li");
+                        let xTotalSWcurrName = OtherFinalResult[i].replace('\n', ' ');
+                        li.innerText = xTotalSWcurrName;
+                        otherList.appendChild(li);
+                      }
 
                     
                     final.style.display = 'block';
