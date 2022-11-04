@@ -1232,7 +1232,7 @@ class Game {
         if (objectManager.objects.length === 0) {
             this.roundScore = 0;
         } else {
-            this.roundScore = (objectHit + currHit) * 10;
+            this.roundScore = (objectHit + currHit) * 20;
         }
 
         document.getElementById("score").innerText = String(this.roundScore + this.score);
