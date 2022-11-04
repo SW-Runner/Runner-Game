@@ -1,6 +1,9 @@
 <html>
 <head>
     <title>SW-Runner</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@1,800&display=swap" rel="stylesheet">
     <script type="text/javascript" src="../js/three.min.js"></script>
     <script type="text/javascript" src="../js/GLTFLoader.js"></script>
@@ -70,11 +73,26 @@
 </div>
 <div id="world"></div>
 
-<div class="test1" style="display: none;" id="tracklist">
+<!-- <div class="test1 radio1" style="display: block;" id="tracklist">
     <h2>트랙 선택</h2><br>
     <input type="radio" name="track" value="bigdata">Big Data<br>
     <input type="radio" name="track" value="smart">Smart System
+</div> -->
+
+<div id="radiobtn" class="test1" style="display: none;">
+    <h2 style="margin-left: 93px">트랙 선택</h2><br>
+    <div style="display: flex; flex-direction: row;">
+        <div class="form_radio_btn" id="tracklist" style="margin-right: 5px;">
+            <input type="radio" name="track" value="bigdata" id="bigdata">
+            <label for="bigdata">Big Data</label>
+        </div>
+        <div class="form_radio_btn" id="tracklist">
+            <input type="radio" name="track" value="smart" id="smart">
+            <label for="smart">Smart System</label>
+        </div>
+    </div>    
 </div>
+
 
 <div id="explain11" class="test">
     <div style="width: 1000px; margin-left: 215px;display: flex; flex-direction: column; margin-top: 0px; float: none; height: 502px; background-color: rgba( 255, 255, 255, 0.5 );"> 
@@ -319,6 +337,22 @@
                 VR: 3D UI(하드웨어), 인간의 인식과 신호, 3D 상호 작용
                 AR: 디스플레이, 추적, 보정 및 등록, 시각화, 상호 작용, 탐색, SW 아키텍처) 등에 대해 배운다.          </div>
         </div>        
+    </div>
+</div>
+
+<div id="final" class="final">
+    <div style="width: 1000px; margin-left: 215px; display: flex; flex-direction: column; margin-top: 0px; float: none; height: 600px; background-color: rgba( 255, 255, 255, 0.5 );"> 
+        <p style="text-align: center; font-size: 2.5em;">Score</p>
+        <div style="display: flex; flex-direction: row; width: 100%; height: 98%;">
+            <div class="innerfinal" style="display: flex; flex-direction: column; width: 50%; height: 100%; border: 1px solid black;">
+                ComputerScience
+                Math
+            </div>
+            <div class="innerfinal" style="display: flex; flex-direction: column; width: 50%; height: 100%;border: 1px solid black;">
+                11     
+            </div>
+        </div>      
+
     </div>
 </div>
 

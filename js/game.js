@@ -1181,6 +1181,8 @@ window.onload = function init() {
     explain33s = document.getElementById("explain33s");
     explain43d = document.getElementById("explain43d");
     explain43s = document.getElementById("explain43s");
+    final = document.getElementById("final");
+
 
 
 
@@ -1196,6 +1198,8 @@ window.onload = function init() {
     explain33s.style.display = 'none';
     explain43d.style.display = 'none';
     explain43s.style.display = 'none';
+    final.style.display = 'block';
+
 
 
     
@@ -1276,10 +1280,9 @@ window.onload = function init() {
                     explain42.style.display = 'none';
 
                     if (roundNumber == 3) { //2 끝나고 3 전
-                        var tracklist = document.getElementById("tracklist");
-                        tracklist.style.display = "block";
-                        var track = document.getElementsByName("track");
-                        var trackChoice; 
+                        var radiobtn = document.getElementById("radiobtn");
+                        radiobtn.style.display = "block";
+                        
                         const radios = document.querySelectorAll(
                             "input[type=radio][name=track]"
                         );
@@ -1288,8 +1291,8 @@ window.onload = function init() {
                                 trackId = event.currentTarget.value;
                                 console.log("track : " + trackId);
                                 count = 0;
-                                tracklist.style.display = "none";
-                                gameManager.initRound(roundNumber); 
+                                setTimeout(() => radiobtn.style.display = "none", 1000);        
+                                setTimeout(() => gameManager.initRound(roundNumber), 1000);
                             });
                         });
                     } 
@@ -1308,7 +1311,7 @@ window.onload = function init() {
                       else if (trackId === "smart"){
                         explain43s.style.display = 'block';
                       }    
-                    }                    
+                    }
                     else if (roundNumber < 3) { //1라운드 끝나면
                       count = 0;
                       gameManager.initRound(roundNumber);
@@ -1319,12 +1322,15 @@ window.onload = function init() {
                   explain33s.style.display = 'none';
                   explain43d.style.display = 'none';
                   explain43s.style.display = 'none';
-                  count = 0;
+                  
                   if(roundNumber == 4){ //3라운드 끝나면
+                    count = 0;
                     gameManager.initRound(roundNumber);
                   }
-                  
-                }
+                  else if (roundNumber == 5) {
+                    //여기에 최종 결과
+                  }                  
+                }                
             }
 
 
@@ -1340,11 +1346,13 @@ window.onload = function init() {
             }
             if (inputKey === three) {
                 roundNumber = 3;
+                trackId = "bigdata";
                 gameManager.initRound(roundNumber);
                 count = 0;
             }
             if (inputKey === four) {
                 roundNumber = 4;
+                trackId = "bigdata";
                 gameManager.initRound(roundNumber);
                 count = 0;
             }
