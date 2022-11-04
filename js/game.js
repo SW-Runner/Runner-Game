@@ -626,11 +626,11 @@ class ObjectsManager {
     // 파라미터로 넘겨받은 x,y,z에 오브젝트를 생성해서 리턴해준다
     createObject(x, y, z) {
         loader.load(
-            "./wood_road_barrier/scene.gltf",
+            "./spoetted_cylinder_obstacle/scene.gltf",
             function (gltf) {
                 let obstacle = gltf.scene.children[0];
                 // 캐릭터 크기 설정
-                obstacle.scale.set(10, 10, 10);
+                obstacle.scale.set(-3, -5, 3);
                 // 캐릭터 위치 설정
                 obstacle.position.set(x, y, z);
                 // objects에 넣은 리스트 생성
@@ -660,14 +660,14 @@ class ObjectsManager {
         let charMinX = runningCharacter.position.x - 115;
         let charMaxX = runningCharacter.position.x + 115;
         let charMinY = runningCharacter.position.y - 310;
-        let charMaxY = runningCharacter.position.y + 320;
+        let charMaxY = runningCharacter.position.y + 200;
         let charMinZ = runningCharacter.position.z - 40;
         let charMaxZ = runningCharacter.position.z + 40;
 
         this.objects.forEach(function (obj) {
             let objMinX = obj[0].position.x - 250;
             let objMaxX = obj[0].position.x + 250;
-            let objMinY = obj[0].position.y - 1150;
+            let objMinY = obj[0].position.y - 150;
             let objMaxY = obj[0].position.y + 1150;
             let objMinZ = obj[0].position.z - 250;
             let objMaxZ = obj[0].position.z + 250;
@@ -764,19 +764,85 @@ class CurriculumManager {
     // 커리큘럼 오브젝트 생성
     // 커리큘럼 글씨는 밑에 createCurriculums에서 생성해주고,
     // scene에 추가까지 해준다
-    createCurriculum(x, y, z) {
+    createCurriculum(x, y, z, lane, position, index) {
+        currManager.currPositions[position] = lane;
+        currManager.currWordDict[index] = SWcurrNameList[index];
+        currManager.SWcurrs[index] = true;
+        for (const otherElement of otherCurrName) {
+            if (SWcurrNameList[index] === otherElement) {
+                currManager.SWcurrs[index] = false;
+                console.log("이거 떠야함 ㄹㅇ");
+            }
+        }
+        currManager.currCollision[index] = false;
+        if (currManager.SWcurrs[index]) {
+            loader.load(
+                "./computer_monitor_lowpoly_model/scene.gltf",
+                function (gltf) {
+                    let laptop = gltf.scene.children[0];
+                    // 캐릭터 크기 설정
+                    laptop.scale.set(200, 200, 200);
 
-        let geo = new THREE.BoxGeometry(this.dx, this.dy, this.dz);
-        let mat = new THREE.MeshPhongMaterial({
-            color: Colors['brownDark'],
-            flatShading: true
-        });
+                    // 캐릭터 위치 설정
+                    laptop.position.set(x, y-200, z);
+                    // objects에 넣은 리스트 생성
+                    let tempContainer = [];
+                    // 0번 인덱스에 오브젝트
+                    tempContainer.push(laptop);
+                    // 1번 인덱스에 아이디 값
+                    tempContainer.push(index);
+                    currManager.currs.push(tempContainer);
+                    // objectCollision 딕셔너리에서는 오브젝트 아이다 값으로 충돌 여부를 확인한다
+                    // 초기에는 충돌 안한 상태이기에 false
+                    scene.add(gltf.scene);
 
-        let object = new THREE.Mesh(geo, mat);
-        object.castShadow = true;
-        object.receiveShadow = true;
-        object.position.set(x, y, z);
-        return object;
+
+                    createSpotLight(lane * 800, 100, position);
+
+                    createWord(lane * 800, 1000, position, SWcurrNameList[index], 130);
+
+                },
+                undefined,
+                function (error) {
+                    console.error(error);
+                }
+            );
+        } else {
+            loader.load(
+                "./book/scene.gltf",
+                function (gltf) {
+                    let book = gltf.scene.children[0];
+                    // 캐릭터 크기 설정
+                    book.scale.set(180, 180, 180);
+
+                    // 캐릭터 위치 설정
+                    book.position.set(x, y-200, z);
+                    // objects에 넣은 리스트 생성
+                    let tempContainer = [];
+                    // 0번 인덱스에 오브젝트
+                    tempContainer.push(book);
+                    // 1번 인덱스에 아이디 값
+                    tempContainer.push(index);
+                    currManager.currs.push(tempContainer);
+                    // objectCollision 딕셔너리에서는 오브젝트 아이다 값으로 충돌 여부를 확인한다
+                    // 초기에는 충돌 안한 상태이기에 false
+                    scene.add(gltf.scene);
+
+                    // scene.add(object);
+
+                    createWordOthercurr(lane * 800, 1000, position, SWcurrNameList[index], 130);
+
+                    // currManager.index += 1;
+                },
+                undefined,
+                function (error) {
+                    console.error(error);
+                }
+            );
+        }
+
+
+
     }
 
     collisionCheck() {
@@ -791,7 +857,7 @@ class CurriculumManager {
         this.currs.forEach(function (obj) {
             let objMinX = obj[0].position.x - 250;
             let objMaxX = obj[0].position.x + 250;
-            let objMinY = obj[0].position.y - 1150;
+            let objMinY = obj[0].position.y - 150;
             let objMaxY = obj[0].position.y + 1150;
             let objMinZ = obj[0].position.z - 250;
             let objMaxZ = obj[0].position.z + 250;
@@ -876,7 +942,14 @@ let currManager = new CurriculumManager();
 class Light {
     constructor() {
         // 캐릭터 뒷조명
-        this.backLight = new THREE.PointLight(0xffffff, 8, 3000, 2);
+        this.backLight = new THREE.PointLight(0xffffff, 8, 6000, 2);
+
+        // 센터 조명
+        // this.centerLight = new THREE.PointLight(0xffffff, 6, 8000, 2);
+        this.centerLight = new THREE.SpotLight();
+        // 두번째 센터 조명
+        this.center2Light = new THREE.SpotLight();
+
         // 캐릭터 윗조명
         this.upLight = new THREE.PointLight(0xffffff, 8, 8000, 2);
         // 광원처리를 위한 시간
@@ -977,9 +1050,27 @@ class Game {
         }
         // 광원추가하기
         lightManager.backLight.position.set(0, 0, -2000);
+
+        lightManager.centerLight.position.set(0, 0, -6000);
+        lightManager.centerLight.target.position.set(0, 0, -12000);
+        lightManager.centerLight.intensity = 3;
+        lightManager.centerLight.distance = 8000;
+        lightManager.centerLight.angle = Math.PI / 4;
+
+        lightManager.center2Light.position.set(0, 0, -9000);
+        lightManager.center2Light.target.position.set(0, 0, -15000);
+        lightManager.center2Light.intensity = 3;
+        lightManager.center2Light.distance = 8000;
+        lightManager.center2Light.angle = Math.PI / 4;
+
+
         lightManager.upLight.position.set(0, 3000, -4000);
 
         scene.add(lightManager.backLight);
+        scene.add(lightManager.centerLight.target);
+        scene.add(lightManager.center2Light.target);
+        scene.add(lightManager.center2Light);
+        scene.add(lightManager.centerLight);
         scene.add(lightManager.upLight);
 
         // TODO: spotlight 처리를 어떻게하면 좋을까, PointLight랑 SpotLight을 섞어서 쓰면 될 것 같기도?
@@ -1042,7 +1133,7 @@ class Game {
         // 커리큘럼 객체를 만들고 텍스트까지 매핑
         shuffleCurriculum();
         for (let i = 25; i < 25 + currLength; i++) {
-            createCurriculums(i * -3000, 0.2, 0.6, 0.7);
+            createCurriculums(i * -3000, 0.2, 0.6, 0.7, i - 25);
         }
 
         // 장애물 & 오브젝트 만들기
@@ -1101,7 +1192,7 @@ class Game {
                 inputkeyBoolean = true;
                 paused = true;
                 gameOverInt = 1;
-                currManager.index = 0
+                // currManager.index = 0
             }, 3000);
         }
     }
@@ -1590,39 +1681,14 @@ function createObjects(position, probability, minScale, maxScale) {
 }
 
 // 오브젝트를 생성하는 코드랑 비슷하게, 커리큘럼 오브젝트를 생성하는 코드
-function createCurriculums(position, probability, minScale, maxScale) {
+function createCurriculums(position, probability, minScale, maxScale, index) {
 
 
     let lane = Math.floor(Math.random() * 4) - 2
 
-    let scale = minScale + (maxScale - minScale) * Math.random();
-    let object = currManager.createCurriculum(lane * 800, 0, position);
-    currManager.currPositions[position] = lane;
-    let tempContainer = [];
-    tempContainer.push(object);
-    tempContainer.push(currManager.index);
-    currManager.currs.push(tempContainer);
-    currManager.currWordDict[currManager.index] = SWcurrNameList[currManager.index];
-    currManager.SWcurrs[currManager.index] = true;
-    for (const otherElement of otherCurrName) {
-        if (SWcurrNameList[currManager.index] === otherElement) {
-            currManager.SWcurrs[currManager.index] = false;
-            console.log("이거 떠야함 ㄹㅇ");
-        }
-    }
 
-    currManager.currCollision[currManager.index] = false;
-    scene.add(object);
-    if (currManager.SWcurrs[currManager.index]) {
-        createSpotLight(lane * 800, 100, position);
-    }
-    if (currManager.SWcurrs[currManager.index]) {
+    currManager.createCurriculum(lane * 800, 0, position, lane, position, index);
 
-        createWord(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
-    } else {
-        createWordOthercurr(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
-    }
-    currManager.index += 1;
 
 
 }
@@ -1635,7 +1701,7 @@ function createWord(x, y, position, text, fontSize) {
             text, {
                 font: font,
                 size: fontSize, // 글씨 크기
-                height: 100, // 글씨 두께
+                height: 25, // 글씨 두께
                 curveSegments: 12
             }
         )
@@ -1645,7 +1711,7 @@ function createWord(x, y, position, text, fontSize) {
         fontGeo.translate(xMid, 0, 0);
         // 글씨 색 지정
         let fontMat = new THREE.MeshBasicMaterial({
-            color: 0x5F9DF7,
+            color: 0xFB2576,
             wireframe: true
         })
         // 글씨 오브젝트 생성
@@ -1665,7 +1731,7 @@ function createWordOthercurr(x, y, position, text, fontSize) {
             text, {
                 font: font,
                 size: fontSize, // 글씨 크기
-                height: 100, // 글씨 두께
+                height: 25, // 글씨 두께
                 curveSegments: 12
             }
         )
@@ -1675,7 +1741,7 @@ function createWordOthercurr(x, y, position, text, fontSize) {
         fontGeo.translate(xMid, 0, 0);
         // 글씨 색 지정
         let fontMat = new THREE.MeshBasicMaterial({
-            color: 0xE97777,
+            color: 0x8758FF,
             wireframe: true
         })
         // 글씨 오브젝트 생성
@@ -1696,7 +1762,7 @@ function createSpotLight(x, y, position) {
     // 조명 강도
     spotLight.intensity = 6;
     // 이 값을 줄이면 스포트라이트의 원이 커진다
-    spotLight.angle = Math.PI / 30;
+    spotLight.angle = Math.PI / 35;
     spotLight.target.position.set(x, y, position);
     scene.add(spotLight.target);
     scene.add(spotLight);
@@ -1710,7 +1776,7 @@ function createWordStatic(x, y, position, text, fontSize) {
         let fontGeo = new THREE.TextGeometry(text, {
             font: font,
             size: fontSize, // 글씨 크기
-            height: 100, // 글씨 두께
+            height: 25, // 글씨 두께
             curveSegments: 12,
         });
         // 효과를 위한 코드
@@ -1719,7 +1785,7 @@ function createWordStatic(x, y, position, text, fontSize) {
         fontGeo.translate(xMid, 0, 0);
         // 글씨 색 지정
         let fontMat = new THREE.MeshBasicMaterial({
-            color: 0x5f9df7,
+            color: 0xFB2576,
             wireframe: true,
         });
         // 글씨 오브젝트 생성
