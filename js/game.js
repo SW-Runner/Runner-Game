@@ -651,14 +651,14 @@ class ObjectsManager {
         let charMinX = runningCharacter.position.x - 115;
         let charMaxX = runningCharacter.position.x + 115;
         let charMinY = runningCharacter.position.y - 310;
-        let charMaxY = runningCharacter.position.y + 320;
+        let charMaxY = runningCharacter.position.y + 200;
         let charMinZ = runningCharacter.position.z - 40;
         let charMaxZ = runningCharacter.position.z + 40;
 
         this.objects.forEach(function (obj) {
             let objMinX = obj[0].position.x - 250;
             let objMaxX = obj[0].position.x + 250;
-            let objMinY = obj[0].position.y - 1150;
+            let objMinY = obj[0].position.y - 150;
             let objMaxY = obj[0].position.y + 1150;
             let objMinZ = obj[0].position.z - 250;
             let objMaxZ = obj[0].position.z + 250;
@@ -848,7 +848,7 @@ class CurriculumManager {
         this.currs.forEach(function (obj) {
             let objMinX = obj[0].position.x - 250;
             let objMaxX = obj[0].position.x + 250;
-            let objMinY = obj[0].position.y - 1150;
+            let objMinY = obj[0].position.y - 150;
             let objMaxY = obj[0].position.y + 1150;
             let objMinZ = obj[0].position.z - 250;
             let objMaxZ = obj[0].position.z + 250;
