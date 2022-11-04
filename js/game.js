@@ -946,9 +946,9 @@ class Light {
 
         // 센터 조명
         // this.centerLight = new THREE.PointLight(0xffffff, 6, 8000, 2);
-        this.centerLight = new THREE.SpotLight();
+        // this.centerLight = new THREE.SpotLight();
         // 두번째 센터 조명
-        this.center2Light = new THREE.SpotLight();
+        // this.center2Light = new THREE.SpotLight();
 
         // 캐릭터 윗조명
         this.upLight = new THREE.PointLight(0xffffff, 8, 8000, 2);
@@ -1051,26 +1051,26 @@ class Game {
         // 광원추가하기
         lightManager.backLight.position.set(0, 0, -2000);
 
-        lightManager.centerLight.position.set(0, 0, -6000);
-        lightManager.centerLight.target.position.set(0, 0, -12000);
-        lightManager.centerLight.intensity = 3;
-        lightManager.centerLight.distance = 8000;
-        lightManager.centerLight.angle = Math.PI / 4;
-
-        lightManager.center2Light.position.set(0, 0, -9000);
-        lightManager.center2Light.target.position.set(0, 0, -15000);
-        lightManager.center2Light.intensity = 3;
-        lightManager.center2Light.distance = 8000;
-        lightManager.center2Light.angle = Math.PI / 4;
+        // lightManager.centerLight.position.set(0, 0, -6000);
+        // lightManager.centerLight.target.position.set(0, 0, -12000);
+        // lightManager.centerLight.intensity = 3;
+        // lightManager.centerLight.distance = 8000;
+        // lightManager.centerLight.angle = Math.PI / 4;
+        //
+        // lightManager.center2Light.position.set(0, 0, -9000);
+        // lightManager.center2Light.target.position.set(0, 0, -15000);
+        // lightManager.center2Light.intensity = 3;
+        // lightManager.center2Light.distance = 8000;
+        // lightManager.center2Light.angle = Math.PI / 4;
 
 
         lightManager.upLight.position.set(0, 3000, -4000);
 
         scene.add(lightManager.backLight);
-        scene.add(lightManager.centerLight.target);
-        scene.add(lightManager.center2Light.target);
-        scene.add(lightManager.center2Light);
-        scene.add(lightManager.centerLight);
+        // scene.add(lightManager.centerLight.target);
+        // scene.add(lightManager.center2Light.target);
+        // scene.add(lightManager.center2Light);
+        // scene.add(lightManager.centerLight);
         scene.add(lightManager.upLight);
 
         // TODO: spotlight 처리를 어떻게하면 좋을까, PointLight랑 SpotLight을 섞어서 쓰면 될 것 같기도?
