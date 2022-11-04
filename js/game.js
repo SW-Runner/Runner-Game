@@ -1198,7 +1198,7 @@ window.onload = function init() {
     explain33s.style.display = 'none';
     explain43d.style.display = 'none';
     explain43s.style.display = 'none';
-    final.style.display = 'block';
+    final.style.display = 'none';
 
 
 
@@ -1329,6 +1329,7 @@ window.onload = function init() {
                   }
                   else if (roundNumber == 5) {
                     //여기에 최종 결과
+                    final.style.display = 'block';
                   }                  
                 }                
             }
