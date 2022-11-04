@@ -1,0 +1,337 @@
+{
+  "accessors": [
+    {
+      "bufferView": 2,
+      "componentType": 5126,
+      "count": 322,
+      "max": [
+        0.6085026860237122,
+        0.6325160264968872,
+        1.9999809265136719
+      ],
+      "min": [
+        -0.6423105597496033,
+        -0.6274839639663696,
+        -1.9073486328125e-05
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 3864,
+      "componentType": 5126,
+      "count": 322,
+      "max": [
+        0.9739466309547424,
+        0.9810960292816162,
+        0.9781141877174377
+      ],
+      "min": [
+        -0.9739466309547424,
+        -0.9810960292816162,
+        -0.9781141877174377
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5126,
+      "count": 322,
+      "max": [
+        1.0,
+        1.0
+      ],
+      "min": [
+        -3.0547380447387695e-07,
+        0.01008164044469595
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "componentType": 5125,
+      "count": 924,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 7728,
+      "componentType": 5126,
+      "count": 2820,
+      "max": [
+        0.14000000059604645,
+        0.7100701928138733,
+        1.5012305974960327
+      ],
+      "min": [
+        -1.2236011028289795,
+        -0.6196007132530212,
+        -0.1400000900030136
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 2,
+      "byteOffset": 41568,
+      "componentType": 5126,
+      "count": 2820,
+      "max": [
+        1.0,
+        0.9995617866516113,
+        0.9626128673553467
+      ],
+      "min": [
+        -0.998630940914154,
+        -0.9998482465744019,
+        -0.9626139402389526
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 2576,
+      "componentType": 5126,
+      "count": 2820,
+      "max": [
+        0.75,
+        1.0
+      ],
+      "min": [
+        0.2499999701976776,
+        0.0
+      ],
+      "type": "VEC2"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 3696,
+      "componentType": 5125,
+      "count": 14520,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "extras": {
+      "author": "aysenaz (https://sketchfab.com/Aysenazkara)",
+      "license": "CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)",
+      "source": "https://sketchfab.com/3d-models/spoetted-cylinder-obstacle-937097bc6c1f4872b8b855e34b579eb1",
+      "title": "Spoetted Cylinder Obstacle"
+    },
+    "generator": "Sketchfab-12.64.0",
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 61776,
+      "name": "floatBufferViews",
+      "target": 34963
+    },
+    {
+      "buffer": 0,
+      "byteLength": 25136,
+      "byteOffset": 61776,
+      "byteStride": 8,
+      "name": "floatBufferViews",
+      "target": 34962
+    },
+    {
+      "buffer": 0,
+      "byteLength": 75408,
+      "byteOffset": 86912,
+      "byteStride": 12,
+      "name": "floatBufferViews",
+      "target": 34962
+    }
+  ],
+  "buffers": [
+    {
+      "byteLength": 162320,
+      "uri": "scene.bin"
+    }
+  ],
+  "materials": [
+    {
+      "doubleSided": true,
+      "name": "cylinder",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.598395,
+          0.0106329,
+          0.0902708,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.96839519633074
+      }
+    },
+    {
+      "doubleSided": true,
+      "name": "spots",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.60745,
+          0.60745,
+          0.60745,
+          1.0
+        ],
+        "metallicFactor": 0.0,
+        "roughnessFactor": 0.8641700507067753
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Cylinder_cylinder_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0,
+            "TEXCOORD_0": 2
+          },
+          "indices": 3,
+          "material": 0,
+          "mode": 4
+        }
+      ]
+    },
+    {
+      "name": "spots_spots_0",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 5,
+            "POSITION": 4,
+            "TEXCOORD_0": 6
+          },
+          "indices": 7,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "children": [
+        1
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        2.220446049250313e-16,
+        -1.0,
+        0.0,
+        0.0,
+        1.0,
+        2.220446049250313e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "Sketchfab_model"
+    },
+    {
+      "children": [
+        2
+      ],
+      "matrix": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        -1.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "name": "9b35d44b137c4828af9153d97c582d42.fbx"
+    },
+    {
+      "children": [
+        3
+      ],
+      "name": "RootNode"
+    },
+    {
+      "children": [
+        4,
+        5
+      ],
+      "matrix": [
+        -90.69381802033627,
+        -1.3877788866605641e-14,
+        42.126391950570486,
+        0.0,
+        42.126391950570365,
+        7.549790558078603e-06,
+        90.69381802033602,
+        0.0,
+        -3.1804538835888962e-06,
+        99.99999999999972,
+        -6.847192257630752e-06,
+        0.0,
+        1.6903866529464722,
+        7.12733268737793,
+        0.25160256028175354,
+        1.0
+      ],
+      "name": "Cylinder"
+    },
+    {
+      "mesh": 0,
+      "name": "Cylinder_cylinder_0"
+    },
+    {
+      "children": [
+        6
+      ],
+      "matrix": [
+        -0.46238382746083956,
+        -0.9915845046615077,
+        2.646977960169689e-23,
+        0.0,
+        0.9915845046615077,
+        -0.46238382746083956,
+        3.489668209208083e-24,
+        0.0,
+        8.02390677119308e-24,
+        2.546456236615835e-23,
+        1.094092607498169,
+        0.0,
+        -0.3226458728313446,
+        -0.5127785801887512,
+        0.29541015625,
+        1.0
+      ],
+      "name": "spots"
+    },
+    {
+      "mesh": 1,
+      "name": "spots_spots_0"
+    }
+  ],
+  "scene": 0,
+  "scenes": [
+    {
+      "name": "Sketchfab_Scene",
+      "nodes": [
+        0
+      ]
+    }
+  ]
+}

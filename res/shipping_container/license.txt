@@ -1,0 +1,11 @@
+Model Information:
+* title:	Shipping Container
+* source:	https://sketchfab.com/3d-models/shipping-container-6843bfb88ef74e36a2a61ad15ae89d74
+* author:	Kateryna H. (https://sketchfab.com/hekava)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Shipping Container" (https://sketchfab.com/3d-models/shipping-container-6843bfb88ef74e36a2a61ad15ae89d74) by Kateryna H. (https://sketchfab.com/hekava) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

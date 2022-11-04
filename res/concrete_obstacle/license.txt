@@ -1,0 +1,11 @@
+Model Information:
+* title:	Concrete Obstacle
+* source:	https://sketchfab.com/3d-models/concrete-obstacle-72b6c1b06a214c90b82c4d589f703a99
+* author:	AdamKozakGrafika (https://sketchfab.com/AdamKozakGrafika)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Concrete Obstacle" (https://sketchfab.com/3d-models/concrete-obstacle-72b6c1b06a214c90b82c4d589f703a99) by AdamKozakGrafika (https://sketchfab.com/AdamKozakGrafika) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
