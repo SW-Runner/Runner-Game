@@ -684,11 +684,11 @@ class ObjectsManager {
         //roundspeed 1)라운드 별 object(장애물) 속도 설정
         if (roundNumber === 1) {
             this.objects.forEach(function (obj) {
-                obj[0].position.z += 70;
+                obj[0].position.z += 90;
             });
         } else if (roundNumber === 2) {
             this.objects.forEach(function (obj) {
-                obj[0].position.z += 90;
+                obj[0].position.z += 100;
             });
         } else if (roundNumber === 3) {
             this.objects.forEach(function (obj) {
@@ -817,19 +817,19 @@ class CurriculumManager {
         //roundspeed 2)라운드 별 커리큘럼 속도와 커리큘럼 word 속도
         if (roundNumber === 1) {
             this.currs.forEach(function (obj) {
-                obj[0].position.z += 70;
-            });
-
-            this.currWords.forEach(function (obj) {
-                obj.position.z += 70;
-            });
-        } else if (roundNumber === 2) {
-            this.currs.forEach(function (obj) {
                 obj[0].position.z += 90;
             });
 
             this.currWords.forEach(function (obj) {
                 obj.position.z += 90;
+            });
+        } else if (roundNumber === 2) {
+            this.currs.forEach(function (obj) {
+                obj[0].position.z += 100;
+            });
+
+            this.currWords.forEach(function (obj) {
+                obj.position.z += 100;
             });
         } else if (roundNumber === 3) {
             this.currs.forEach(function (obj) {
@@ -890,13 +890,13 @@ class Light {
         //roundspeed 3)
         if (roundNumber === 1) {
             this.spotLights.forEach(function (obj) {
-                obj.position.z += 70;
-                obj.target.position.z += 70;
+                obj.position.z += 90;
+                obj.target.position.z += 90;
             });
         } else if (roundNumber === 2) {
             this.spotLights.forEach(function (obj) {
-                obj.position.z += 90;
-                obj.target.position.z += 90;
+                obj.position.z += 100;
+                obj.target.position.z += 100;
             });
         } else if (roundNumber === 3) {
             this.spotLights.forEach(function (obj) {
@@ -1155,6 +1155,13 @@ window.onload = function init() {
     explain32 = document.getElementById("explain32");
     explain42 = document.getElementById("explain42");
 
+    explain33d = document.getElementById("explain33d");
+    explain33s = document.getElementById("explain33s");
+    explain43d = document.getElementById("explain43d");
+    explain43s = document.getElementById("explain43s");
+    final = document.getElementById("final");
+
+
     explain11.style.display = 'none';
     explain21.style.display = 'none';
     explain31.style.display = 'none';
@@ -1163,6 +1170,12 @@ window.onload = function init() {
     explain22.style.display = 'none';
     explain32.style.display = 'none';
     explain42.style.display = 'none';
+    explain33d.style.display = 'none';
+    explain33s.style.display = 'none';
+    explain43d.style.display = 'none';
+    explain43s.style.display = 'none';
+    final.style.display = 'none';
+
 
     // Renderer 설정하기
     renderer = new THREE.WebGLRenderer({
@@ -1239,11 +1252,10 @@ window.onload = function init() {
                     explain32.style.display = 'none';
                     explain42.style.display = 'none';
 
-                    if (roundNumber === 3) {
-                        var tracklist = document.getElementById("tracklist");
-                        tracklist.style.display = "block";
-                        var track = document.getElementsByName("track");
-                        var trackChoice; // 여기에 선택된 radio 버튼의 값이 담기게 된다.
+                    if (roundNumber === 3) { //2 끝나고 3 전
+                        var radiobtn = document.getElementById("radiobtn");
+                        radiobtn.style.display = "block";
+
                         const radios = document.querySelectorAll(
                             "input[type=radio][name=track]"
                         );
@@ -1252,14 +1264,27 @@ window.onload = function init() {
                                 trackId = event.currentTarget.value;
                                 console.log("track : " + trackId);
                                 count = 0;
-                                tracklist.style.display = "none";
-                                gameManager.initRound(roundNumber); //임시방편
+                                setTimeout(() => radiobtn.style.display = "none", 1000);
+                                setTimeout(() => gameManager.initRound(roundNumber), 1000);
                             });
                         });
-                    } else if (roundNumber !== 5) {
-                        gameManager.initRound(roundNumber);
-                    } else if (roundNumber === 5) //TODO 의성: 최종 결과 html에 출력해야함
-                    {
+                    }
+                    else if (roundNumber === 4) { //3 끝나면
+                      if (trackId === "bigdata") {
+                        explain33d.style.display = 'block';
+                      }
+                      else if (trackId === "smart"){
+                        explain33s.style.display = 'block';
+                      }
+                    }
+                    else if (roundNumber === 5) { //4 끝나면
+                      if (trackId === "bigdata") {
+                        explain43d.style.display = 'block';
+                      }
+                      else if (trackId === "smart"){
+                        explain43s.style.display = 'block';
+                      }
+
                         //finalTotalCurr : 게임중 먹은 SW 커리큘럼, 다른 학과 커리큘럼 전부 누적
                         //TotalSWcurrName : 우리 학과 전체 커리큘럼 배열
 
@@ -1293,9 +1318,27 @@ window.onload = function init() {
                         console.log(FailSWFinalResult);
                         console.log("OtherFinalResult : 다른 학과 커리큘럼 먹은 것");
                         console.log(OtherFinalResult);
-                    }
-                    count = 0;
 
+                    }
+                    else if (roundNumber < 3) { //1라운드 끝나면
+                      count = 0;
+                      gameManager.initRound(roundNumber);
+                    }
+                }
+                else if (count === 4) {
+                  explain33d.style.display = 'none';
+                  explain33s.style.display = 'none';
+                  explain43d.style.display = 'none';
+                  explain43s.style.display = 'none';
+
+                  if(roundNumber === 4){ //3라운드 끝나면
+                    count = 0;
+                    gameManager.initRound(roundNumber);
+                  }
+                  else if (roundNumber === 5) {
+                    //여기에 최종 결과
+                    final.style.display = 'block';
+                  }
                 }
             }
 
@@ -1312,11 +1355,13 @@ window.onload = function init() {
             }
             if (inputKey === three) {
                 roundNumber = 3;
+                trackId = "bigdata";
                 gameManager.initRound(roundNumber);
                 count = 0;
             }
             if (inputKey === four) {
                 roundNumber = 4;
+                trackId = "bigdata";
                 gameManager.initRound(roundNumber);
                 count = 0;
             }
@@ -1516,7 +1561,7 @@ function createCurriculums(position, probability, minScale, maxScale) {
     if (currManager.SWcurrs[currManager.index]) {
 
         createWord(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
-    }else {
+    } else {
         createWordOthercurr(lane * 800, 1000, position, SWcurrNameList[currManager.index], 100);
     }
     currManager.index += 1;
@@ -1636,7 +1681,6 @@ function shuffleArray(array) {
 function shuffleCurriculum() {
     shuffleArray(otherCurrName);
     let otherCurrArray = otherCurrName.slice(0, 5);
-    console.log(otherCurrArray);
 
 
     if (roundNumber === 1) {
@@ -1646,11 +1690,26 @@ function shuffleCurriculum() {
         SWcurrNameList = [...SWcurrName2, ...otherCurrArray];
         shuffleArray(SWcurrNameList)
     } else if (roundNumber === 3) {
-        SWcurrNameList = [...SWcurrName3, ...otherCurrArray];
-        shuffleArray(SWcurrNameList)
+        if (trackId === "bigdata") {
+            SWcurrNameList = [...SWcurrName3, ...otherCurrArray, ...dataTrack3];
+            shuffleArray(SWcurrNameList)
+        } else if (trackId === "smart") {
+            SWcurrNameList = [...SWcurrName3, ...otherCurrArray, ...sensorTrack3];
+            shuffleArray(SWcurrNameList)
+        }
+
     } else if (roundNumber === 4) {
-        SWcurrNameList = [...SWcurrName4, ...otherCurrArray];
-        shuffleArray(SWcurrNameList)
+        if (trackId === "bigdata") {
+            SWcurrNameList = [...SWcurrName4, ...otherCurrArray, ...dataTrack4];
+            shuffleArray(SWcurrNameList)
+        } else if (trackId === "smart") {
+            SWcurrNameList = [...SWcurrName4, ...otherCurrArray, ...sensorTrack4];
+            shuffleArray(SWcurrNameList)
+        }
+
     }
+
+    currLength = SWcurrNameList.length
+
 }
 

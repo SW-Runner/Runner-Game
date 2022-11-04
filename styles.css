@@ -1,3 +1,4 @@
+
 * {
     margin:0;
     padding:0;
@@ -171,10 +172,75 @@ td:nth-child(2) {
 
 .test1 {
     position: absolute;
+    left: 42%;
+    top: 42%;
+    display: inline-block;
+    font-family: 'Open Sans', sans-serif;
+    font-size:1.3em;
+}
+
+.form_radio_btn {
+    width: 160px;
+    height : 45px;
+    border: 1px solid #EAE7E7;
+    border-radius: 10px;
+}
+.form_radio_btn input[type=radio] {
+    display: none;
+}
+.form_radio_btn label {
+    display: block;
+    border-radius: 10px;
+    margin: 0 auto;
+    text-align: center;
+    height: -webkit-fill-available;
+    line-height: 45px;
+}
+
+/* Checked */
+.form_radio_btn input[type=radio]:checked + label {
+    background: #184DA0;
+    color: #fff;
+}
+
+/* Hover */
+.form_radio_btn label:hover {
+    color: #184DA0;
+}
+
+/* Disabled */
+.form_radio_btn input[type=radio] + label {
+    background: #F9FAFC;
+    color: #666;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Merriweather+Sans:wght@300&display=swap');
+
+.final {
+    position: absolute;
     left: 50%;
     top: 50%;
-    display: inline-block;
-    
+    display: none;
+    transform: translate(-50%, -50%);
+    padding-top: 15px;
+    font-family: 'Merriweather Sans', sans-serif;
+
+    /* font-family: 'Playfair Display', serif; */
+    /* animation: box-ani 2s linear forwards; */
+}
+
+.innerfinal {
+    font-family: 'Merriweather Sans', sans-serif;
+}
+
+@keyframes box-ani {
+	from {
+		transform: translate(-600px, -1000px);
+	}
+	to {
+		transform: translate(-600px, -320px);
+	}
 }
 
 .curr{
