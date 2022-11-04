@@ -684,11 +684,11 @@ class ObjectsManager {
         //roundspeed 1)라운드 별 object(장애물) 속도 설정
         if (roundNumber === 1) {
             this.objects.forEach(function (obj) {
-                obj[0].position.z += 70;
+                obj[0].position.z += 90;
             });
         } else if (roundNumber === 2) {
             this.objects.forEach(function (obj) {
-                obj[0].position.z += 90;
+                obj[0].position.z += 100;
             });
         } else if (roundNumber === 3) {
             this.objects.forEach(function (obj) {
@@ -817,19 +817,19 @@ class CurriculumManager {
         //roundspeed 2)라운드 별 커리큘럼 속도와 커리큘럼 word 속도
         if (roundNumber === 1) {
             this.currs.forEach(function (obj) {
-                obj[0].position.z += 70;
-            });
-
-            this.currWords.forEach(function (obj) {
-                obj.position.z += 70;
-            });
-        } else if (roundNumber === 2) {
-            this.currs.forEach(function (obj) {
                 obj[0].position.z += 90;
             });
 
             this.currWords.forEach(function (obj) {
                 obj.position.z += 90;
+            });
+        } else if (roundNumber === 2) {
+            this.currs.forEach(function (obj) {
+                obj[0].position.z += 100;
+            });
+
+            this.currWords.forEach(function (obj) {
+                obj.position.z += 100;
             });
         } else if (roundNumber === 3) {
             this.currs.forEach(function (obj) {
@@ -890,13 +890,13 @@ class Light {
         //roundspeed 3)
         if (roundNumber === 1) {
             this.spotLights.forEach(function (obj) {
-                obj.position.z += 70;
-                obj.target.position.z += 70;
+                obj.position.z += 90;
+                obj.target.position.z += 90;
             });
         } else if (roundNumber === 2) {
             this.spotLights.forEach(function (obj) {
-                obj.position.z += 90;
-                obj.target.position.z += 90;
+                obj.position.z += 100;
+                obj.target.position.z += 100;
             });
         } else if (roundNumber === 3) {
             this.spotLights.forEach(function (obj) {
@@ -1709,7 +1709,7 @@ function shuffleCurriculum() {
 
     }
 
-    currLenghth = SWcurrNameList.length
+    currLength = SWcurrNameList.length
 
 }
 
