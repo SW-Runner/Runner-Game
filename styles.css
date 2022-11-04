@@ -232,6 +232,8 @@ td:nth-child(2) {
     font-family: 'Merriweather Sans', sans-serif;
 }
 
+
+
 @keyframes box-ani {
 	from {
 		transform: translate(-600px, -1000px);

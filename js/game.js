@@ -1,5 +1,6 @@
 let SWFinalResult;
 let OtherFinalResult;
+let finalScore;
 
 // 게임오버 판단하는 정수
 let gameOverInt = 1;
@@ -42,7 +43,7 @@ const sensorTrack3 = [
 
 const sensorTrack4 = [
     "Embedded\nSystems",
-    "VR and\nVR"
+    "VR and\nAR"
 ]
 
 //우리학과 커리큘럼 전부 누적
@@ -1144,6 +1145,7 @@ class Game {
         }
 
         document.getElementById("score").innerText = String(this.roundScore + this.score);
+        finalScore = String(this.roundScore + this.score);
         document.getElementById("curr").innerHTML = showCurr;
     }
 }
@@ -1390,6 +1392,10 @@ window.onload = function init() {
                             li.innerText = xTotalSWcurrName;
                             otherList.appendChild(li);
                         }
+
+                        finalscore = document.getElementById("finalscore");
+                        finalscore.append(finalScore);
+
 
 
                         final.style.display = 'block';
